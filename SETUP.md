@@ -63,7 +63,8 @@ Web検索によるフォールバックが走り、生成が遅く・やや高�
 1. https://webservice.rakuten.co.jp/ にアクセス
 2. 楽天会員でログインし、**「アプリID発行」**
 3. アプリ名（例: `bookgram`）とアプリURL（例: `https://github.com/wyattfuji1220/Instagram`）を入力
-4. 発行された **applicationId**（数字の羅列）を控える
+4. アプリ詳細ページの **アプリケーションID** と **アクセスキー** を控える
+   （どちらもUUID形式。両方必要です。アフィリエイトIDは使いません）
 
 審査はなく、発行は即時です。
 
@@ -78,7 +79,8 @@ Web検索によるフォールバックが走り、生成が遅く・やや高�
 | `ANTHROPIC_API_KEY` | https://console.anthropic.com/ で発行した API キー |
 | `IG_USER_ID` | 手順2で取得した ID |
 | `IG_ACCESS_TOKEN` | 手順2で取得した長期トークン |
-| `RAKUTEN_APP_ID` | 手順2.5の applicationId（推奨） |
+| `RAKUTEN_APP_ID` | 手順2.5のアプリケーションID（推奨） |
+| `RAKUTEN_ACCESS_KEY` | 手順2.5のアクセスキー（推奨） |
 
 同じ画面の **Variables** タブで、以下も登録します。
 

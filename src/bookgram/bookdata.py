@@ -26,8 +26,11 @@ from typing import Any
 import requests
 
 NDL_ENDPOINT = "https://ndlsearch.ndl.go.jp/api/opensearch"
+# 2026年時点の楽天ウェブサービスは openapi.rakuten.co.jp に移行しており、
+# applicationId(UUID) と accessKey の両方が必須。旧 app.rakuten.co.jp は
+# 数字19桁のIDを要求するが、現行コンソールではそれが発行されない。
 RAKUTEN_ENDPOINT = (
-    "https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404"
+    "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404"
 )
 OPENBD_ENDPOINT = "https://api.openbd.jp/v1/get"
 GOOGLE_BOOKS_ENDPOINT = "https://www.googleapis.com/books/v1/volumes"
@@ -39,7 +42,13 @@ RETRYABLE_STATUS = {408, 429, 500, 502, 503, 504}
 XSI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 MIN_SUBSTANCE_CHARS = 80
 # 例外メッセージやログに載せてはいけないクエリパラメータ
-SECRET_PARAMS = {"applicationId", "key", "access_token", "affiliateId"}
+SECRET_PARAMS = {
+    "applicationId",
+    "accessKey",
+    "key",
+    "access_token",
+    "affiliateId",
+}
 
 
 class BookNotFoundError(RuntimeError):
@@ -224,14 +233,17 @@ def search_ndl(title: str) -> dict[str, Any]:
 def search_rakuten(title: str, isbn: str = "") -> dict[str, Any]:
     """楽天ブックスで検索する。商用和書の内容紹介(itemCaption)のカバー率が高い。
 
-    RAKUTEN_APP_ID が未設定なら何もしない。
+    RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY の両方が要る。
+    どちらか欠けていれば何もしない（他ソースで続行する）。
     """
     app_id = os.getenv("RAKUTEN_APP_ID", "")
-    if not app_id:
+    access_key = os.getenv("RAKUTEN_ACCESS_KEY", "")
+    if not app_id or not access_key:
         return {}
 
     params: dict[str, Any] = {
         "applicationId": app_id,
+        "accessKey": access_key,
         "hits": 5,
         "format": "json",
         "formatVersion": 2,
