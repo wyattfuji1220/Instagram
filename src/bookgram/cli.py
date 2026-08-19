@@ -19,7 +19,7 @@ from datetime import date, datetime, timedelta
 from typing import Any
 
 from . import queue as bookqueue
-from .bookdata import BookNotFoundError, fetch_material
+from .bookdata import fetch_material
 from .config import (
     DAYS_PER_BOOK,
     IMAGE_RETENTION_DAYS,
@@ -30,6 +30,7 @@ from .config import (
     load_secrets,
 )
 from .generate import generate_book_posts
+from .websearch import enrich_with_web_search
 from .preview import load_week_drafts, render_index, render_week_preview
 from .publish import InstagramClient, PublishError, build_caption, publish_carousel
 from .render import render_day
@@ -64,12 +65,21 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
         title = book["title"]
         print(f"[generate] 『{title}』の書誌データを取得中…")
-        try:
-            material = fetch_material(
-                title, book.get("isbn", ""), book.get("notes", "")
+        material = fetch_material(
+            title, book.get("isbn", ""), book.get("notes", ""), strict=False
+        )
+
+        if not material.has_substance():
+            print("[generate] 書誌DBの根拠が不足。Web検索で補完します…")
+            enrich_with_web_search(material, secrets.anthropic_api_key)
+
+        if not material.has_substance():
+            print(
+                f"[error] 『{title}』の根拠データを集められませんでした"
+                f"（ソース: {', '.join(material.sources) or 'なし'}）。"
+                " books/queue.yaml の notes にメモを書いてください。",
+                file=sys.stderr,
             )
-        except BookNotFoundError as error:
-            print(f"[error] {error}", file=sys.stderr)
             book["status"] = "needs_input"
             bookqueue.save_queue(data)
             return 1

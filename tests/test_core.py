@@ -154,3 +154,49 @@ def test_build_user_prompt_omits_empty_sections():
     prompt = _build_user_prompt(material)
     assert "内容紹介" in prompt
     assert "読書メモ" not in prompt
+
+
+class _Block:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
+class _Response:
+    def __init__(self, content):
+        self.content = content
+
+
+def test_websearch_extracts_text_and_urls():
+    from bookgram.websearch import _extract_text, _extract_urls
+
+    response = _Response(
+        [
+            _Block(type="text", text="この本は行動経済学の入門書です。"),
+            _Block(
+                type="web_search_tool_result",
+                content=[
+                    _Block(url="https://example.com/a"),
+                    _Block(url="https://example.com/b"),
+                    _Block(url="https://example.com/a"),
+                ],
+            ),
+        ]
+    )
+    assert "行動経済学" in _extract_text(response)
+    assert _extract_urls(response) == ["https://example.com/a", "https://example.com/b"]
+
+
+def test_websearch_tolerates_error_result_block():
+    from bookgram.websearch import _extract_urls
+
+    response = _Response(
+        [_Block(type="web_search_tool_result", content=_Block(error_code="max_uses_exceeded"))]
+    )
+    assert _extract_urls(response) == []
+
+
+def test_web_sources_appear_in_prompt_block():
+    material = BookMaterial(title="本", description="要約", web_sources=["https://example.com/x"])
+    block = material.to_prompt_block()
+    assert "出典" in block
+    assert "https://example.com/x" in block

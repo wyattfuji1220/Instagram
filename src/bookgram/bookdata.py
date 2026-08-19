@@ -6,6 +6,7 @@
 3つのソースを併用する。どれか1つが落ちても残りで成立する設計。
 
   NDLサーチ    和書の書誌情報とISBN。キー不要で、和書のタイトル解決に最も強い
+  楽天ブックス 商用和書の内容紹介。カバー率が最も高い。無料の applicationId が要る
   Google Books 内容紹介が充実していることが多い。匿名アクセスは429になりやすい
   openBD       和書の内容紹介・目次・著者略歴。ISBNが分かっている場合のみ引ける
 
@@ -25,6 +26,9 @@ from typing import Any
 import requests
 
 NDL_ENDPOINT = "https://ndlsearch.ndl.go.jp/api/opensearch"
+RAKUTEN_ENDPOINT = (
+    "https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404"
+)
 OPENBD_ENDPOINT = "https://api.openbd.jp/v1/get"
 GOOGLE_BOOKS_ENDPOINT = "https://www.googleapis.com/books/v1/volumes"
 USER_AGENT = "bookgram/1.0 (personal reading log)"
@@ -54,6 +58,7 @@ class BookMaterial:
     personal_notes: str = ""
     categories: list[str] = field(default_factory=list)
     sources: list[str] = field(default_factory=list)
+    web_sources: list[str] = field(default_factory=list)
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -75,6 +80,8 @@ class BookMaterial:
             lines += ["", "【目次】", self.table_of_contents]
         if self.author_bio:
             lines += ["", "【著者略歴】", self.author_bio]
+        if self.web_sources:
+            lines += ["", "【上記のWeb情報の出典】"] + [f"- {u}" for u in self.web_sources]
         if self.personal_notes:
             lines += [
                 "",
@@ -181,6 +188,56 @@ def search_ndl(title: str) -> dict[str, Any]:
     return {}
 
 
+# ------------------------------------------------------------------ 楽天ブックス
+
+
+def search_rakuten(title: str, isbn: str = "") -> dict[str, Any]:
+    """楽天ブックスで検索する。商用和書の内容紹介(itemCaption)のカバー率が高い。
+
+    RAKUTEN_APP_ID が未設定なら何もしない。
+    """
+    app_id = os.getenv("RAKUTEN_APP_ID", "")
+    if not app_id:
+        return {}
+
+    params: dict[str, Any] = {
+        "applicationId": app_id,
+        "hits": 5,
+        "format": "json",
+        "formatVersion": 2,
+    }
+    if isbn:
+        params["isbn"] = isbn
+    else:
+        params["title"] = title
+
+    items = _request(RAKUTEN_ENDPOINT, params).json().get("Items") or []
+    if not items:
+        return {}
+
+    # formatVersion=2 では Items が直接アイテムの配列になる。
+    entries = [item.get("Item", item) for item in items]
+    best = max(entries, key=lambda e: len(e.get("itemCaption", "") or ""))
+    return best
+
+
+def _apply_rakuten(material: BookMaterial, entry: dict[str, Any]) -> None:
+    material.sources.append("rakuten")
+    material.title = entry.get("title") or material.title
+    if entry.get("author") and not material.authors:
+        material.authors = [
+            _normalize_person(name)
+            for name in entry["author"].replace("/", "、").split("、")
+            if name.strip()
+        ]
+    material.publisher = material.publisher or entry.get("publisherName", "")
+    material.published_date = material.published_date or entry.get("salesDate", "")
+    material.isbn = material.isbn or _normalize_isbn(entry.get("isbn", ""))
+    caption = (entry.get("itemCaption") or "").strip()
+    if len(caption) > len(material.description):
+        material.description = caption
+
+
 # ---------------------------------------------------------------- Google Books
 
 
@@ -245,8 +302,14 @@ def _try(source: str, fetch):
         return None
 
 
-def fetch_material(title: str, isbn: str = "", notes: str = "") -> BookMaterial:
-    """1冊分の根拠データを取得してマージする。"""
+def fetch_material(
+    title: str, isbn: str = "", notes: str = "", *, strict: bool = True
+) -> BookMaterial:
+    """1冊分の根拠データを取得してマージする。
+
+    strict=False にすると根拠不足でも例外を投げず、そのまま返す。
+    Web検索で補完してから判定したい場合に使う。
+    """
     material = BookMaterial(
         title=title, isbn=_normalize_isbn(isbn), personal_notes=notes.strip()
     )
@@ -262,6 +325,11 @@ def fetch_material(title: str, isbn: str = "", notes: str = "") -> BookMaterial:
             material.published_date = ndl["published_date"]
         _polite_sleep()
 
+    rakuten = _try("楽天ブックス", lambda: search_rakuten(title, material.isbn))
+    if rakuten:
+        _apply_rakuten(material, rakuten)
+        _polite_sleep()
+
     volume = _try(
         "Google Books", lambda: search_google_books(title, material.isbn)
     )
@@ -275,7 +343,9 @@ def fetch_material(title: str, isbn: str = "", notes: str = "") -> BookMaterial:
         material.publisher = volume.get("publisher") or material.publisher
         material.published_date = volume.get("publishedDate") or material.published_date
         material.page_count = volume.get("pageCount") or material.page_count
-        material.description = (volume.get("description") or "").strip()
+        google_description = (volume.get("description") or "").strip()
+        if len(google_description) > len(material.description):
+            material.description = google_description
         material.categories = volume.get("categories") or []
         if not material.isbn:
             for ident in volume.get("industryIdentifiers", []) or []:
@@ -306,7 +376,7 @@ def fetch_material(title: str, isbn: str = "", notes: str = "") -> BookMaterial:
             material.table_of_contents = texts.get("table_of_contents", "")
             material.author_bio = texts.get("author_bio", "")
 
-    if not material.has_substance():
+    if strict and not material.has_substance():
         raise BookNotFoundError(
             f"『{title}』の根拠データが不足しています"
             f"（取得できたソース: {', '.join(material.sources) or 'なし'} / "
