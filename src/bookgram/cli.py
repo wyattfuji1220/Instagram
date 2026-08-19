@@ -23,6 +23,7 @@ from typing import Any
 from . import queue as bookqueue
 from .bookdata import fetch_material
 from .config import (
+    CARDS_PER_POST,
     DRAFTS_DIR,
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
@@ -159,12 +160,12 @@ def cmd_post(args: argparse.Namespace) -> int:
 
     image_urls = [
         f"{secrets.pages_base_url}/img/{day.isoformat()}/{i:02d}.jpg"
-        for i in range(1, len(draft["cards"]) + 1)
+        for i in range(1, CARDS_PER_POST + 1)
     ]
     caption = build_caption(draft)
 
     if args.dry_run:
-        print(f"[dry-run] {day} 『{draft['book_title']}』 Day{draft['day_index']}")
+        print(f"[dry-run] {day} 『{draft['book_title']}』 / {draft['book_author']}")
         for url in image_urls:
             print(f"  image: {url}")
         print("--- caption ---")
@@ -177,7 +178,7 @@ def cmd_post(args: argparse.Namespace) -> int:
         secrets.graph_api_version,
         secrets.api_host,
     )
-    print(f"[post] {day} 『{draft['book_title']}』 Day{draft['day_index']} を投稿中…")
+    print(f"[post] {day} 『{draft['book_title']}』 を投稿中…")
     try:
         media_id = publish_carousel(client, image_urls, caption)
     except PublishError as error:
@@ -193,7 +194,6 @@ def cmd_post(args: argparse.Namespace) -> int:
             "date": day.isoformat(),
             "media_id": media_id,
             "book_title": draft["book_title"],
-            "day_index": draft["day_index"],
             "posted_at": draft["posted_at"],
         }
     )
@@ -370,6 +370,11 @@ def cmd_cleanup(_: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Windows のコンソールは既定が cp932 で、絵文字や一部の記号で落ちる。
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(prog="bookgram", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
