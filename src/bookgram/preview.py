@@ -14,6 +14,8 @@ from typing import Any
 
 from .config import CARDS_PER_POST, DOCS_DIR, OUTPUT_DIR, PAGES_PREVIEW_DIRNAME
 
+NEWLINE = chr(10)
+
 PAGE_CSS = """
 :root { color-scheme: dark; }
 * { box-sizing: border-box; }
@@ -166,6 +168,78 @@ def render_index(pages_base_url: str) -> list[Path]:
     docs_path.write_text(_index_html(relative or empty), encoding="utf-8")
     output_path.write_text(_index_html(absolute or empty), encoding="utf-8")
     return [docs_path, output_path]
+
+
+def render_pr_body(
+    week_label: str,
+    drafts: list[tuple[date, dict[str, Any]]],
+    repo: str,
+    branch: str,
+) -> Path:
+    """PR本文用のMarkdownを書き出す。
+
+    画像は raw.githubusercontent.com のブランチURLで参照するため、
+    マージ前でもPR画面上で現物を確認できる。
+    """
+    raw_base = f"https://raw.githubusercontent.com/{repo}/{branch}/docs/img"
+    parts = [
+        f"## {week_label} の投稿下書き",
+        "",
+        f"本 {len({d.get('book_title') for _, d in drafts})} 冊 / {len(drafts)} 日分。",
+        "",
+        "**このPRをマージした日付だけが、毎朝7時に自動投稿されます。**",
+        "修正する場合は `drafts/` 以下の JSON をこのブランチ上で直接編集してください。",
+        "",
+        "### レビュー観点",
+        "",
+        "- [ ] 根拠データに無い事実を書いていないか（各日の grounding を確認）",
+        "- [ ] 文字が画像からはみ出していないか",
+        "- [ ] キャプションとハッシュタグが妥当か",
+        "",
+        "---",
+        "",
+    ]
+
+    for day, draft in drafts:
+        iso = day.isoformat()
+        images = " ".join(
+            f'<img src="{raw_base}/{iso}/{i:02d}.jpg" width="150">'
+            for i in range(1, len(draft.get("cards", [])) + 1)
+        )
+        tags = " ".join(draft.get("hashtags", []))
+        grounding = NEWLINE.join(f"> - {g}" for g in draft.get("grounding", []))
+        parts += [
+            f"### {day.strftime('%m/%d (%a)')} — Day{draft.get('day_index')} "
+            f"【{draft.get('theme')}】",
+            "",
+            f"**{draft.get('book_title')}** / {draft.get('book_author')}",
+            "",
+            images,
+            "",
+            "<details><summary>キャプションとハッシュタグ</summary>",
+            "",
+            "```",
+            draft.get("caption", ""),
+            "",
+            tags,
+            "```",
+            "",
+            "</details>",
+            "",
+            "<details><summary>根拠メモ (grounding)</summary>",
+            "",
+            grounding,
+            "",
+            "</details>",
+            "",
+            "---",
+            "",
+        ]
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = OUTPUT_DIR / "pr-body.md"
+    path.write_text(NEWLINE.join(parts), encoding="utf-8")
+    return path
 
 
 def load_week_drafts(days: list[date]) -> list[tuple[date, dict[str, Any]]]:

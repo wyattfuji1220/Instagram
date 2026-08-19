@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from datetime import date, datetime, timedelta
@@ -31,7 +32,12 @@ from .config import (
 )
 from .generate import generate_book_posts
 from .websearch import enrich_with_web_search
-from .preview import load_week_drafts, render_index, render_week_preview
+from .preview import (
+    load_week_drafts,
+    render_index,
+    render_pr_body,
+    render_week_preview,
+)
 from .publish import InstagramClient, PublishError, build_caption, publish_carousel
 from .render import render_day
 
@@ -134,8 +140,10 @@ def _write_previews(start: date, pages_base_url: str) -> None:
     days = [start + timedelta(days=i) for i in range(14)]
     drafts = load_week_drafts(days)
     if drafts:
-        path = render_week_preview(week_label(start), drafts)
-        print(f"[preview] {path}")
+        print(f"[preview] {render_week_preview(week_label(start), drafts)}")
+        repo = os.getenv("GITHUB_REPOSITORY", "wyattfuji1220/Instagram")
+        branch = os.getenv("DRAFT_BRANCH", f"drafts/{week_label(start)}")
+        print(f"[preview] {render_pr_body(week_label(start), drafts, repo, branch)}")
     for path in render_index(pages_base_url):
         print(f"[preview] {path}")
 

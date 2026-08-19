@@ -70,27 +70,10 @@ jobs:
           git commit -m "生成: ${WEEK} の投稿下書き"
           git push -f origin "$BRANCH"
 
-          BASE="${PAGES_BASE_URL:-https://wyattfuji1220.github.io/Instagram}"
-          BODY=$(printf '%s\n' \
-            "## ${WEEK} の投稿下書き" \
-            "" \
-            "プレビュー: ${BASE}/preview/${WEEK}.html" \
-            "" \
-            "※ プレビューは **このPRをマージしたあと** に表示されます（GitHub Pages が main を配信するため）。" \
-            "先に中身を見たい場合は \`drafts/\` 以下の JSON を確認してください。" \
-            "" \
-            "### レビュー観点" \
-            "- [ ] 書誌データに無い事実を書いていないか（各日の grounding を確認）" \
-            "- [ ] 文字が画像からはみ出していないか" \
-            "- [ ] キャプションとハッシュタグが妥当か" \
-            "" \
-            "**このPRをマージした日付だけが自動投稿されます。**")
-
-          if ! gh pr view "$BRANCH" >/dev/null 2>&1; then
-            gh pr create --base main --head "$BRANCH" \
-              --title "投稿下書き ${WEEK}" --body "$BODY"
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            gh pr edit "$BRANCH" --body-file output/pr-body.md
           else
-            gh pr edit "$BRANCH" --body "$BODY"
+            gh pr create --base main --head "$BRANCH"               --title "投稿下書き ${WEEK}" --body-file output/pr-body.md
           fi
 
       - name: キュー切れを通知
