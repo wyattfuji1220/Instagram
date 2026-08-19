@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <style>
   :root {
-    --bg: #0B0E14;
-    --bg-raised: #131822;
-    --ink: #F2F5F9;
-    --ink-dim: #8C97A8;
-    --accent: #F5B94A;
-    --rule: #232B39;
+    --ink: #FFFFFF;
+    --ink-dim: #D8D4CC;
+    --hl: #F2C14E;          /* 本文のハイライト（黄〜橙） */
+    --hl-cover: #D93A2B;    /* 表紙のハイライト（赤） */
+    --paper: #FBFAF7;
+    --paper-ink: #2B2B2B;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,10 +17,11 @@
   html, body {
     width: {{ width }}px;
     height: {{ height }}px;
-    background: var(--bg);
+    overflow: hidden;
+    background: #0A0A0A;
     color: var(--ink);
-    font-family: "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", sans-serif;
-    font-feature-settings: "palt" 1;
+    font-family: "Noto Serif JP", "Noto Serif CJK JP", "Hiragino Mincho ProN",
+                 "Yu Mincho", "YuMincho", serif;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -28,165 +29,306 @@
     position: relative;
     width: {{ width }}px;
     height: {{ height }}px;
-    padding: 96px 88px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
-  /* 左端のアクセントバー */
-  .card::before {
-    content: "";
+  /* 背景はぼかして沈める。文字の可読性を最優先にする。 */
+  .bg {
     position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 12px;
-    background: var(--accent);
+    inset: -40px;
+    background-image: url("{{ bg }}");
+    background-size: cover;
+    background-position: center;
+    filter: blur(4px) brightness(0.78) saturate(0.9);
   }
-
-  /* 背面の巨大な連番 */
-  .ghost-number {
+  .veil {
     position: absolute;
-    right: -40px;
-    bottom: -120px;
-    font-size: 460px;
-    font-weight: 900;
-    line-height: 1;
-    color: #FFFFFF;
-    opacity: 0.028;
-    letter-spacing: -0.05em;
+    inset: 0;
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(6, 6, 8, 0.26) 0%,
+        rgba(6, 6, 8, 0.60) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(6, 6, 8, 0.62) 0%,
+        rgba(6, 6, 8, 0.38) 42%,
+        rgba(6, 6, 8, 0.68) 100%
+      );
   }
 
-  .head {
+  .layer {
+    position: relative;
+    flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 64px;
+    flex-direction: column;
+    padding: 52px 72px 46px;
   }
 
-  .kicker {
-    display: inline-block;
-    padding: 12px 26px;
-    border: 2px solid var(--accent);
-    border-radius: 999px;
-    color: var(--accent);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+  .top-note {
+    font-size: 30px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
     white-space: nowrap;
   }
 
-  .pager {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--ink-dim);
-    letter-spacing: 0.12em;
+  .center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
-  .main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-  .headline {
-    font-size: {{ 78 if variant == 'hook' else 62 }}px;
-    font-weight: 900;
-    line-height: 1.38;
-    letter-spacing: -0.01em;
-    margin-bottom: 44px;
+  .lead {
+    font-size: 54px;
+    font-weight: 500;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    white-space: pre-line;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+    max-width: 920px;
   }
-  .headline .mark {
-    color: var(--accent);
-  }
-
-  .body {
-    font-size: 38px;
-    line-height: 2.0;
-    color: #D5DCE6;
-    letter-spacing: 0.01em;
-  }
-
-  .oneline {
-    font-family: "Noto Serif JP", "Noto Serif CJK JP", "Hiragino Mincho ProN", serif;
-    font-size: 40px;
-    line-height: 1.8;
-    color: var(--accent);
-    padding-left: 28px;
-    border-left: 4px solid var(--rule);
-    margin-top: 20px;
-  }
-
-  .cta {
-    margin-top: 48px;
-    padding: 34px 38px;
-    background: var(--bg-raised);
-    border-radius: 20px;
-    border: 1px solid var(--rule);
-  }
-  .cta-title {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--accent);
-    margin-bottom: 14px;
-  }
-  .cta-text {
-    font-size: 30px;
-    line-height: 1.7;
-    color: var(--ink-dim);
-  }
+  .lead.small { font-size: 46px; line-height: 1.95; }
+  .hl { color: var(--hl); }
 
   .foot {
-    margin-top: 56px;
-    padding-top: 32px;
-    border-top: 1px solid var(--rule);
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
   }
-  .foot-title {
-    font-size: 30px;
+  .icon {
+    width: 76px; height: 76px; border-radius: 50%;
+    background-image: url("{{ icon }}");
+    background-size: cover; background-position: center;
+    background-color: #2A2A2A;
+    flex: 0 0 auto;
+  }
+  .icon.letter {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; color: var(--ink-dim);
+  }
+  .handle { font-size: 40px; letter-spacing: 0.02em; }
+
+  /* ---------------------------------------------------------------- 表紙 */
+
+  .cover { display: flex; height: 100%; }
+  .cover-left {
+    width: 62%;
+    background: var(--paper);
+    color: var(--paper-ink);
+    padding: 52px 56px 46px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cover-right {
+    width: 38%;
+    background-image: url("{{ bg }}");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) contrast(1.1) brightness(0.92);
+  }
+  .cover-left .top-note { color: #4A4A4A; font-size: 27px; }
+  .cover-title {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .cover-title span {
+    font-size: 66px;
     font-weight: 700;
-    color: var(--ink);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 640px;
+    line-height: 1.62;
+    letter-spacing: 0.01em;
+    white-space: pre-line;
   }
-  .foot-author {
-    font-size: 26px;
+  .cover-title .hl { color: var(--hl-cover); }
+  .cover-tag {
+    font-size: 32px;
+    color: #4A4A4A;
+    margin-bottom: 30px;
+  }
+  .cover-foot { display: flex; align-items: center; gap: 18px; }
+  .cover-foot .handle { color: var(--paper-ink); font-size: 38px; }
+
+  /* ------------------------------------------------------------ 書誌情報 */
+
+  .biblio-title {
+    margin-top: 34px;
+    font-size: 46px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.5;
+    text-wrap: balance;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+  }
+  .biblio-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    padding: 34px 0;
+  }
+  .cover-image {
+    width: 400px; height: 570px;
+    background-image: url("{{ cover_image }}");
+    background-size: cover; background-position: center;
+    background-color: #16161A;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+    flex: 0 0 auto;
+  }
+  .cover-image.placeholder {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 40px;
+    font-size: 40px; line-height: 1.7; color: var(--ink-dim);
+    border: 1px solid #3A3A40;
+  }
+  .facts { flex: 1; }
+  .fact { margin-bottom: 46px; }
+  .fact-label { font-size: 38px; color: var(--hl); margin-bottom: 14px; }
+  .fact-value { font-size: 42px; line-height: 1.6; }
+  .biblio-note {
+    font-size: 30px;
+    text-align: center;
     color: var(--ink-dim);
-    white-space: nowrap;
+  }
+
+  /* -------------------------------------------------- こんな方におすすめ */
+
+  .rec-title {
+    margin-top: 18px;
+    font-size: 52px;
+    letter-spacing: 0.05em;
+    margin-bottom: 56px;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+  }
+  .rec-list { width: 100%; max-width: 900px; }
+  .rec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 44px;
+    text-align: left;
+  }
+  .check {
+    flex: 0 0 auto;
+    width: 46px; height: 46px;
+    border: 3px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px; line-height: 1;
+    margin-top: 8px;
+  }
+  .rec-text {
+    font-size: 42px;
+    line-height: 1.72;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+  }
+
+  /* ------------------------------------------------------------ 最終カード */
+
+  .outro-head {
+    font-size: 44px;
+    line-height: 1.75;
+    max-width: 820px;
+    text-wrap: balance;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+  }
+  .outro-text {
+    margin-top: 56px;
+    font-size: 36px;
+    line-height: 1.85;
+    color: var(--ink-dim);
+    white-space: pre-line;
+    max-width: 820px;
   }
 </style>
 </head>
 <body>
+
+{% if variant == 'cover' %}
   <div class="card">
-    <div class="ghost-number">{{ card_index }}</div>
-
-    <div class="head">
-      <span class="kicker">{{ kicker }}</span>
-      <span class="pager">{{ card_index }} / {{ card_total }}</span>
+    <div class="cover">
+      <div class="cover-left">
+        <div class="top-note">{{ top_note }}</div>
+        <div class="cover-title"><span>{{ text_html }}</span></div>
+        <div class="cover-tag">{{ cover_tag }}</div>
+        <div class="cover-foot">
+          <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
+          <span class="handle">{{ handle }}</span>
+        </div>
+      </div>
+      <div class="cover-right"></div>
     </div>
+  </div>
 
-    <div class="main">
-      <div class="headline">{{ headline }}</div>
+{% else %}
+  <div class="card">
+    <div class="bg"></div>
+    <div class="veil"></div>
+    <div class="layer">
+      <div class="top-note">{{ top_note }}</div>
 
-      {% if variant == 'hook' and one_line %}
-        <div class="oneline">{{ one_line }}</div>
+      {% if variant == 'biblio' %}
+        <div class="biblio-title">{{ book_title }}</div>
+        <div class="biblio-body">
+          <div class="cover-image{{ '' if cover_image else ' placeholder' }}">
+            {{ '' if cover_image else book_title }}
+          </div>
+          <div class="facts">
+            <div class="fact">
+              <div class="fact-label">▶ 発行日</div>
+              <div class="fact-value">{{ published or '—' }}</div>
+            </div>
+            <div class="fact">
+              <div class="fact-label">▶ 著者</div>
+              <div class="fact-value">{{ book_author }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="biblio-note">↓ 詳細レビューは本文から ↓</div>
+
+      {% elif variant == 'recommend' %}
+        <div class="center">
+          <div class="rec-title">こんな方におすすめ</div>
+          <div class="rec-list">
+            {% for item in items %}
+              <div class="rec-item">
+                <span class="check">✓</span>
+                <span class="rec-text">{{ item }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="foot">
+          <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
+          <span class="handle">{{ handle }}</span>
+        </div>
+
+      {% elif variant == 'outro' %}
+        <div class="center">
+          <div class="outro-head">{{ account_name }}</div>
+          <div class="outro-text">{{ outro_text }}</div>
+        </div>
+        <div class="foot">
+          <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
+          <span class="handle">{{ handle }}</span>
+        </div>
+
       {% else %}
-        <div class="body">{{ body }}</div>
-      {% endif %}
-
-      {% if variant == 'outro' %}
-        <div class="cta">
-          <div class="cta-title">{{ cta_title }}</div>
-          <div class="cta-text">{{ cta_text }}</div>
+        <div class="center">
+          <div class="lead{{ ' small' if long_text }}">{{ text_html }}</div>
+        </div>
+        <div class="foot">
+          <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
+          <span class="handle">{{ handle }}</span>
         </div>
       {% endif %}
     </div>
-
-    <div class="foot">
-      <span class="foot-title">{{ book_title }}</span>
-      <span class="foot-author">{{ book_author }}</span>
-    </div>
   </div>
+{% endif %}
+
 </body>
 </html>

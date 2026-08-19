@@ -16,6 +16,7 @@ from typing import Any
 
 import requests
 
+NEWLINE = chr(10)
 DEFAULT_HOST = "https://graph.facebook.com"
 TIMEOUT = 60
 STATUS_POLL_INTERVAL = 5
@@ -182,8 +183,29 @@ def publish_carousel(
 
 
 def build_caption(draft: dict[str, Any]) -> str:
-    """本文とハッシュタグを Instagram のキャプション形式に組み立てる。"""
-    hashtags = " ".join(
-        tag if tag.startswith("#") else f"#{tag}" for tag in draft.get("hashtags", [])
+    """本文・アカウント紹介・ハッシュタグを Instagram のキャプション形式に組み立てる。
+
+    定型部分は account.yaml から読む。
+    """
+    from .config import load_account
+
+    account = load_account()
+    tags = list(account.get("fixed_hashtags", []))
+    for tag in draft.get("hashtags", []):
+        tag = tag if tag.startswith("#") else f"#{tag}"
+        if tag not in tags:
+            tags.append(tag)
+
+    return NEWLINE.join(
+        [
+            draft["caption"].strip(),
+            "",
+            "-------------------------------",
+            "",
+            account["name"],
+            account["tagline"],
+            "",
+            "",
+            " ".join(tags),
+        ]
     )
-    return f"{draft['caption'].strip()}\n\n.\n.\n.\n{hashtags}"

@@ -23,7 +23,6 @@ from typing import Any
 from . import queue as bookqueue
 from .bookdata import fetch_material
 from .config import (
-    DAYS_PER_BOOK,
     DRAFTS_DIR,
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
@@ -32,7 +31,7 @@ from .config import (
     QUEUE_LOW_THRESHOLD,
     load_secrets,
 )
-from .generate import generate_book_posts
+from .generate import generate_book_post
 from .websearch import enrich_with_web_search
 from .preview import (
     load_week_drafts,
@@ -41,7 +40,7 @@ from .preview import (
     render_week_preview,
 )
 from .publish import InstagramClient, PublishError, build_caption, publish_carousel
-from .render import render_day
+from .render import fetch_cover_data_uri, render_post
 
 TARGET_COVERAGE_DAYS = 7
 
@@ -63,10 +62,10 @@ def cmd_generate(args: argparse.Namespace) -> int:
     start = date.fromisoformat(args.start) if args.start else today_jst() + timedelta(days=1)
 
     data = bookqueue.load_queue()
-    generated_books = 0
+    generated = 0
 
     while bookqueue.coverage_days(start) < TARGET_COVERAGE_DAYS:
-        if args.max_books and generated_books >= args.max_books:
+        if args.max_books and generated >= args.max_books:
             print(f"[stop] --max-books {args.max_books} に達したので終了します。")
             break
         book = bookqueue.take_next_book(data)
@@ -75,7 +74,8 @@ def cmd_generate(args: argparse.Namespace) -> int:
             break
 
         title = book["title"]
-        print(f"[generate] 『{title}』の書誌データを取得中…")
+        target = bookqueue.free_dates(start, 1)[0]
+        print(f"[generate] {target} 『{title}』の根拠データを取得中…")
         material = fetch_material(
             title, book.get("isbn", ""), book.get("notes", ""), strict=False
         )
@@ -96,48 +96,35 @@ def cmd_generate(args: argparse.Namespace) -> int:
             return 1
 
         print(f"[generate] 原稿を生成中（sources={material.sources}）…")
-        payload = generate_book_posts(material, secrets.anthropic_api_key)
+        post = generate_book_post(material, secrets.anthropic_api_key)
+        post["cover_url"] = material.cover_url
+        post["cover_data_uri"] = fetch_cover_data_uri(material.cover_url)
 
-        targets = bookqueue.free_dates(start, DAYS_PER_BOOK)
-        days = sorted(payload["days"], key=lambda d: d["day_index"])
-
-        for day_date, day in zip(targets, days):
-            print(f"[render]   {day_date} Day{day['day_index']} 【{day['theme']}】")
-            render_day(
-                day,
-                payload["book_title"],
-                payload["book_author"],
-                payload["one_line"],
-                IMG_DIR / day_date.isoformat(),
-            )
-            bookqueue.save_draft(
-                day_date,
-                {
-                    "date": day_date.isoformat(),
-                    "book_title": payload["book_title"],
-                    "book_author": payload["book_author"],
-                    "one_line": payload["one_line"],
-                    "day_index": day["day_index"],
-                    "theme": day["theme"],
-                    "cards": day["cards"],
-                    "caption": day["caption"],
-                    "hashtags": day["hashtags"],
-                    "grounding": day["grounding"],
-                    "status": "draft",
-                    "meta": payload.get("_meta", {}),
-                },
-            )
+        print(f"[render]   カード{len(render_post(post, IMG_DIR / target.isoformat()))}枚")
+        post.pop("cover_data_uri", None)
+        bookqueue.save_draft(
+            target,
+            {
+                "date": target.isoformat(),
+                **{k: v for k, v in post.items() if k != "_meta"},
+                "status": "draft",
+                "meta": post.get("_meta", {}),
+            },
+        )
 
         bookqueue.mark_generated(data, book)
         bookqueue.save_queue(data)
-        generated_books += 1
+        generated += 1
 
     _write_previews(start, secrets.pages_base_url)
 
     remaining = len(bookqueue.pending_books(data))
-    print(f"[done] 生成した本: {generated_books}冊 / キュー残: {remaining}冊")
+    print(f"[done] 生成: {generated}冊 / キュー残: {remaining}冊（＝{remaining}日分）")
     if remaining < QUEUE_LOW_THRESHOLD:
-        print(f"::warning::キューの残りが{remaining}冊です。books/queue.yaml に本を追加してください。")
+        print(
+            f"::warning::キューの残りが{remaining}冊（{remaining}日分）です。"
+            " books/queue.yaml に本を追加してください。"
+        )
     return 0
 
 
@@ -233,8 +220,7 @@ def cmd_rerender(args: argparse.Namespace) -> int:
         targets = [date.fromisoformat(args.date)]
     else:
         targets = sorted(
-            date.fromisoformat(p.parent.name)
-            for p in DRAFTS_DIR.glob("*/post.json")
+            date.fromisoformat(p.parent.name) for p in DRAFTS_DIR.glob("*/post.json")
         )
 
     rendered = 0
@@ -246,19 +232,15 @@ def cmd_rerender(args: argparse.Namespace) -> int:
         if draft.get("status") == "posted" and not args.force:
             print(f"[skip] {day} は投稿済みです。作り直すには --force を付けてください。")
             continue
-        render_day(
-            draft,
-            draft["book_title"],
-            draft["book_author"],
-            draft["one_line"],
-            IMG_DIR / day.isoformat(),
-        )
-        print(f"[render] {day} Day{draft['day_index']}")
+        post = dict(draft)
+        post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
+        render_post(post, IMG_DIR / day.isoformat())
+        print(f"[render] {day} 『{draft['book_title']}』")
         rendered += 1
 
     if rendered:
         _write_previews(min(targets), secrets.pages_base_url)
-    print(f"[done] {rendered} 日分を再生成しました。")
+    print(f"[done] {rendered} 投稿分を再生成しました。")
     return 0
 
 

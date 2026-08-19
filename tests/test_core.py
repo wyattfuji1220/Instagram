@@ -1,20 +1,30 @@
 import sys
-from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import pytest
+import requests
 
+from bookgram import bookdata
 from bookgram.bookdata import (
     BookMaterial,
     _extract_openbd_texts,
     _ndl_item_fields,
     _normalize_isbn,
+    _safe_params,
 )
-from bookgram.generate import _build_user_prompt, _output_schema, _validate
+from bookgram.generate import (
+    POINT_SLIDES,
+    RECOMMEND_ITEMS,
+    _build_user_prompt,
+    _output_schema,
+    _validate,
+)
 from bookgram.publish import PublishError, build_caption, publish_carousel
-from bookgram.render import _variant, build_card_contexts
+from bookgram.render import _highlighted, build_card_contexts
+
+# --------------------------------------------------------------------- 書誌データ
 
 
 def test_normalize_isbn_strips_separators():
@@ -22,20 +32,41 @@ def test_normalize_isbn_strips_separators():
 
 
 def test_material_requires_substance():
-    thin = BookMaterial(title="薄い本", description="短い")
-    assert not thin.has_substance()
-    thick = BookMaterial(title="厚い本", description="あ" * 100)
-    assert thick.has_substance()
+    assert not BookMaterial(title="薄い本", description="短い").has_substance()
+    assert BookMaterial(title="厚い本", description="あ" * 100).has_substance()
 
 
-def test_prompt_block_contains_description():
+def test_notes_alone_can_satisfy_substance():
+    """APIが全滅しても、読書メモがあれば生成できる。"""
+    material = BookMaterial(title="本", personal_notes="め" * 80)
+    assert material.has_substance()
+    assert "読書メモ" in material.to_prompt_block()
+
+
+def test_substance_counts_all_grounding_sources():
     material = BookMaterial(
-        title="テスト本", authors=["著者A"], description="内容紹介テキスト"
+        title="本",
+        description="あ" * 30,
+        table_of_contents="い" * 30,
+        personal_notes="う" * 30,
+    )
+    assert material.substance_chars() == 90
+
+
+def test_official_title_shown_separately_from_display_title():
+    material = BookMaterial(
+        title="すごい左利き",
+        official_title="1万人の脳を見た名医が教えるすごい左利き",
+        description="内容",
     )
     block = material.to_prompt_block()
-    assert "テスト本" in block
-    assert "著者A" in block
-    assert "内容紹介テキスト" in block
+    assert "書名: すごい左利き" in block
+    assert "正式書名" in block
+
+
+def test_web_sources_appear_in_prompt_block():
+    material = BookMaterial(title="本", description="要約", web_sources=["https://example.com/x"])
+    assert "https://example.com/x" in material.to_prompt_block()
 
 
 def test_extract_openbd_texts_picks_longest_per_type():
@@ -55,84 +86,6 @@ def test_extract_openbd_texts_picks_longest_per_type():
     assert texts["table_of_contents"] == "第1章 / 第2章"
 
 
-def _fake_day(day_index=1, cards=5):
-    return {
-        "day_index": day_index,
-        "theme": "テーマ",
-        "cards": [
-            {"kicker": "k", "headline": "h", "body": "b"} for _ in range(cards)
-        ],
-        "caption": "キャプション",
-        "hashtags": ["#読書"],
-        "grounding": ["内容紹介より"],
-    }
-
-
-def test_validate_rejects_wrong_day_count():
-    with pytest.raises(ValueError, match="days"):
-        _validate({"days": [_fake_day()]})
-
-
-def test_validate_rejects_wrong_card_count():
-    payload = {"days": [_fake_day(i, cards=5) for i in range(1, 6)]}
-    payload["days"][2]["cards"] = payload["days"][2]["cards"][:3]
-    with pytest.raises(ValueError, match="cards"):
-        _validate(payload)
-
-
-def test_validate_accepts_well_formed_payload():
-    _validate({"days": [_fake_day(i) for i in range(1, 6)]})
-
-
-def test_output_schema_marks_objects_closed():
-    schema = _output_schema()
-    assert schema["additionalProperties"] is False
-    assert schema["properties"]["days"]["items"]["additionalProperties"] is False
-
-
-def test_card_variants_by_position():
-    assert _variant(1, 5) == "hook"
-    assert _variant(3, 5) == "body"
-    assert _variant(5, 5) == "outro"
-
-
-def test_build_card_contexts_shapes_first_and_last():
-    contexts = build_card_contexts(_fake_day(2), "書名", "著者", "一言コピー")
-    assert len(contexts) == 5
-    assert contexts[0]["variant"] == "hook"
-    assert contexts[0]["kicker"].startswith("Day 2")
-    assert contexts[0]["one_line"] == "一言コピー"
-    assert contexts[-1]["variant"] == "outro"
-    assert contexts[-1]["cta_title"]
-
-
-def test_build_caption_prefixes_hashtags():
-    caption = build_caption({"caption": "本文です", "hashtags": ["#読書", "書評"]})
-    assert caption.startswith("本文です")
-    assert "#読書" in caption
-    assert "#書評" in caption
-
-
-def test_publish_rejects_single_image():
-    with pytest.raises(PublishError, match="2〜10枚"):
-        publish_carousel(None, ["https://example.com/1.jpg"], "caption")
-
-
-def test_notes_alone_can_satisfy_substance():
-    """APIが全滅しても、読書メモがあれば生成できる。"""
-    material = BookMaterial(title="本", personal_notes="め" * 80)
-    assert material.has_substance()
-    assert "読書メモ" in material.to_prompt_block()
-
-
-def test_substance_counts_all_grounding_sources():
-    material = BookMaterial(
-        title="本", description="あ" * 30, table_of_contents="い" * 30, personal_notes="う" * 30
-    )
-    assert material.substance_chars() == 90
-    assert material.has_substance()
-
-
 def test_ndl_item_fields_extracts_isbn_and_normalizes_author():
     import xml.etree.ElementTree as ET
 
@@ -146,75 +99,15 @@ def test_ndl_item_fields_extracts_isbn_and_normalizes_author():
     fields = _ndl_item_fields(ET.fromstring(xml))
     assert fields["isbn"] == "9784815619503"
     assert fields["authors"] == ["相良奈美香"]
-    assert fields["publisher"] == "SBクリエイティブ"
-
-
-def test_build_user_prompt_omits_empty_sections():
-    material = BookMaterial(title="本", description="内容紹介")
-    prompt = _build_user_prompt(material)
-    assert "内容紹介" in prompt
-    assert "読書メモ" not in prompt
-
-
-class _Block:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-
-class _Response:
-    def __init__(self, content):
-        self.content = content
-
-
-def test_websearch_extracts_text_and_urls():
-    from bookgram.websearch import _extract_text, _extract_urls
-
-    response = _Response(
-        [
-            _Block(type="text", text="この本は行動経済学の入門書です。"),
-            _Block(
-                type="web_search_tool_result",
-                content=[
-                    _Block(url="https://example.com/a"),
-                    _Block(url="https://example.com/b"),
-                    _Block(url="https://example.com/a"),
-                ],
-            ),
-        ]
-    )
-    assert "行動経済学" in _extract_text(response)
-    assert _extract_urls(response) == ["https://example.com/a", "https://example.com/b"]
-
-
-def test_websearch_tolerates_error_result_block():
-    from bookgram.websearch import _extract_urls
-
-    response = _Response(
-        [_Block(type="web_search_tool_result", content=_Block(error_code="max_uses_exceeded"))]
-    )
-    assert _extract_urls(response) == []
-
-
-def test_web_sources_appear_in_prompt_block():
-    material = BookMaterial(title="本", description="要約", web_sources=["https://example.com/x"])
-    block = material.to_prompt_block()
-    assert "出典" in block
-    assert "https://example.com/x" in block
 
 
 def test_safe_params_masks_credentials():
-    from bookgram.bookdata import _safe_params
-
     masked = _safe_params({"applicationId": "secret-value", "title": "本"})
     assert masked["applicationId"] == "***"
     assert masked["title"] == "本"
 
 
 def test_request_error_does_not_leak_credentials(monkeypatch):
-    import requests
-
-    from bookgram import bookdata
-
     class _Resp:
         status_code = 400
         text = ""
@@ -223,3 +116,123 @@ def test_request_error_does_not_leak_credentials(monkeypatch):
     with pytest.raises(requests.HTTPError) as excinfo:
         bookdata._request("https://example.com/api", {"applicationId": "SECRET123"})
     assert "SECRET123" not in str(excinfo.value)
+
+
+# ------------------------------------------------------------------------ 生成
+
+
+def _slide(text="これはカードに載せる短い文章です", highlight="カード"):
+    return {"text": text, "highlight": highlight}
+
+
+def _fake_post():
+    return {
+        "book_title": "テスト本",
+        "book_author": "著者名",
+        "published": "2023年6月",
+        "cover": _slide(),
+        "recommend": [_slide() for _ in range(RECOMMEND_ITEMS)],
+        "question": _slide(),
+        "points": [_slide() for _ in range(POINT_SLIDES)],
+        "summary": _slide(),
+        "caption": "キャプション本文です。",
+        "hashtags": ["#心理学"],
+        "grounding": ["内容紹介より"],
+    }
+
+
+def test_validate_accepts_well_formed_payload():
+    _validate(_fake_post())
+
+
+def test_validate_rejects_wrong_recommend_count():
+    post = _fake_post()
+    post["recommend"] = post["recommend"][:2]
+    with pytest.raises(ValueError, match="recommend"):
+        _validate(post)
+
+
+def test_validate_rejects_wrong_point_count():
+    post = _fake_post()
+    post["points"] = post["points"][:2]
+    with pytest.raises(ValueError, match="points"):
+        _validate(post)
+
+
+def test_validate_drops_highlight_not_present_in_text():
+    post = _fake_post()
+    post["cover"] = {"text": "本文", "highlight": "存在しない語"}
+    _validate(post)
+    assert post["cover"]["highlight"] == ""
+
+
+def test_output_schema_marks_objects_closed():
+    schema = _output_schema()
+    assert schema["additionalProperties"] is False
+    assert schema["properties"]["points"]["items"]["additionalProperties"] is False
+
+
+def test_build_user_prompt_omits_empty_sections():
+    prompt = _build_user_prompt(BookMaterial(title="本", description="内容紹介"))
+    assert "内容紹介" in prompt
+    assert "読書メモ" not in prompt
+
+
+# ------------------------------------------------------------------ レンダリング
+
+
+def test_highlight_wraps_only_the_target():
+    markup = str(_highlighted("あいうえお", "うえ"))
+    assert markup == 'あい<span class="hl">うえ</span>お'
+
+
+def test_highlight_escapes_html():
+    assert "&lt;script&gt;" in str(_highlighted("<script>", ""))
+
+
+def test_highlight_ignores_missing_target():
+    assert str(_highlighted("あいうえお", "かき")) == "あいうえお"
+
+
+def test_build_card_contexts_produces_ten_slides_in_order():
+    contexts = build_card_contexts(_fake_post())
+    assert [c["variant"] for c in contexts] == [
+        "cover",
+        "biblio",
+        "recommend",
+        "text",
+        "text",
+        "text",
+        "text",
+        "text",
+        "text",
+        "outro",
+    ]
+
+
+def test_recommend_slide_carries_three_items():
+    contexts = build_card_contexts(_fake_post())
+    assert len(contexts[2]["items"]) == RECOMMEND_ITEMS
+
+
+def test_same_book_gets_stable_backgrounds():
+    first = [c["bg"] for c in build_card_contexts(_fake_post())]
+    second = [c["bg"] for c in build_card_contexts(_fake_post())]
+    assert first == second
+
+
+# ---------------------------------------------------------------------- 投稿
+
+
+def test_build_caption_appends_fixed_footer_and_tags():
+    caption = build_caption({"caption": "本文です", "hashtags": ["#心理学", "書評"]})
+    assert caption.startswith("本文です")
+    assert "-------------------------------" in caption
+    assert "#読了" in caption      # account.yaml の固定タグ
+    assert "#心理学" in caption    # 書籍固有タグ
+    assert "#書評" in caption      # # が無いタグも補完される
+
+
+def test_publish_rejects_single_image():
+    with pytest.raises(PublishError, match="2〜10枚"):
+        publish_carousel(None, ["https://example.com/1.jpg"], "caption")

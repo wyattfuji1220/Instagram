@@ -73,26 +73,41 @@ def _esc(value: Any) -> str:
     return html.escape(str(value))
 
 
+def _slide_lines(draft: dict[str, Any]) -> list[str]:
+    """カードに載る文言を、並び順どおりに取り出す。"""
+    lines = [f"1 表紙: {draft['cover']['text']}"]
+    lines.append(f"2 書誌情報: {draft.get('published', '—')} / {draft['book_author']}")
+    for i, item in enumerate(draft["recommend"], start=1):
+        lines.append(f"3 おすすめ{i}: {item['text']}")
+    lines.append(f"4 問いかけ: {draft['question']['text']}")
+    for i, point in enumerate(draft["points"], start=5):
+        lines.append(f"{i} 本文: {point['text']}")
+    lines.append(f"9 まとめ: {draft['summary']['text']}")
+    return lines
+
+
 def _render_day_block(day_date: date, draft: dict[str, Any]) -> str:
     images = "".join(
         f'<img src="../img/{day_date.isoformat()}/{i:02d}.jpg" alt="card {i}" loading="lazy">'
         for i in range(1, CARDS_PER_POST + 1)
     )
+    slides = "".join(f"<li>{_esc(line)}</li>" for line in _slide_lines(draft))
     tags = "".join(f'<span class="tag">{_esc(t)}</span>' for t in draft.get("hashtags", []))
     grounding = "".join(f"<li>{_esc(g)}</li>" for g in draft.get("grounding", []))
-    caption = _esc(draft.get("caption", ""))
 
     return f"""
     <section class="day">
       <div class="day-head">
         <span class="date">{day_date.strftime('%m/%d (%a)')}</span>
-        <span class="badge">Day {_esc(draft.get('day_index'))} / {_esc(draft.get('theme'))}</span>
-        <span class="book">{_esc(draft.get('book_title'))} — {_esc(draft.get('book_author'))}</span>
+        <span class="badge">{_esc(draft.get('book_title'))}</span>
+        <span class="book">{_esc(draft.get('book_author'))}</span>
       </div>
       <div class="cards">{images}</div>
+      <h3>カードの文言</h3>
+      <ul class="grounding">{slides}</ul>
       <h3>キャプション</h3>
-      <pre class="caption">{caption}</pre>
-      <h3>ハッシュタグ</h3>
+      <pre class="caption">{_esc(draft.get('caption', ''))}</pre>
+      <h3>書籍固有ハッシュタグ</h3>
       <div class="tags">{tags}</div>
       <h3>根拠メモ (grounding)</h3>
       <ul class="grounding">{grounding}</ul>
@@ -185,7 +200,7 @@ def render_pr_body(
     parts = [
         f"## {week_label} の投稿下書き",
         "",
-        f"本 {len({d.get('book_title') for _, d in drafts})} 冊 / {len(drafts)} 日分。",
+        f"{len(drafts)} 投稿分（1投稿 = 1冊）。",
         "",
         "**このPRをマージした日付だけが、毎朝7時に自動投稿されます。**",
         "修正する場合は `drafts/` 以下の JSON をこのブランチ上で直接編集してください。",
@@ -204,24 +219,28 @@ def render_pr_body(
         iso = day.isoformat()
         images = " ".join(
             f'<img src="{raw_base}/{iso}/{i:02d}.jpg" width="150">'
-            for i in range(1, len(draft.get("cards", [])) + 1)
+            for i in range(1, CARDS_PER_POST + 1)
         )
-        tags = " ".join(draft.get("hashtags", []))
+        slides = NEWLINE.join(f"> {line}" for line in _slide_lines(draft))
         grounding = NEWLINE.join(f"> - {g}" for g in draft.get("grounding", []))
         parts += [
-            f"### {day.strftime('%m/%d (%a)')} — Day{draft.get('day_index')} "
-            f"【{draft.get('theme')}】",
-            "",
-            f"**{draft.get('book_title')}** / {draft.get('book_author')}",
+            f"### {day.strftime('%m/%d (%a)')} — {draft.get('book_title')}"
+            f" / {draft.get('book_author')}",
             "",
             images,
             "",
-            "<details><summary>キャプションとハッシュタグ</summary>",
+            "<details><summary>カードの文言</summary>",
+            "",
+            slides,
+            "",
+            "</details>",
+            "",
+            "<details><summary>キャプション</summary>",
             "",
             "```",
             draft.get("caption", ""),
             "",
-            tags,
+            " ".join(draft.get("hashtags", [])),
             "```",
             "",
             "</details>",

@@ -16,17 +16,23 @@ DOCS_DIR = ROOT / "docs"
 IMG_DIR = DOCS_DIR / "img"
 OUTPUT_DIR = ROOT / "output"
 TEMPLATES_DIR = ROOT / "templates"
+ASSETS_DIR = ROOT / "assets"
+BACKGROUNDS_DIR = ASSETS_DIR / "backgrounds"
+PROFILE_ICON = ASSETS_DIR / "profile.jpg"
+ACCOUNT_FILE = ROOT / "account.yaml"
 POSTED_LOG = ROOT / "posted.jsonl"
 
 # 日本標準時。DSTが無いため固定オフセットで足り、tzdata への依存を避けられる。
 JST = timezone(timedelta(hours=9), "JST")
 
 MODEL = "claude-opus-5"
+# 過去投稿に合わせた正方形。1冊 = 1投稿で完結させる。
 CARD_WIDTH = 1080
-CARD_HEIGHT = 1350
-CARDS_PER_POST = 5
-DAYS_PER_BOOK = 5
-QUEUE_LOW_THRESHOLD = 3
+CARD_HEIGHT = 1080
+CARDS_PER_POST = 10
+DAYS_PER_BOOK = 1
+# 1冊1日消費なので、在庫警告はこの日数を基準にする
+QUEUE_LOW_THRESHOLD = 14
 IMAGE_RETENTION_DAYS = 45
 PAGES_PREVIEW_DIRNAME = "preview"
 
@@ -62,3 +68,12 @@ def load_secrets(
         graph_api_version=os.getenv("GRAPH_API_VERSION", "v23.0"),
         api_host=os.getenv("IG_API_HOST", "https://graph.facebook.com").rstrip("/"),
     )
+
+
+def load_account() -> dict:
+    """account.yaml を読み込む。カードとキャプションの定型部分に使う。"""
+    import yaml
+
+    if not ACCOUNT_FILE.exists():
+        raise RuntimeError(f"{ACCOUNT_FILE} がありません。")
+    return yaml.safe_load(ACCOUNT_FILE.read_text(encoding="utf-8")) or {}

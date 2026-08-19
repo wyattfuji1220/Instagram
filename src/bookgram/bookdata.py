@@ -61,6 +61,7 @@ class BookMaterial:
     table_of_contents: str = ""
     author_bio: str = ""
     personal_notes: str = ""
+    cover_url: str = ""
     categories: list[str] = field(default_factory=list)
     sources: list[str] = field(default_factory=list)
     web_sources: list[str] = field(default_factory=list)
@@ -262,6 +263,9 @@ def _apply_rakuten(material: BookMaterial, entry: dict[str, Any]) -> None:
     material.publisher = material.publisher or entry.get("publisherName", "")
     material.published_date = material.published_date or entry.get("salesDate", "")
     material.isbn = material.isbn or _normalize_isbn(entry.get("isbn", ""))
+    material.cover_url = material.cover_url or (
+        entry.get("largeImageUrl") or entry.get("mediumImageUrl") or ""
+    )
     caption = (entry.get("itemCaption") or "").strip()
     if len(caption) > len(material.description):
         material.description = caption
@@ -395,6 +399,7 @@ def fetch_material(
                     for name in summary["author"].split("/")
                     if name.strip()
                 ]
+            material.cover_url = material.cover_url or summary.get("cover", "")
             material.publisher = material.publisher or summary.get("publisher", "")
             material.published_date = material.published_date or summary.get("pubdate", "")
 

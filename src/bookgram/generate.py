@@ -1,7 +1,11 @@
-"""Claude API で1冊分（5日 × カルーセル5枚）の原稿を生成する。
+"""Claude API で1冊分（カルーセル10枚 + キャプション）の原稿を生成する。
 
-書誌データ(material)を唯一の根拠として渡し、そこに無い事実を書かせない。
+根拠データ(material)を唯一の根拠として渡し、そこに無い事実を書かせない。
 出力は structured outputs でスキーマを強制する。
+
+カード構成は過去投稿に合わせた10枚:
+  1 表紙 / 2 書誌情報 / 3 こんな方におすすめ / 4 問いかけ
+  5-8 本文4枚 / 9 まとめ / 10 フォロー導線
 """
 
 from __future__ import annotations
@@ -12,95 +16,70 @@ from typing import Any
 import anthropic
 
 from .bookdata import BookMaterial
-from .config import CARDS_PER_POST, DAYS_PER_BOOK, MODEL
+from .config import MODEL
 
 MAX_TOKENS = 32000
+POINT_SLIDES = 4
+RECOMMEND_ITEMS = 3
 
-DAY_THEMES = [
-    ("この本、こんな本", "本の概要・どんな人に向くか・基本情報を伝える導入回"),
-    ("要点①", "本の中心となる主張を1つ深掘りする"),
-    ("要点②", "印象に残る切り口・視点を1つ深掘りする"),
-    ("キーワード3選", "本を理解する鍵になる用語や概念を3つ解説する"),
-    ("総括", "全体の評価・誰におすすめか・読後に何が変わるか"),
-]
-
-SYSTEM_PROMPT = """あなたは読書アカウントの編集者です。与えられた根拠データだけを根拠に、
-Instagram のカルーセル投稿原稿を書きます。
-根拠データには書誌情報のほか、読者本人が書いた読書メモが含まれることがあります。
-メモは実際に読んだ人の記録なので、出版社の内容紹介と同等に信頼して使ってください。
+SYSTEM_PROMPT = """あなたは読書アカウント「Anne（アン）月一冊から始めるビジネス書」の中の人です。
+与えられた根拠データだけを根拠に、Instagram のカルーセル投稿とキャプションを書きます。
 
 ## 絶対に守るルール
 
 1. 根拠データに書かれていない事実を書かない。
-   具体的には、データに無い人名・地名・数値・年号・章タイトル・エピソードを一切書かない。
-2. 本文からの引用を捏造しない。原文の再現が必要な表現は使わない。
-3. 出版社の内容紹介だけを根拠にする記述は、そう分かる書き方をする。
-   例:「〜と紹介されています」「〜がテーマとされています」
-   読書メモに基づく記述はこの限りではなく、読者の実感として書いてよい。
-4. データが薄い項目については、無理に埋めず一般論に留める。
+   データに無い人名・数値・年号・章タイトル・エピソードを一切書かない。
+2. 本文からの引用を捏造しない。
+3. 自分の実体験を創作しない。
+   「打ち合わせで苦労した」「前職では」のような、根拠データに無い個人的な経験は書かない。
+   ただし読書メモに書かれている所感（「個人的には〜と感じた」等）は、
+   本人の記録なのでそのまま自分の言葉として使ってよい。
+4. 出版社の内容紹介だけが根拠の記述は、そう分かる書き方をする。
 
 ## 文体
 
-- 一人称は使わず、読者に語りかける。丁寧語。
-- 誇張表現（「人生が変わる」「衝撃の」）を使わない。
-- 1枚のカードは1つのメッセージだけ扱う。
-- カード本文は日本語で60〜110文字。長いと画像からはみ出す。
+- 一人称は「私」。読者に語りかける丁寧語。
+- カードの文言は短く言い切る。体言止めや問いかけを使う。
+- 誇張表現（「人生が変わる」「衝撃の」「必読」）を使わない。
+- カードのテキストは20〜45文字。これを超えると文字が画像からはみ出す。
+- カードのテキストには改行を入れ、2〜4行に分ける。
+  改行は必ず意味の切れ目に置く。文節の途中で切らない。
+  例: 「毎日100%のメンタルで
+仕事に向かい続けることは難しい」
 
-## 出力
+## ハイライト
 
-指定されたJSONスキーマに厳密に従うこと。
+各カードには highlight を1つ指定する。
+これは text の中に必ず存在する連続した部分文字列で、色を変えて強調する箇所。
+文の要点になる語句を5〜12文字ぶん選ぶ。text 全体をそのまま指定してはいけない。
+
+## キャプション
+
+- 冒頭で「今回は〜」のようにジャンルや切り口に触れる。
+- 本の中身のうち、自分が面白いと思った点を2〜3個、地の文で書く。
+- 最後は読者への一言で締める。
+- 300〜600文字。ハッシュタグや区切り線は含めない（システムが後ろに付ける）。
 """
 
 
-def _card_schema() -> dict[str, Any]:
+def _slide_schema(description: str) -> dict[str, Any]:
     return {
         "type": "object",
         "properties": {
-            "kicker": {
+            "text": {
                 "type": "string",
-                "description": "カード上部の小見出し。8文字以内。",
+                "description": (
+                    f"{description} 全体で20〜45文字。"
+                    "意味の切れ目で改行を入れ、2〜4行に分ける。1行は12〜22文字。"
+                    "単語や文節の途中で改行しないこと。"
+                ),
             },
-            "headline": {
+            "highlight": {
                 "type": "string",
-                "description": "カードの主見出し。15〜28文字。",
-            },
-            "body": {
-                "type": "string",
-                "description": "カード本文。60〜110文字。",
+                "description": "text に含まれる連続した部分文字列。5〜12文字。",
             },
         },
-        "required": ["kicker", "headline", "body"],
-        "additionalProperties": False,
-    }
-
-
-def _day_schema() -> dict[str, Any]:
-    return {
-        "type": "object",
-        "properties": {
-            "day_index": {"type": "integer", "description": "1から5"},
-            "theme": {"type": "string", "description": "その日のテーマ名"},
-            "cards": {
-                "type": "array",
-                "items": _card_schema(),
-                "description": f"必ず{CARDS_PER_POST}枚。1枚目フック、2〜4枚目本文、5枚目まとめ。",
-            },
-            "caption": {
-                "type": "string",
-                "description": "Instagram のキャプション本文。200〜400文字。ハッシュタグは含めない。",
-            },
-            "hashtags": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "#付きのハッシュタグを10〜15個。読書系の定番＋ジャンル固有を混ぜる。",
-            },
-            "grounding": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "この日の主要な記述が書誌データのどこに基づくかを1行ずつ記した根拠メモ。",
-            },
-        },
-        "required": ["day_index", "theme", "cards", "caption", "hashtags", "grounding"],
+        "required": ["text", "highlight"],
         "additionalProperties": False,
     }
 
@@ -111,69 +90,107 @@ def _output_schema() -> dict[str, Any]:
         "properties": {
             "book_title": {
                 "type": "string",
-                "description": "根拠データの「書名」をそのまま使う。正式書名や副題は付けない。",
+                "description": "根拠データの「書名」をそのまま使う。副題は付けない。",
             },
-            "book_author": {"type": "string"},
-            "one_line": {
+            "book_author": {"type": "string", "description": "著者名"},
+            "published": {
                 "type": "string",
-                "description": "この本を一言で表すコピー。20〜35文字。",
+                "description": "発行日。「2023年5月」の形式。不明なら空文字。",
             },
-            "days": {
+            "cover": _slide_schema("表紙の見出し。本のテーマを一言で表す。"),
+            "recommend": {
                 "type": "array",
-                "items": _day_schema(),
-                "description": f"必ず{DAYS_PER_BOOK}日分。",
+                "items": _slide_schema("「こんな方におすすめ」の1項目。"),
+                "description": f"必ず{RECOMMEND_ITEMS}項目。「〜したい方」の形で揃える。",
+            },
+            "question": _slide_schema("読者への問いかけ。本が答えようとしている問い。"),
+            "points": {
+                "type": "array",
+                "items": _slide_schema("本の要点を1つ。"),
+                "description": f"必ず{POINT_SLIDES}枚。1枚1メッセージ。",
+            },
+            "summary": _slide_schema("まとめ。この本がどういう一冊かを言い切る。"),
+            "caption": {
+                "type": "string",
+                "description": "キャプション本文。300〜600文字。ハッシュタグを含めない。",
+            },
+            "hashtags": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "この本に固有のハッシュタグを3〜6個。#付き。書名・著者名・ジャンルなど。",
+            },
+            "grounding": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "主要な記述が根拠データのどこに基づくかを1行ずつ記した根拠メモ。",
             },
         },
-        "required": ["book_title", "book_author", "one_line", "days"],
+        "required": [
+            "book_title",
+            "book_author",
+            "published",
+            "cover",
+            "recommend",
+            "question",
+            "points",
+            "summary",
+            "caption",
+            "hashtags",
+            "grounding",
+        ],
         "additionalProperties": False,
     }
 
 
 def _build_user_prompt(material: BookMaterial) -> str:
-    theme_lines = "\n".join(
-        f"  Day{i + 1} 【{name}】: {intent}" for i, (name, intent) in enumerate(DAY_THEMES)
+    return "\n".join(
+        [
+            "以下の書籍について、Instagram のカルーセル投稿1本ぶんの原稿を作ってください。",
+            "",
+            "## 根拠データ（これが唯一の根拠です）",
+            "",
+            material.to_prompt_block(),
+            "",
+            "## カード構成（全10枚）",
+            "",
+            "  1枚目  表紙        cover",
+            "  2枚目  書誌情報    （システムが自動生成。原稿不要）",
+            f"  3枚目  こんな方におすすめ  recommend（{RECOMMEND_ITEMS}項目）",
+            "  4枚目  問いかけ    question",
+            f"  5〜8枚目  本文     points（{POINT_SLIDES}枚）",
+            "  9枚目  まとめ      summary",
+            "  10枚目 フォロー導線（システムが自動生成。原稿不要）",
+            "",
+            "## grounding について",
+            "",
+            "主要な記述が根拠データのどの部分に基づくかを列挙してください。",
+            "根拠が薄い記述は「一般論（データに根拠なし）」と正直に書いてください。",
+        ]
     )
-    parts = [
-        "以下の書籍について、Instagram のカルーセル投稿を "
-        f"{DAYS_PER_BOOK} 日分つくってください。",
-        "",
-        "## 根拠データ（これが唯一の根拠です）",
-        "",
-        material.to_prompt_block(),
-        "",
-        "## 各日の構成",
-        "",
-        theme_lines,
-        "",
-        f"## 各日のカルーセル（{CARDS_PER_POST}枚）",
-        "",
-        "  1枚目: フック。読み手が指を止める問いかけや切り口。",
-        "  2〜4枚目: 本文。1枚1メッセージ。",
-        f"  {CARDS_PER_POST}枚目: まとめ。次の投稿への引きとフォローの誘導。",
-        "",
-        "## grounding について",
-        "",
-        "各日ごとに、主要な記述が根拠データのどの部分に基づくかを grounding に列挙してください。",
-        "根拠が薄い記述がある場合は「一般論（データに根拠なし）」と正直に書いてください。",
-    ]
-    return "\n".join(parts)
 
 
 def _validate(payload: dict[str, Any]) -> None:
-    days = payload.get("days", [])
-    if len(days) != DAYS_PER_BOOK:
-        raise ValueError(f"days が {DAYS_PER_BOOK} 件ではありません: {len(days)} 件")
-    for day in days:
-        cards = day.get("cards", [])
-        if len(cards) != CARDS_PER_POST:
-            raise ValueError(
-                f"Day{day.get('day_index')} の cards が {CARDS_PER_POST} 枚ではありません: {len(cards)} 枚"
-            )
-        if not day.get("hashtags"):
-            raise ValueError(f"Day{day.get('day_index')} の hashtags が空です")
+    if len(payload.get("recommend", [])) != RECOMMEND_ITEMS:
+        raise ValueError(
+            f"recommend が {RECOMMEND_ITEMS} 項目ではありません: "
+            f"{len(payload.get('recommend', []))}"
+        )
+    if len(payload.get("points", [])) != POINT_SLIDES:
+        raise ValueError(
+            f"points が {POINT_SLIDES} 枚ではありません: {len(payload.get('points', []))}"
+        )
+    if not payload.get("hashtags"):
+        raise ValueError("hashtags が空です")
+
+    slides = [payload["cover"], payload["question"], payload["summary"]]
+    slides += payload["recommend"] + payload["points"]
+    for slide in slides:
+        # ハイライトは表示上の飾りなので、外れていても投稿は止めず無効化するだけにする
+        if slide["highlight"] and slide["highlight"] not in slide["text"]:
+            slide["highlight"] = ""
 
 
-def generate_book_posts(material: BookMaterial, api_key: str) -> dict[str, Any]:
+def generate_book_post(material: BookMaterial, api_key: str) -> dict[str, Any]:
     """1冊分の原稿を生成して dict で返す。"""
     client = anthropic.Anthropic(api_key=api_key)
 
