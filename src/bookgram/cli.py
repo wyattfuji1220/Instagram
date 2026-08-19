@@ -2,6 +2,7 @@
 
   python -m bookgram generate    週次: 在庫が7日分に満たなければ本を消化して下書きを作る
   python -m bookgram post        毎日: その日の下書きを Instagram に投稿する
+  python -m bookgram rerender    下書きJSONから画像を作り直す（JSON修正後に使う）
   python -m bookgram preview     プレビューページだけ作り直す
   python -m bookgram doctor      認証・トークン・キューの状態を点検する
   python -m bookgram whoami      アクセストークンから IG_USER_ID を調べる
@@ -23,6 +24,7 @@ from . import queue as bookqueue
 from .bookdata import fetch_material
 from .config import (
     DAYS_PER_BOOK,
+    DRAFTS_DIR,
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
     JST,
@@ -64,6 +66,9 @@ def cmd_generate(args: argparse.Namespace) -> int:
     generated_books = 0
 
     while bookqueue.coverage_days(start) < TARGET_COVERAGE_DAYS:
+        if args.max_books and generated_books >= args.max_books:
+            print(f"[stop] --max-books {args.max_books} に達したので終了します。")
+            break
         book = bookqueue.take_next_book(data)
         if book is None:
             print("[warn] キューに未生成の本がありません。books/queue.yaml に本を追加してください。")
@@ -218,6 +223,45 @@ def _append_log(record: dict[str, Any]) -> None:
         handle.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+# --------------------------------------------------------------------------- rerender
+
+
+def cmd_rerender(args: argparse.Namespace) -> int:
+    """下書きJSONから画像を作り直す。JSONを手で修正したあとに使う。"""
+    secrets = load_secrets(require=())
+    if args.date:
+        targets = [date.fromisoformat(args.date)]
+    else:
+        targets = sorted(
+            date.fromisoformat(p.parent.name)
+            for p in DRAFTS_DIR.glob("*/post.json")
+        )
+
+    rendered = 0
+    for day in targets:
+        draft = bookqueue.load_draft(day)
+        if draft is None:
+            print(f"[skip] {day} の下書きがありません。")
+            continue
+        if draft.get("status") == "posted" and not args.force:
+            print(f"[skip] {day} は投稿済みです。作り直すには --force を付けてください。")
+            continue
+        render_day(
+            draft,
+            draft["book_title"],
+            draft["book_author"],
+            draft["one_line"],
+            IMG_DIR / day.isoformat(),
+        )
+        print(f"[render] {day} Day{draft['day_index']}")
+        rendered += 1
+
+    if rendered:
+        _write_previews(min(targets), secrets.pages_base_url)
+    print(f"[done] {rendered} 日分を再生成しました。")
+    return 0
+
+
 # ---------------------------------------------------------------------------- preview
 
 
@@ -349,6 +393,9 @@ def main(argv: list[str] | None = None) -> int:
 
     p_gen = sub.add_parser("generate", help="週次の下書き生成")
     p_gen.add_argument("--start", help="生成開始日 (YYYY-MM-DD)。既定は明日。")
+    p_gen.add_argument(
+        "--max-books", type=int, default=0, help="生成する冊数の上限。0で無制限。"
+    )
     p_gen.set_defaults(func=cmd_generate)
 
     p_post = sub.add_parser("post", help="その日の下書きを投稿")
@@ -359,6 +406,11 @@ def main(argv: list[str] | None = None) -> int:
     p_prev = sub.add_parser("preview", help="プレビューページを作り直す")
     p_prev.add_argument("--start", help="表示開始日 (YYYY-MM-DD)。既定は本日。")
     p_prev.set_defaults(func=cmd_preview)
+
+    p_re = sub.add_parser("rerender", help="下書きJSONから画像を作り直す")
+    p_re.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は全下書き。")
+    p_re.add_argument("--force", action="store_true", help="投稿済みも作り直す")
+    p_re.set_defaults(func=cmd_rerender)
 
     sub.add_parser("doctor", help="設定と接続の点検").set_defaults(func=cmd_doctor)
     sub.add_parser("whoami", help="トークンから IG_USER_ID を調べる").set_defaults(

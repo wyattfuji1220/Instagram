@@ -48,7 +48,10 @@ class BookNotFoundError(RuntimeError):
 
 @dataclass
 class BookMaterial:
+    # 利用者が queue.yaml に書いた書名。カードに表示するのはこちら。
     title: str
+    # 書誌DB上の正式書名（副題込み）。根拠としてのみ使う。
+    official_title: str = ""
     isbn: str = ""
     authors: list[str] = field(default_factory=list)
     publisher: str = ""
@@ -69,6 +72,11 @@ class BookMaterial:
         """Claude に渡す根拠テキスト。ここに無い情報は書かせない。"""
         lines = [
             f"書名: {self.title}",
+            *(
+                [f"正式書名（書誌DB上の表記）: {self.official_title}"]
+                if self.official_title and self.official_title != self.title
+                else []
+            ),
             f"著者: {', '.join(self.authors) or '不明'}",
             f"出版社: {self.publisher or '不明'}",
             f"出版日: {self.published_date or '不明'}",
@@ -244,7 +252,7 @@ def search_rakuten(title: str, isbn: str = "") -> dict[str, Any]:
 
 def _apply_rakuten(material: BookMaterial, entry: dict[str, Any]) -> None:
     material.sources.append("rakuten")
-    material.title = entry.get("title") or material.title
+    material.official_title = entry.get("title") or material.official_title
     if entry.get("author") and not material.authors:
         material.authors = [
             _normalize_person(name)
@@ -340,7 +348,7 @@ def fetch_material(
         if ndl:
             material.sources.append("ndl")
             material.isbn = ndl["isbn"]
-            material.title = ndl["title"] or material.title
+            material.official_title = ndl["title"]
             material.authors = ndl["authors"]
             material.publisher = ndl["publisher"]
             material.published_date = ndl["published_date"]
@@ -356,10 +364,10 @@ def fetch_material(
     )
     if volume:
         material.sources.append("google_books")
+        google_title = volume.get("title") or ""
         if volume.get("subtitle"):
-            material.title = f"{volume.get('title', material.title)} {volume['subtitle']}"
-        else:
-            material.title = volume.get("title") or material.title
+            google_title = f"{google_title} {volume['subtitle']}"
+        material.official_title = google_title or material.official_title
         material.authors = volume.get("authors") or material.authors
         material.publisher = volume.get("publisher") or material.publisher
         material.published_date = volume.get("publishedDate") or material.published_date
@@ -380,7 +388,7 @@ def fetch_material(
         if record:
             material.sources.append("openbd")
             summary = record.get("summary", {}) or {}
-            material.title = summary.get("title") or material.title
+            material.official_title = summary.get("title") or material.official_title
             if summary.get("author") and not material.authors:
                 material.authors = [
                     _normalize_person(name)

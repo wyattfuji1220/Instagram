@@ -109,7 +109,10 @@ def _output_schema() -> dict[str, Any]:
     return {
         "type": "object",
         "properties": {
-            "book_title": {"type": "string"},
+            "book_title": {
+                "type": "string",
+                "description": "根拠データの「書名」をそのまま使う。正式書名や副題は付けない。",
+            },
             "book_author": {"type": "string"},
             "one_line": {
                 "type": "string",
