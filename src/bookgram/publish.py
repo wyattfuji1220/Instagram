@@ -202,7 +202,8 @@ def build_caption(draft: dict[str, Any]) -> str:
             "",
             "-------------------------------",
             "",
-            account["name"],
+            # カード側は2行に割るが、キャプションでは1行に戻す
+            account["name"].replace(NEWLINE, "　"),
             account["tagline"],
             "",
             "",

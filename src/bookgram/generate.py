@@ -97,7 +97,10 @@ def _output_schema() -> dict[str, Any]:
                 "type": "string",
                 "description": "発行日。「2023年5月」の形式。不明なら空文字。",
             },
-            "cover": _slide_schema("表紙の見出し。本のテーマを一言で表す。"),
+            "cover": _slide_schema(
+                "表紙の見出し。本のテーマを一言で表す。"
+                "表紙は幅が狭いので1行10文字以内・2〜3行に必ず収めること。"
+            ),
             "recommend": {
                 "type": "array",
                 "items": _slide_schema("「こんな方におすすめ」の1項目。"),
