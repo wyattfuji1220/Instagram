@@ -36,7 +36,13 @@ Facebook ページを作る必要がなく、トークンの自動延長も使�
    https://graph.instagram.com/v23.0/me?fields=user_id,username&access_token=【手順6のトークン】
    ```
 
-   返ってくる `user_id` が `IG_USER_ID` です。
+   返ってくる `user_id` が `IG_USER_ID` です（`id` ではありません）。
+
+   `.env` にトークンを書いた場合は、コマンドでも調べられます:
+
+   ```bash
+   PYTHONPATH=src python -m bookgram whoami
+   ```
 
 8. この方式では `IG_API_HOST` に `https://graph.instagram.com` を設定します（手順4参照）。
 

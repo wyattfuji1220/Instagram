@@ -4,6 +4,7 @@
   python -m bookgram post        毎日: その日の下書きを Instagram に投稿する
   python -m bookgram preview     プレビューページだけ作り直す
   python -m bookgram doctor      認証・トークン・キューの状態を点検する
+  python -m bookgram whoami      アクセストークンから IG_USER_ID を調べる
   python -m bookgram cleanup     古い画像を削除する
   python -m bookgram refresh-token  長期アクセストークンを延長する
 """
@@ -254,6 +255,27 @@ def cmd_doctor(_: argparse.Namespace) -> int:
     return 1 if problems else 0
 
 
+# ------------------------------------------------------------------------------ whoami
+
+
+def cmd_whoami(_: argparse.Namespace) -> int:
+    """IG_ACCESS_TOKEN だけを使って IG_USER_ID を調べる（セットアップ用）。"""
+    secrets = load_secrets(require=("IG_ACCESS_TOKEN",))
+    client = InstagramClient(
+        "me", secrets.ig_access_token, secrets.graph_api_version, secrets.api_host
+    )
+    try:
+        info = client.whoami()
+    except PublishError as error:
+        print(f"[NG] {error}", file=sys.stderr)
+        return 1
+    user_id = info.get("user_id") or info.get("id", "")
+    print(f"username : {info.get('username', '(取得できず)')}")
+    print(f"IG_USER_ID: {user_id}")
+    print("この IG_USER_ID を GitHub Secrets と .env に設定してください。")
+    return 0
+
+
 # ----------------------------------------------------------------------- refresh-token
 
 
@@ -320,6 +342,9 @@ def main(argv: list[str] | None = None) -> int:
     p_prev.set_defaults(func=cmd_preview)
 
     sub.add_parser("doctor", help="設定と接続の点検").set_defaults(func=cmd_doctor)
+    sub.add_parser("whoami", help="トークンから IG_USER_ID を調べる").set_defaults(
+        func=cmd_whoami
+    )
     sub.add_parser("refresh-token", help="長期トークンを延長する").set_defaults(
         func=cmd_refresh_token
     )

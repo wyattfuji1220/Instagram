@@ -32,6 +32,7 @@ PYTHONPATH=src python -m bookgram post --dry-run # 今日の投稿内容を確�
 PYTHONPATH=src python -m bookgram post           # 今日の分を投稿
 PYTHONPATH=src python -m bookgram preview        # プレビューを作り直す
 PYTHONPATH=src python -m bookgram doctor         # 設定と接続の点検
+PYTHONPATH=src python -m bookgram whoami         # トークンから IG_USER_ID を調べる
 PYTHONPATH=src python -m bookgram refresh-token  # 長期トークンを延長
 PYTHONPATH=src python -m bookgram cleanup        # 古い画像を削除
 ```

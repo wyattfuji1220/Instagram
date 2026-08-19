@@ -102,6 +102,18 @@ class InstagramClient:
         """接続確認用にアカウント名を取得する。"""
         return self._get(self.ig_user_id, {"fields": "username,name"})
 
+    def whoami(self) -> dict[str, Any]:
+        """トークンだけで自分のアカウント情報を引く（IG_USER_ID の取得用）。"""
+        response = requests.get(
+            f"{self.base}/me",
+            params={
+                "fields": "user_id,username",
+                "access_token": self.access_token,
+            },
+            timeout=TIMEOUT,
+        )
+        return self._unwrap(response)
+
     def refresh_long_lived_token(self) -> dict[str, Any]:
         """長期トークンを延長する（Instagram Login 方式のみ）。
 
