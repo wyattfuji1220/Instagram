@@ -124,19 +124,8 @@ def render_week_preview(
     return path
 
 
-def render_index(pages_base_url: str) -> Path:
-    """output/index.html に、これまでのプレビューへのリンク集を書き出す。"""
-    preview_dir = DOCS_DIR / PAGES_PREVIEW_DIRNAME
-    pages = sorted(preview_dir.glob("*.html"), reverse=True) if preview_dir.exists() else []
-    items = "".join(
-        f'<li><a href="{pages_base_url}/{PAGES_PREVIEW_DIRNAME}/{_esc(p.name)}">'
-        f"{_esc(p.stem)} の投稿プレビュー</a></li>"
-        for p in pages
-    )
-    if not items:
-        items = "<li>まだプレビューはありません。</li>"
-
-    page = f"""<!doctype html>
+def _index_html(links_html: str) -> str:
+    return f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>読書Instagram 自動投稿</title>
@@ -144,13 +133,39 @@ def render_index(pages_base_url: str) -> Path:
 <body><div class="wrap">
 <h1>読書Instagram 自動投稿</h1>
 <p class="lede">週次で生成された投稿プレビューの一覧です。</p>
-<ul class="links">{items}</ul>
+<ul class="links">{links_html}</ul>
 </div></body></html>
 """
+
+
+def render_index(pages_base_url: str) -> list[Path]:
+    """トップページを2箇所に書き出す。
+
+    docs/index.html   GitHub Pages が配信する実体。リンクは相対パス。
+    output/index.html 手元から開く用の入口。リンクは絶対URL。
+    """
+    preview_dir = DOCS_DIR / PAGES_PREVIEW_DIRNAME
+    pages = sorted(preview_dir.glob("*.html"), reverse=True) if preview_dir.exists() else []
+    empty = "<li>まだプレビューはありません。日曜の週次生成を待つか、Actions から手動実行してください。</li>"
+
+    relative = "".join(
+        f'<li><a href="{PAGES_PREVIEW_DIRNAME}/{_esc(p.name)}">'
+        f"{_esc(p.stem)} の投稿プレビュー</a></li>"
+        for p in pages
+    )
+    absolute = "".join(
+        f'<li><a href="{pages_base_url}/{PAGES_PREVIEW_DIRNAME}/{_esc(p.name)}">'
+        f"{_esc(p.stem)} の投稿プレビュー</a></li>"
+        for p in pages
+    )
+
+    DOCS_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    path = OUTPUT_DIR / "index.html"
-    path.write_text(page, encoding="utf-8")
-    return path
+    docs_path = DOCS_DIR / "index.html"
+    output_path = OUTPUT_DIR / "index.html"
+    docs_path.write_text(_index_html(relative or empty), encoding="utf-8")
+    output_path.write_text(_index_html(absolute or empty), encoding="utf-8")
+    return [docs_path, output_path]
 
 
 def load_week_drafts(days: list[date]) -> list[tuple[date, dict[str, Any]]]:

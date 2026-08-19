@@ -126,7 +126,8 @@ def _write_previews(start: date, pages_base_url: str) -> None:
     if drafts:
         path = render_week_preview(week_label(start), drafts)
         print(f"[preview] {path}")
-    print(f"[preview] {render_index(pages_base_url)}")
+    for path in render_index(pages_base_url):
+        print(f"[preview] {path}")
 
 
 # ------------------------------------------------------------------------------- post
