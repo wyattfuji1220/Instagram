@@ -41,6 +41,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          RAKUTEN_REFERER: ${{ vars.RAKUTEN_REFERER || format('{0}/{1}', github.server_url, github.repository) }}
           GOOGLE_BOOKS_API_KEY: ${{ secrets.GOOGLE_BOOKS_API_KEY }}
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
           PYTHONPATH: src

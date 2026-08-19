@@ -35,6 +35,8 @@ RAKUTEN_ENDPOINT = (
 OPENBD_ENDPOINT = "https://api.openbd.jp/v1/get"
 GOOGLE_BOOKS_ENDPOINT = "https://www.googleapis.com/books/v1/volumes"
 USER_AGENT = "bookgram/1.0 (personal reading log)"
+# 楽天アプリに登録した「許可されたWebサイト」。Referer 検証に使う。
+DEFAULT_RAKUTEN_REFERER = "https://github.com/wyattfuji1220/Instagram"
 TIMEOUT = 15
 RETRY_ATTEMPTS = 3
 RETRY_BASE_WAIT = 3.0
@@ -134,7 +136,9 @@ def _safe_params(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _request(url: str, params: dict[str, Any]) -> requests.Response:
+def _request(
+    url: str, params: dict[str, Any], headers: dict[str, str] | None = None
+) -> requests.Response:
     """GET する。429/5xx は指数バックオフで再試行する。
 
     APIキーがURLに乗るため、例外メッセージには秘匿済みの情報だけを載せる。
@@ -145,7 +149,10 @@ def _request(url: str, params: dict[str, Any]) -> requests.Response:
     for attempt in range(RETRY_ATTEMPTS):
         try:
             response = requests.get(
-                url, params=params, timeout=TIMEOUT, headers={"User-Agent": USER_AGENT}
+                url,
+                params=params,
+                timeout=TIMEOUT,
+                headers={"User-Agent": USER_AGENT, **(headers or {})},
             )
         except requests.RequestException as error:
             # 例外文字列にURL（=キー）が入りうるので型名だけ残す
@@ -236,10 +243,15 @@ def search_rakuten(title: str, isbn: str = "") -> dict[str, Any]:
     RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY の両方が要る。
     どちらか欠けていれば何もしない（他ソースで続行する）。
     """
-    app_id = os.getenv("RAKUTEN_APP_ID", "")
-    access_key = os.getenv("RAKUTEN_ACCESS_KEY", "")
+    app_id = os.getenv("RAKUTEN_APP_ID", "").strip()
+    access_key = os.getenv("RAKUTEN_ACCESS_KEY", "").strip()
     if not app_id or not access_key:
         return {}
+
+    # 楽天は登録済みサイトからのリクエストであることを Referer と Origin の
+    # 両方で検証する。片方だけだと 403 REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING。
+    site = os.getenv("RAKUTEN_REFERER", DEFAULT_RAKUTEN_REFERER)
+    headers = {"Referer": site, "Origin": site}
 
     params: dict[str, Any] = {
         "applicationId": app_id,
@@ -253,7 +265,7 @@ def search_rakuten(title: str, isbn: str = "") -> dict[str, Any]:
     else:
         params["title"] = title
 
-    items = _request(RAKUTEN_ENDPOINT, params).json().get("Items") or []
+    items = _request(RAKUTEN_ENDPOINT, params, headers).json().get("Items") or []
     if not items:
         return {}
 
