@@ -20,7 +20,9 @@ Facebook ページを作る必要がなく、トークンの自動延長も使�
 ### A. Instagram ログイン方式（推奨）
 
 1. https://developers.facebook.com/ にログインし、**マイアプリ → アプリを作成**
-2. ユースケースで **「Instagram」** を選択
+2. ユースケース一覧から **「Instagramでメッセージとコンテンツを管理」** を選択
+   （単独の「Instagram」という項目はありません。説明文に「投稿の公開」と
+   書かれているものが目的のユースケースです）
 3. 作成後、アプリのダッシュボードで **Instagram** のセットアップに進み、
    **「Instagram ログインでの API 設定」**（Instagram API with Instagram login）を選ぶ
 4. **ビジネスログイン設定** から、投稿先の Instagram アカウントを連携する
