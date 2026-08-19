@@ -38,6 +38,8 @@ RETRY_BASE_WAIT = 3.0
 RETRYABLE_STATUS = {408, 429, 500, 502, 503, 504}
 XSI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 MIN_SUBSTANCE_CHARS = 80
+# 例外メッセージやログに載せてはいけないクエリパラメータ
+SECRET_PARAMS = {"applicationId", "key", "access_token", "affiliateId"}
 
 
 class BookNotFoundError(RuntimeError):
@@ -107,8 +109,19 @@ def _polite_sleep() -> None:
     time.sleep(random.uniform(1.0, 3.0))
 
 
+def _safe_params(params: dict[str, Any]) -> dict[str, Any]:
+    """ログや例外に出しても安全な形にする。"""
+    return {
+        k: ("***" if k in SECRET_PARAMS else v) for k, v in params.items()
+    }
+
+
 def _request(url: str, params: dict[str, Any]) -> requests.Response:
-    """GET する。429/5xx は指数バックオフで再試行する。"""
+    """GET する。429/5xx は指数バックオフで再試行する。
+
+    APIキーがURLに乗るため、例外メッセージには秘匿済みの情報だけを載せる。
+    requests の HTTPError は生URLを含むので、そのまま外へ出さないこと。
+    """
     last_error: Exception | None = None
 
     for attempt in range(RETRY_ATTEMPTS):
@@ -117,13 +130,21 @@ def _request(url: str, params: dict[str, Any]) -> requests.Response:
                 url, params=params, timeout=TIMEOUT, headers={"User-Agent": USER_AGENT}
             )
         except requests.RequestException as error:
-            last_error = error
+            # 例外文字列にURL（=キー）が入りうるので型名だけ残す
+            last_error = requests.RequestException(
+                f"{type(error).__name__} while requesting {url}"
+            )
         else:
             if response.status_code not in RETRYABLE_STATUS:
-                response.raise_for_status()
+                if response.status_code >= 400:
+                    raise requests.HTTPError(
+                        f"HTTP {response.status_code} from {url} "
+                        f"params={_safe_params(params)}"
+                    )
                 return response
             last_error = requests.HTTPError(
-                f"HTTP {response.status_code} from {url}", response=response
+                f"HTTP {response.status_code} from {url} "
+                f"params={_safe_params(params)}"
             )
 
         if attempt < RETRY_ATTEMPTS - 1:

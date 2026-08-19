@@ -200,3 +200,26 @@ def test_web_sources_appear_in_prompt_block():
     block = material.to_prompt_block()
     assert "出典" in block
     assert "https://example.com/x" in block
+
+
+def test_safe_params_masks_credentials():
+    from bookgram.bookdata import _safe_params
+
+    masked = _safe_params({"applicationId": "secret-value", "title": "本"})
+    assert masked["applicationId"] == "***"
+    assert masked["title"] == "本"
+
+
+def test_request_error_does_not_leak_credentials(monkeypatch):
+    import requests
+
+    from bookgram import bookdata
+
+    class _Resp:
+        status_code = 400
+        text = ""
+
+    monkeypatch.setattr(bookdata.requests, "get", lambda *a, **k: _Resp())
+    with pytest.raises(requests.HTTPError) as excinfo:
+        bookdata._request("https://example.com/api", {"applicationId": "SECRET123"})
+    assert "SECRET123" not in str(excinfo.value)
