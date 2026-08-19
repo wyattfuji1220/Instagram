@@ -75,6 +75,17 @@ def _esc(value: Any) -> str:
 
 def _slide_lines(draft: dict[str, Any]) -> list[str]:
     """カードに載る文言を、並び順どおりに取り出す。"""
+    if draft.get("kind") == "feature":
+        lines = [f"1 表紙: {draft['cover_lead']} {draft['period_label']} 新刊"
+                 f"{len(draft['books'])}選"]
+        for i, book in enumerate(draft["books"], start=2):
+            lines.append(
+                f"{i} {book['title']}（{book['sales_date']} / {book['author']}）"
+                f" 注目: {book['point']}"
+            )
+        lines.append(f"{len(draft['books']) + 2} まとめ: チェックリスト")
+        return lines
+
     lines = [f"1 表紙: {draft['cover']['text']}"]
     lines.append(f"2 書誌情報: {draft.get('published', '—')} / {draft['book_author']}")
     for i, item in enumerate(draft["recommend"], start=1):
@@ -87,9 +98,10 @@ def _slide_lines(draft: dict[str, Any]) -> list[str]:
 
 
 def _render_day_block(day_date: date, draft: dict[str, Any]) -> str:
+    count = draft.get("image_count", CARDS_PER_POST)
     images = "".join(
         f'<img src="../img/{day_date.isoformat()}/{i:02d}.jpg" alt="card {i}" loading="lazy">'
-        for i in range(1, CARDS_PER_POST + 1)
+        for i in range(1, count + 1)
     )
     slides = "".join(f"<li>{_esc(line)}</li>" for line in _slide_lines(draft))
     tags = "".join(f'<span class="tag">{_esc(t)}</span>' for t in draft.get("hashtags", []))
@@ -99,8 +111,8 @@ def _render_day_block(day_date: date, draft: dict[str, Any]) -> str:
     <section class="day">
       <div class="day-head">
         <span class="date">{day_date.strftime('%m/%d (%a)')}</span>
-        <span class="badge">{_esc(draft.get('book_title'))}</span>
-        <span class="book">{_esc(draft.get('book_author'))}</span>
+        <span class="badge">{_esc(draft.get('book_title') or draft.get('period_label'))}</span>
+        <span class="book">{_esc(draft.get('book_author') or '新刊特集')}</span>
       </div>
       <div class="cards">{images}</div>
       <h3>カードの文言</h3>
@@ -217,15 +229,17 @@ def render_pr_body(
 
     for day, draft in drafts:
         iso = day.isoformat()
+        count = draft.get("image_count", CARDS_PER_POST)
         images = " ".join(
             f'<img src="{raw_base}/{iso}/{i:02d}.jpg" width="150">'
-            for i in range(1, CARDS_PER_POST + 1)
+            for i in range(1, count + 1)
         )
         slides = NEWLINE.join(f"> {line}" for line in _slide_lines(draft))
         grounding = NEWLINE.join(f"> - {g}" for g in draft.get("grounding", []))
         parts += [
-            f"### {day.strftime('%m/%d (%a)')} — {draft.get('book_title')}"
-            f" / {draft.get('book_author')}",
+            f"### {day.strftime('%m/%d (%a)')} — "
+            f"{draft.get('book_title') or draft.get('period_label')}"
+            f" / {draft.get('book_author') or '新刊特集'}",
             "",
             images,
             "",

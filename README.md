@@ -23,12 +23,20 @@ Pull Request が自動で作られる  ←  あなたがレビュー＆マージ
 Instagram Graph API でカルーセル投稿
 ```
 
-1冊が5日分の投稿になるため、週に約1.4冊を消費します。
+1冊 = 1投稿。月曜は書籍紹介ではなく「ビジネス書 新刊特集」を配信します。
+
+| 曜日 | 内容 | 枚数 |
+|---|---|---|
+| 火〜日 | 読了した本の紹介（読書メモが根拠） | 10枚 |
+| 月 | ビジネス書 新刊特集（楽天の新刊から4冊選抜） | 6枚 |
+
+投稿と同時に、9:16のストーリーも自動で流れます。
 
 ## コマンド
 
 ```bash
 PYTHONPATH=src python -m bookgram generate       # 下書きを生成（週次相当）
+PYTHONPATH=src python -m bookgram feature        # ビジネス書の新刊特集（月曜枠）
 PYTHONPATH=src python -m bookgram post --dry-run # 今日の投稿内容を確認
 PYTHONPATH=src python -m bookgram post           # 今日の分を投稿
 PYTHONPATH=src python -m bookgram preview        # プレビューを作り直す

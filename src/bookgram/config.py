@@ -38,6 +38,8 @@ CARDS_PER_POST = 10
 DAYS_PER_BOOK = 1
 # 1冊1日消費なので、在庫警告はこの日数を基準にする
 QUEUE_LOW_THRESHOLD = 14
+# 新刊特集の曜日（0=月曜）。この日は通常の書籍投稿を割り当てない。
+FEATURE_WEEKDAY = 0
 IMAGE_RETENTION_DAYS = 45
 PAGES_PREVIEW_DIRNAME = "preview"
 

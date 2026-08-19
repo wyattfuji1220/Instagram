@@ -76,14 +76,21 @@ def save_draft(day: date, payload: dict[str, Any]) -> Path:
     return path
 
 
-def free_dates(start: date, count: int) -> list[date]:
-    """start 以降で下書きがまだ無い日付を count 件返す。"""
+def free_dates(start: date, count: int, *, skip_weekday: int | None = None) -> list[date]:
+    """start 以降で下書きがまだ無い日付を count 件返す。
+
+    skip_weekday を指定すると、その曜日は割り当て対象から外す
+    （新刊特集の枠を空けておくため）。
+    """
     found: list[date] = []
     cursor = start
     # 割り当て済みの日が続いても止まらないよう、探索範囲に余裕を持たせる。
     for _ in range(count * 10):
         if len(found) >= count:
             break
+        if skip_weekday is not None and cursor.weekday() == skip_weekday:
+            cursor += timedelta(days=1)
+            continue
         if not draft_path(cursor).exists():
             found.append(cursor)
         cursor += timedelta(days=1)

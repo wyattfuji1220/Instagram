@@ -186,17 +186,78 @@ def render_post(post: dict[str, Any], out_dir: Path) -> list[Path]:
     return paths
 
 
+def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
+    """新刊特集のカードを書き出す（表紙 + 書籍数 + まとめ）。"""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    template = _env().get_template("feature.html.j2")
+    account = load_account()
+    icon_path = find_profile_icon()
+    books = post["books"]
+    seed = post["period_label"]
+
+    base = {
+        "width": CARD_WIDTH,
+        "height": CARD_HEIGHT,
+        "icon": _data_uri(icon_path) if icon_path else "",
+        "handle": account["handle"],
+        "period_label": post["period_label"],
+        "cover_lead": post["cover_lead"],
+        "book_count": len(books),
+    }
+
+    contexts = [
+        {**base, "variant": "fcover", "bg": _pick_background(seed, 0), "cover_image": ""}
+    ]
+    for i, book in enumerate(books):
+        contexts.append(
+            {
+                **base,
+                "variant": "fbook",
+                "bg": _pick_background(seed, i + 1),
+                "cover_image": book.get("cover_data_uri", ""),
+                "book_title": book["title"],
+                "book_author": book["author"],
+                "sales_date": book["sales_date"],
+                "point": book["point"],
+            }
+        )
+    contexts.append(
+        {
+            **base,
+            "variant": "fsummary",
+            "bg": _pick_background(seed, len(books) + 1),
+            "cover_image": "",
+            "items": books,
+        }
+    )
+
+    paths: list[Path] = []
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": CARD_WIDTH, "height": CARD_HEIGHT},
+            device_scale_factor=1,
+        )
+        for i, context in enumerate(contexts, start=1):
+            page.set_content(template.render(**context), wait_until="load")
+            path = out_dir / f"{i:02d}.jpg"
+            page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
+            paths.append(path)
+        browser.close()
+    return paths
+
+
 def build_story_context(post: dict[str, Any]) -> dict[str, Any]:
     account = load_account()
     icon_path = find_profile_icon()
     return {
         "width": STORY_WIDTH,
         "height": STORY_HEIGHT,
-        "bg": _pick_background(post["book_title"], 0),
+        "bg": _pick_background(post.get("book_title") or post.get("period_label", ""), 0),
         "icon": _data_uri(icon_path) if icon_path else "",
         "cover_image": post.get("cover_data_uri", ""),
-        "book_title": post["book_title"],
-        "book_author": post["book_author"],
+        "book_title": post.get("book_title") or post.get("period_label", ""),
+        "book_author": post.get("book_author", ""),
         "handle": account["handle"],
         "label": account.get("story_label", "本日の１冊"),
         "cta": account.get("story_cta", "詳しくはフィード投稿から →"),

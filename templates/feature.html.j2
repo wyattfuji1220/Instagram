@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --ink: #FFFFFF;
+    --ink-dim: #D8D4CC;
+    --hl: #F2C14E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: {{ width }}px;
+    height: {{ height }}px;
+    overflow: hidden;
+    background: #0A0A0A;
+    color: var(--ink);
+    font-family: "Noto Serif JP", "Noto Serif CJK JP", "Hiragino Mincho ProN",
+                 "Yu Mincho", "YuMincho", serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .card { position: relative; width: {{ width }}px; height: {{ height }}px; }
+
+  .bg {
+    position: absolute; inset: -40px;
+    background-image: url("{{ bg }}");
+    background-size: cover; background-position: center;
+    filter: blur(4px) brightness(0.74) saturate(0.9);
+  }
+  .veil {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at center,
+        rgba(6, 6, 8, 0.28) 0%, rgba(6, 6, 8, 0.62) 100%),
+      linear-gradient(180deg,
+        rgba(6, 6, 8, 0.66) 0%, rgba(6, 6, 8, 0.40) 45%, rgba(6, 6, 8, 0.74) 100%);
+  }
+
+  .layer {
+    position: relative; height: 100%;
+    display: flex; flex-direction: column;
+    padding: 68px 76px 62px;
+  }
+
+  .foot {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+  }
+  .icon {
+    width: 76px; height: 76px; border-radius: 50%;
+    background-image: url("{{ icon }}");
+    background-size: cover; background-position: center;
+    background-color: #2A2A2A; flex: 0 0 auto;
+  }
+  .icon.letter {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; color: var(--ink-dim);
+  }
+  .handle { font-size: 38px; }
+
+  /* ------------------------------------------------------------------ 表紙 */
+
+  .frame {
+    position: absolute; inset: 44px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+  }
+  .cover-center {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+  }
+  .cover-lead {
+    font-size: 52px; letter-spacing: 0.06em;
+    color: var(--hl); margin-bottom: 42px;
+  }
+  .cover-period { font-size: 76px; font-weight: 700; line-height: 1.5; }
+  .cover-main {
+    font-size: 92px; font-weight: 700; line-height: 1.45;
+    margin: 18px 0 8px;
+    text-shadow: 0 4px 26px rgba(0, 0, 0, 0.75);
+  }
+  .cover-count { font-size: 76px; font-weight: 700; }
+  .cover-count .num { color: var(--hl); font-size: 104px; }
+
+  /* -------------------------------------------------------------- 各書籍 */
+
+  .book-title {
+    font-size: 46px; font-weight: 600; line-height: 1.5;
+    text-wrap: balance; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65);
+  }
+  .book-body {
+    display: flex; align-items: center; gap: 48px;
+    margin: 38px 0 34px;
+  }
+  .book-cover {
+    width: 400px; height: 570px;
+    background-image: url("{{ cover_image }}");
+    background-size: cover; background-position: center;
+    background-color: #16161A;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6);
+    flex: 0 0 auto;
+  }
+  .book-cover.placeholder {
+    display: flex; align-items: center; justify-content: center;
+    padding: 36px; border: 1px solid #3A3A40;
+    font-size: 36px; line-height: 1.7; color: var(--ink-dim); text-align: center;
+  }
+  .book-facts { flex: 1; }
+  .fact { margin-bottom: 48px; }
+  .fact-label { font-size: 36px; color: var(--hl); margin-bottom: 14px; }
+  .fact-value { font-size: 40px; line-height: 1.6; }
+
+  .point-label { font-size: 40px; color: var(--hl); margin-bottom: 16px; }
+  .point-text {
+    font-size: 36px; line-height: 1.8; color: var(--ink);
+    white-space: pre-line;
+  }
+
+  /* -------------------------------------------------------------- まとめ */
+
+  .sum-list { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .sum-item { display: flex; gap: 26px; margin-bottom: 46px; }
+  .sum-check { font-size: 58px; line-height: 1; color: var(--ink); flex: 0 0 auto; }
+  .sum-date { font-size: 32px; color: var(--hl); margin-bottom: 8px; }
+  .sum-title { font-size: 38px; line-height: 1.55; }
+  .sum-save {
+    font-size: 44px; text-align: center; letter-spacing: 0.04em;
+    margin-bottom: 30px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="bg"></div>
+  <div class="veil"></div>
+
+  {% if variant == 'fcover' %}
+    <div class="frame"></div>
+    <div class="layer">
+      <div class="cover-center">
+        <div class="cover-lead">{{ cover_lead }}</div>
+        <div class="cover-period">{{ period_label }}</div>
+        <div class="cover-main">ビジネス書</div>
+        <div class="cover-count">新刊<span class="num">{{ book_count }}</span>選</div>
+      </div>
+      <div class="foot">
+        <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
+        <span class="handle">{{ handle }}</span>
+      </div>
+    </div>
+
+  {% elif variant == 'fbook' %}
+    <div class="layer">
+      <div class="book-title">{{ book_title }}</div>
+      <div class="book-body">
+        <div class="book-cover{{ '' if cover_image else ' placeholder' }}">
+          {{ '' if cover_image else book_title }}
+        </div>
+        <div class="book-facts">
+          <div class="fact">
+            <div class="fact-label">▶ 発売日</div>
+            <div class="fact-value">{{ sales_date }}</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">▶ 著者</div>
+            <div class="fact-value">{{ book_author or '—' }}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="point-label">▶ 私の注目ポイント</div>
+        <div class="point-text">{{ point }}</div>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="layer">
+      <div class="sum-list">
+        {% for item in items %}
+          <div class="sum-item">
+            <span class="sum-check">✓</span>
+            <div>
+              <div class="sum-date">{{ item.sales_date }}（{{ item.author or '著者不明' }}）</div>
+              <div class="sum-title">{{ item.title }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="sum-save">見返しやすいように保存 ↓ 🔖</div>
+      <div class="foot">
+        <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
+        <span class="handle">{{ handle }}</span>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+</body>
+</html>

@@ -197,6 +197,11 @@ def publish_story(client: InstagramClient, image_url: str) -> str:
     return client.publish(creation_id)
 
 
+def caption_for(draft: dict[str, Any]) -> str:
+    """下書きの種別に応じたキャプションを組み立てる。"""
+    return build_caption(draft)
+
+
 def build_caption(draft: dict[str, Any]) -> str:
     """本文・アカウント紹介・ハッシュタグを Instagram のキャプション形式に組み立てる。
 

@@ -2,6 +2,7 @@
 
   python -m bookgram generate    週次: 在庫が7日分に満たなければ本を消化して下書きを作る
   python -m bookgram post        毎日: その日の下書きを Instagram に投稿する
+  python -m bookgram feature     週次: ビジネス書の新刊特集をつくる（月曜枠）
   python -m bookgram rerender    下書きJSONから画像を作り直す（JSON修正後に使う）
   python -m bookgram preview     プレビューページだけ作り直す
   python -m bookgram doctor      認証・トークン・キューの状態を点検する
@@ -24,6 +25,7 @@ from . import queue as bookqueue
 from .bookdata import fetch_material
 from .config import (
     CARDS_PER_POST,
+    FEATURE_WEEKDAY,
     DRAFTS_DIR,
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
@@ -33,6 +35,8 @@ from .config import (
     load_secrets,
 )
 from .generate import generate_book_post
+from .feature import generate_feature_post
+from .newbooks import NewBooksUnavailableError, fetch_new_business_books
 from .websearch import enrich_with_web_search
 from .preview import (
     load_week_drafts,
@@ -50,6 +54,7 @@ from .publish import (
 from .render import (
     STORY_FILENAME,
     fetch_cover_data_uri,
+    render_feature,
     render_post,
     render_story,
 )
@@ -86,7 +91,11 @@ def cmd_generate(args: argparse.Namespace) -> int:
             break
 
         title = book["title"]
-        target = bookqueue.free_dates(start, 1)[0]
+        slots = bookqueue.free_dates(start, 1, skip_weekday=FEATURE_WEEKDAY)
+        if not slots:
+            print("[warn] 割り当て可能な日付がありません。")
+            break
+        target = slots[0]
         print(f"[generate] {target} 『{title}』の根拠データを取得中…")
         material = fetch_material(
             title, book.get("isbn", ""), book.get("notes", ""), strict=False
@@ -124,6 +133,8 @@ def cmd_generate(args: argparse.Namespace) -> int:
             target,
             {
                 "date": target.isoformat(),
+                "kind": "book",
+                "image_count": CARDS_PER_POST,
                 **{k: v for k, v in post.items() if k != "_meta"},
                 "status": "draft",
                 "meta": post.get("_meta", {}),
@@ -177,7 +188,7 @@ def cmd_post(args: argparse.Namespace) -> int:
 
     image_urls = [
         f"{secrets.pages_base_url}/img/{day.isoformat()}/{i:02d}.jpg"
-        for i in range(1, CARDS_PER_POST + 1)
+        for i in range(1, draft.get("image_count", CARDS_PER_POST) + 1)
     ]
     caption = build_caption(draft)
 
@@ -266,7 +277,12 @@ def cmd_rerender(args: argparse.Namespace) -> int:
         post = dict(draft)
         post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
         out_dir = IMG_DIR / day.isoformat()
-        render_post(post, out_dir)
+        if draft.get("kind") == "feature":
+            for book in post["books"]:
+                book["cover_data_uri"] = fetch_cover_data_uri(book.get("cover_url", ""))
+            render_feature(post, out_dir)
+        else:
+            render_post(post, out_dir)
         render_story(post, out_dir)
         print(f"[render] {day} 『{draft['book_title']}』")
         rendered += 1
@@ -274,6 +290,62 @@ def cmd_rerender(args: argparse.Namespace) -> int:
     if rendered:
         _write_previews(min(targets), secrets.pages_base_url)
     print(f"[done] {rendered} 投稿分を再生成しました。")
+    return 0
+
+
+# --------------------------------------------------------------------------- feature
+
+
+def next_weekday(start: date, weekday: int) -> date:
+    """start 以降で最初に該当曜日になる日付。"""
+    return start + timedelta(days=(weekday - start.weekday()) % 7)
+
+
+def cmd_feature(args: argparse.Namespace) -> int:
+    """ビジネス書の新刊特集を1本つくる。"""
+    secrets = load_secrets(require=("ANTHROPIC_API_KEY",))
+    target = (
+        date.fromisoformat(args.date)
+        if args.date
+        else next_weekday(today_jst() + timedelta(days=1), FEATURE_WEEKDAY)
+    )
+
+    if bookqueue.load_draft(target) and not args.force:
+        print(f"[skip] {target} には既に下書きがあります。上書きするには --force を付けてください。")
+        return 0
+
+    print(f"[feature] {target} 向けの新刊を収集中…")
+    try:
+        candidates = fetch_new_business_books(target, limit=args.candidates)
+    except NewBooksUnavailableError as error:
+        print(f"[error] {error}", file=sys.stderr)
+        return 1
+    print(f"[feature] 候補 {len(candidates)} 冊から選抜します…")
+
+    post = generate_feature_post(candidates, secrets.anthropic_api_key, target)
+    for book in post["books"]:
+        book["cover_data_uri"] = fetch_cover_data_uri(book["cover_url"])
+
+    out_dir = IMG_DIR / target.isoformat()
+    paths = render_feature(post, out_dir)
+    render_story(post, out_dir)
+    print(f"[render]   カード{len(paths)}枚 + ストーリー1枚")
+
+    for book in post["books"]:
+        book.pop("cover_data_uri", None)
+    bookqueue.save_draft(
+        target,
+        {
+            "date": target.isoformat(),
+            "image_count": len(paths),
+            **{k: v for k, v in post.items() if k != "_meta"},
+            "status": "draft",
+            "meta": post.get("_meta", {}),
+        },
+    )
+
+    _write_previews(target, secrets.pages_base_url)
+    print(f"[done] {target} の新刊特集を作成しました。")
     return 0
 
 
@@ -426,6 +498,14 @@ def main(argv: list[str] | None = None) -> int:
     p_prev = sub.add_parser("preview", help="プレビューページを作り直す")
     p_prev.add_argument("--start", help="表示開始日 (YYYY-MM-DD)。既定は本日。")
     p_prev.set_defaults(func=cmd_preview)
+
+    p_feat = sub.add_parser("feature", help="ビジネス書の新刊特集をつくる")
+    p_feat.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は次の月曜。")
+    p_feat.add_argument(
+        "--candidates", type=int, default=20, help="Claudeに渡す候補冊数"
+    )
+    p_feat.add_argument("--force", action="store_true", help="既存の下書きを上書き")
+    p_feat.set_defaults(func=cmd_feature)
 
     p_re = sub.add_parser("rerender", help="下書きJSONから画像を作り直す")
     p_re.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は全下書き。")
