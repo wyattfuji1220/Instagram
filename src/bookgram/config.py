@@ -18,7 +18,8 @@ OUTPUT_DIR = ROOT / "output"
 TEMPLATES_DIR = ROOT / "templates"
 ASSETS_DIR = ROOT / "assets"
 BACKGROUNDS_DIR = ASSETS_DIR / "backgrounds"
-PROFILE_ICON = ASSETS_DIR / "profile.jpg"
+# アイコンは拡張子を問わず assets/profile.* を拾う
+PROFILE_ICON_STEM = "profile"
 ACCOUNT_FILE = ROOT / "account.yaml"
 POSTED_LOG = ROOT / "posted.jsonl"
 
@@ -77,3 +78,12 @@ def load_account() -> dict:
     if not ACCOUNT_FILE.exists():
         raise RuntimeError(f"{ACCOUNT_FILE} がありません。")
     return yaml.safe_load(ACCOUNT_FILE.read_text(encoding="utf-8")) or {}
+
+
+def find_profile_icon() -> Path | None:
+    """assets/profile.* を拡張子を問わず探す。見つからなければ None。"""
+    for suffix in (".jpg", ".jpeg", ".png", ".webp"):
+        candidate = ASSETS_DIR / f"{PROFILE_ICON_STEM}{suffix}"
+        if candidate.exists():
+            return candidate
+    return None

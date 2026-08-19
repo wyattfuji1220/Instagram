@@ -28,8 +28,8 @@ from .config import (
     CARD_HEIGHT,
     CARD_WIDTH,
     CARDS_PER_POST,
-    PROFILE_ICON,
     TEMPLATES_DIR,
+    find_profile_icon,
     load_account,
 )
 
@@ -99,7 +99,8 @@ def build_card_contexts(post: dict[str, Any]) -> list[dict[str, Any]]:
     """10枚分のテンプレート変数を組み立てる。"""
     account = load_account()
     seed = post["book_title"]
-    icon = _data_uri(PROFILE_ICON)
+    icon_path = find_profile_icon()
+    icon = _data_uri(icon_path) if icon_path else ""
     cover_image = post.get("cover_data_uri", "")
 
     base = {
