@@ -1,22 +1,39 @@
-"""書誌データ取得。openBD（日本の書籍データベース）と Google Books API を併用する。
+"""書誌データ取得。
 
 生成AIに渡す「根拠データ(material)」を組み立てるのがこのモジュールの役割。
-両APIとも取得できなかった場合は例外を投げ、知らない本を書かせないようにする。
+根拠が集まらなかった場合は例外を投げ、知らない本を書かせないようにする。
+
+3つのソースを併用する。どれか1つが落ちても残りで成立する設計。
+
+  NDLサーチ    和書の書誌情報とISBN。キー不要で、和書のタイトル解決に最も強い
+  Google Books 内容紹介が充実していることが多い。匿名アクセスは429になりやすい
+  openBD       和書の内容紹介・目次・著者略歴。ISBNが分かっている場合のみ引ける
+
+加えて、あなた自身の読書メモ(notes)も同等の根拠として扱う。
+APIが全滅してもメモさえ書けば生成できる。
 """
 
 from __future__ import annotations
 
+import os
 import random
 import time
-from dataclasses import dataclass, field, asdict
+import xml.etree.ElementTree as ET
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 import requests
 
+NDL_ENDPOINT = "https://ndlsearch.ndl.go.jp/api/opensearch"
 OPENBD_ENDPOINT = "https://api.openbd.jp/v1/get"
 GOOGLE_BOOKS_ENDPOINT = "https://www.googleapis.com/books/v1/volumes"
 USER_AGENT = "bookgram/1.0 (personal reading log)"
 TIMEOUT = 15
+RETRY_ATTEMPTS = 3
+RETRY_BASE_WAIT = 3.0
+RETRYABLE_STATUS = {408, 429, 500, 502, 503, 504}
+XSI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
+MIN_SUBSTANCE_CHARS = 80
 
 
 class BookNotFoundError(RuntimeError):
@@ -34,6 +51,7 @@ class BookMaterial:
     description: str = ""
     table_of_contents: str = ""
     author_bio: str = ""
+    personal_notes: str = ""
     categories: list[str] = field(default_factory=list)
     sources: list[str] = field(default_factory=list)
 
@@ -57,38 +75,126 @@ class BookMaterial:
             lines += ["", "【目次】", self.table_of_contents]
         if self.author_bio:
             lines += ["", "【著者略歴】", self.author_bio]
+        if self.personal_notes:
+            lines += [
+                "",
+                "【読者本人による読書メモ】",
+                "（実際に読んだ本人の記録です。内容紹介と同等の根拠として扱ってください）",
+                self.personal_notes,
+            ]
         return "\n".join(lines)
 
+    def substance_chars(self) -> int:
+        return (
+            len(self.description)
+            + len(self.table_of_contents)
+            + len(self.personal_notes)
+        )
+
     def has_substance(self) -> bool:
-        """紹介文を書くのに足る情報があるか。"""
-        return len(self.description) + len(self.table_of_contents) >= 80
+        """紹介文を書くのに足る根拠があるか。"""
+        return self.substance_chars() >= MIN_SUBSTANCE_CHARS
 
 
 def _polite_sleep() -> None:
     time.sleep(random.uniform(1.0, 3.0))
 
 
-def _get_json(url: str, params: dict[str, Any]) -> Any:
-    response = requests.get(
-        url, params=params, timeout=TIMEOUT, headers={"User-Agent": USER_AGENT}
-    )
-    response.raise_for_status()
-    return response.json()
+def _request(url: str, params: dict[str, Any]) -> requests.Response:
+    """GET する。429/5xx は指数バックオフで再試行する。"""
+    last_error: Exception | None = None
+
+    for attempt in range(RETRY_ATTEMPTS):
+        try:
+            response = requests.get(
+                url, params=params, timeout=TIMEOUT, headers={"User-Agent": USER_AGENT}
+            )
+        except requests.RequestException as error:
+            last_error = error
+        else:
+            if response.status_code not in RETRYABLE_STATUS:
+                response.raise_for_status()
+                return response
+            last_error = requests.HTTPError(
+                f"HTTP {response.status_code} from {url}", response=response
+            )
+
+        if attempt < RETRY_ATTEMPTS - 1:
+            wait = RETRY_BASE_WAIT * (2**attempt) + random.uniform(0, 1.5)
+            print(f"[retry] 一時エラー。{wait:.1f}秒待って再試行します（{attempt + 1}回目）")
+            time.sleep(wait)
+
+    raise last_error if last_error else RuntimeError(f"{url} の取得に失敗しました")
 
 
 def _normalize_isbn(raw: str) -> str:
     return "".join(ch for ch in raw if ch.isdigit() or ch in "Xx").upper()
 
 
+def _normalize_person(raw: str) -> str:
+    """NDL の「相良, 奈美香」形式を「相良奈美香」に整える。"""
+    return raw.replace(", ", "").replace(",", "").strip()
+
+
+# ------------------------------------------------------------------- NDLサーチ
+
+
+def _ndl_item_fields(item: ET.Element) -> dict[str, Any]:
+    fields: dict[str, Any] = {
+        "isbn": "",
+        "title": "",
+        "authors": [],
+        "publisher": "",
+        "published_date": "",
+    }
+    for child in item:
+        tag = child.tag.split("}")[-1]
+        text = (child.text or "").strip()
+        if not text:
+            continue
+        if tag == "identifier" and child.attrib.get(XSI_TYPE, "").endswith("ISBN"):
+            fields["isbn"] = _normalize_isbn(text)
+        elif tag == "title" and not fields["title"]:
+            fields["title"] = text
+        elif tag == "creator":
+            name = _normalize_person(text)
+            if name not in fields["authors"]:
+                fields["authors"].append(name)
+        elif tag == "publisher" and not fields["publisher"]:
+            fields["publisher"] = text
+        elif tag == "date" and not fields["published_date"]:
+            fields["published_date"] = text
+    return fields
+
+
+def search_ndl(title: str) -> dict[str, Any]:
+    """国立国会図書館サーチで和書を検索する。ISBNを持つ最初の候補を返す。
+
+    検索結果には書評や雑誌記事が混ざるため、ISBNを持つ＝図書である候補に絞る。
+    """
+    response = _request(NDL_ENDPOINT, {"title": title, "cnt": 10})
+    root = ET.fromstring(response.content)
+    for item in root.findall(".//item"):
+        fields = _ndl_item_fields(item)
+        if fields["isbn"]:
+            return fields
+    return {}
+
+
+# ---------------------------------------------------------------- Google Books
+
+
 def search_google_books(title: str, isbn: str = "") -> dict[str, Any]:
     query = f"isbn:{isbn}" if isbn else f"intitle:{title}"
-    payload = _get_json(
-        GOOGLE_BOOKS_ENDPOINT, {"q": query, "maxResults": 5, "langRestrict": "ja"}
-    )
+    params: dict[str, Any] = {"q": query, "maxResults": 5, "langRestrict": "ja"}
+    api_key = os.getenv("GOOGLE_BOOKS_API_KEY", "")
+    if api_key:
+        params["key"] = api_key
+
+    payload = _request(GOOGLE_BOOKS_ENDPOINT, params).json()
     items = payload.get("items") or []
     if not items:
         return {}
-
     if isbn:
         return items[0].get("volumeInfo", {})
 
@@ -100,8 +206,11 @@ def search_google_books(title: str, isbn: str = "") -> dict[str, Any]:
     return best.get("volumeInfo", {})
 
 
+# ---------------------------------------------------------------------- openBD
+
+
 def fetch_openbd(isbn: str) -> dict[str, Any]:
-    payload = _get_json(OPENBD_ENDPOINT, {"isbn": isbn})
+    payload = _request(OPENBD_ENDPOINT, {"isbn": isbn}).json()
     if not payload or payload[0] is None:
         return {}
     return payload[0]
@@ -124,20 +233,48 @@ def _extract_openbd_texts(record: dict[str, Any]) -> dict[str, str]:
     return result
 
 
-def fetch_material(title: str, isbn: str = "") -> BookMaterial:
-    """1冊分の書誌データを取得してマージする。"""
-    material = BookMaterial(title=title, isbn=_normalize_isbn(isbn))
+# ------------------------------------------------------------------ 統合
 
-    volume = search_google_books(title, material.isbn)
+
+def _try(source: str, fetch):
+    """1ソースの失敗が全体を止めないようにする。"""
+    try:
+        return fetch()
+    except Exception as error:  # noqa: BLE001 - 残りのソースで続行したい
+        print(f"[warn] {source} を取得できませんでした: {error}")
+        return None
+
+
+def fetch_material(title: str, isbn: str = "", notes: str = "") -> BookMaterial:
+    """1冊分の根拠データを取得してマージする。"""
+    material = BookMaterial(
+        title=title, isbn=_normalize_isbn(isbn), personal_notes=notes.strip()
+    )
+
+    if not material.isbn:
+        ndl = _try("NDLサーチ", lambda: search_ndl(title))
+        if ndl:
+            material.sources.append("ndl")
+            material.isbn = ndl["isbn"]
+            material.title = ndl["title"] or material.title
+            material.authors = ndl["authors"]
+            material.publisher = ndl["publisher"]
+            material.published_date = ndl["published_date"]
+        _polite_sleep()
+
+    volume = _try(
+        "Google Books", lambda: search_google_books(title, material.isbn)
+    )
     if volume:
         material.sources.append("google_books")
-        material.title = volume.get("title") or material.title
         if volume.get("subtitle"):
-            material.title = f"{material.title} {volume['subtitle']}"
-        material.authors = volume.get("authors") or []
-        material.publisher = volume.get("publisher") or ""
-        material.published_date = volume.get("publishedDate") or ""
-        material.page_count = volume.get("pageCount") or 0
+            material.title = f"{volume.get('title', material.title)} {volume['subtitle']}"
+        else:
+            material.title = volume.get("title") or material.title
+        material.authors = volume.get("authors") or material.authors
+        material.publisher = volume.get("publisher") or material.publisher
+        material.published_date = volume.get("publishedDate") or material.published_date
+        material.page_count = volume.get("pageCount") or material.page_count
         material.description = (volume.get("description") or "").strip()
         material.categories = volume.get("categories") or []
         if not material.isbn:
@@ -148,14 +285,16 @@ def fetch_material(title: str, isbn: str = "") -> BookMaterial:
 
     if material.isbn:
         _polite_sleep()
-        record = fetch_openbd(material.isbn)
+        record = _try("openBD", lambda: fetch_openbd(material.isbn))
         if record:
             material.sources.append("openbd")
             summary = record.get("summary", {}) or {}
             material.title = summary.get("title") or material.title
             if summary.get("author") and not material.authors:
                 material.authors = [
-                    name.strip() for name in summary["author"].split("/") if name.strip()
+                    _normalize_person(name)
+                    for name in summary["author"].split("/")
+                    if name.strip()
                 ]
             material.publisher = material.publisher or summary.get("publisher", "")
             material.published_date = material.published_date or summary.get("pubdate", "")
@@ -169,9 +308,12 @@ def fetch_material(title: str, isbn: str = "") -> BookMaterial:
 
     if not material.has_substance():
         raise BookNotFoundError(
-            f"『{title}』の書誌データが不足しています "
-            f"(sources={material.sources or 'なし'})。"
-            "ISBNを books/queue.yaml に追記するか、手動で notes を書いてください。"
+            f"『{title}』の根拠データが不足しています"
+            f"（取得できたソース: {', '.join(material.sources) or 'なし'} / "
+            f"根拠文字数: {material.substance_chars()}、必要: {MIN_SUBSTANCE_CHARS}）。"
+            " books/queue.yaml の notes に、この本について自分の言葉で"
+            f"{MIN_SUBSTANCE_CHARS}文字以上のメモを書いてください。"
+            " それが最も確実な解決策です。ISBN の追記も有効です。"
         )
 
     return material

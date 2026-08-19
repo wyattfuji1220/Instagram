@@ -6,8 +6,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import pytest
 
-from bookgram.bookdata import BookMaterial, _extract_openbd_texts, _normalize_isbn
-from bookgram.generate import _output_schema, _validate
+from bookgram.bookdata import (
+    BookMaterial,
+    _extract_openbd_texts,
+    _ndl_item_fields,
+    _normalize_isbn,
+)
+from bookgram.generate import _build_user_prompt, _output_schema, _validate
 from bookgram.publish import PublishError, build_caption, publish_carousel
 from bookgram.render import _variant, build_card_contexts
 
@@ -111,3 +116,41 @@ def test_build_caption_prefixes_hashtags():
 def test_publish_rejects_single_image():
     with pytest.raises(PublishError, match="2〜10枚"):
         publish_carousel(None, ["https://example.com/1.jpg"], "caption")
+
+
+def test_notes_alone_can_satisfy_substance():
+    """APIが全滅しても、読書メモがあれば生成できる。"""
+    material = BookMaterial(title="本", personal_notes="め" * 80)
+    assert material.has_substance()
+    assert "読書メモ" in material.to_prompt_block()
+
+
+def test_substance_counts_all_grounding_sources():
+    material = BookMaterial(
+        title="本", description="あ" * 30, table_of_contents="い" * 30, personal_notes="う" * 30
+    )
+    assert material.substance_chars() == 90
+    assert material.has_substance()
+
+
+def test_ndl_item_fields_extracts_isbn_and_normalizes_author():
+    import xml.etree.ElementTree as ET
+
+    xml = """<item xmlns:dc="http://purl.org/dc/elements/1.1/"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <dc:title>行動経済学が最強の学問である</dc:title>
+      <dc:creator>相良, 奈美香</dc:creator>
+      <dc:publisher>SBクリエイティブ</dc:publisher>
+      <dc:identifier xsi:type="dcndl:ISBN">978-4-8156-1950-3</dc:identifier>
+    </item>"""
+    fields = _ndl_item_fields(ET.fromstring(xml))
+    assert fields["isbn"] == "9784815619503"
+    assert fields["authors"] == ["相良奈美香"]
+    assert fields["publisher"] == "SBクリエイティブ"
+
+
+def test_build_user_prompt_omits_empty_sections():
+    material = BookMaterial(title="本", description="内容紹介")
+    prompt = _build_user_prompt(material)
+    assert "内容紹介" in prompt
+    assert "読書メモ" not in prompt

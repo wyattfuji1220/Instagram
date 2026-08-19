@@ -24,17 +24,19 @@ DAY_THEMES = [
     ("総括", "全体の評価・誰におすすめか・読後に何が変わるか"),
 ]
 
-SYSTEM_PROMPT = """あなたは読書アカウントの編集者です。与えられた書誌データだけを根拠に、
+SYSTEM_PROMPT = """あなたは読書アカウントの編集者です。与えられた根拠データだけを根拠に、
 Instagram のカルーセル投稿原稿を書きます。
+根拠データには書誌情報のほか、読者本人が書いた読書メモが含まれることがあります。
+メモは実際に読んだ人の記録なので、出版社の内容紹介と同等に信頼して使ってください。
 
 ## 絶対に守るルール
 
-1. 書誌データに書かれていない事実を書かない。
+1. 根拠データに書かれていない事実を書かない。
    具体的には、データに無い人名・地名・数値・年号・章タイトル・エピソードを一切書かない。
 2. 本文からの引用を捏造しない。原文の再現が必要な表現は使わない。
-3. 内容について述べるときは、出版社の内容紹介に基づく記述であることが分かる書き方をする。
+3. 出版社の内容紹介だけを根拠にする記述は、そう分かる書き方をする。
    例:「〜と紹介されています」「〜がテーマとされています」
-   自分が読んで確かめたかのような断定（「〜と書かれている」「著者はこう言い切る」）は避ける。
+   読書メモに基づく記述はこの限りではなく、読者の実感として書いてよい。
 4. データが薄い項目については、無理に埋めず一般論に留める。
 
 ## 文体
@@ -124,7 +126,7 @@ def _output_schema() -> dict[str, Any]:
     }
 
 
-def _build_user_prompt(material: BookMaterial, notes: str = "") -> str:
+def _build_user_prompt(material: BookMaterial) -> str:
     theme_lines = "\n".join(
         f"  Day{i + 1} 【{name}】: {intent}" for i, (name, intent) in enumerate(DAY_THEMES)
     )
@@ -132,7 +134,7 @@ def _build_user_prompt(material: BookMaterial, notes: str = "") -> str:
         "以下の書籍について、Instagram のカルーセル投稿を "
         f"{DAYS_PER_BOOK} 日分つくってください。",
         "",
-        "## 書誌データ（これが唯一の根拠です）",
+        "## 根拠データ（これが唯一の根拠です）",
         "",
         material.to_prompt_block(),
         "",
@@ -148,11 +150,9 @@ def _build_user_prompt(material: BookMaterial, notes: str = "") -> str:
         "",
         "## grounding について",
         "",
-        "各日ごとに、主要な記述が書誌データのどの部分に基づくかを grounding に列挙してください。",
+        "各日ごとに、主要な記述が根拠データのどの部分に基づくかを grounding に列挙してください。",
         "根拠が薄い記述がある場合は「一般論（データに根拠なし）」と正直に書いてください。",
     ]
-    if notes:
-        parts += ["", "## 補足メモ（あなた自身の読書メモ。書誌データと同等に根拠として扱ってよい）", "", notes]
     return "\n".join(parts)
 
 
@@ -170,9 +170,7 @@ def _validate(payload: dict[str, Any]) -> None:
             raise ValueError(f"Day{day.get('day_index')} の hashtags が空です")
 
 
-def generate_book_posts(
-    material: BookMaterial, api_key: str, notes: str = ""
-) -> dict[str, Any]:
+def generate_book_posts(material: BookMaterial, api_key: str) -> dict[str, Any]:
     """1冊分の原稿を生成して dict で返す。"""
     client = anthropic.Anthropic(api_key=api_key)
 
@@ -184,7 +182,7 @@ def generate_book_posts(
             "effort": "high",
             "format": {"type": "json_schema", "schema": _output_schema()},
         },
-        messages=[{"role": "user", "content": _build_user_prompt(material, notes)}],
+        messages=[{"role": "user", "content": _build_user_prompt(material)}],
     ) as stream:
         response = stream.get_final_message()
 

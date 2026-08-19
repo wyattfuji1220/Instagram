@@ -65,7 +65,9 @@ def cmd_generate(args: argparse.Namespace) -> int:
         title = book["title"]
         print(f"[generate] 『{title}』の書誌データを取得中…")
         try:
-            material = fetch_material(title, book.get("isbn", ""))
+            material = fetch_material(
+                title, book.get("isbn", ""), book.get("notes", "")
+            )
         except BookNotFoundError as error:
             print(f"[error] {error}", file=sys.stderr)
             book["status"] = "needs_input"
@@ -73,9 +75,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
             return 1
 
         print(f"[generate] 原稿を生成中（sources={material.sources}）…")
-        payload = generate_book_posts(
-            material, secrets.anthropic_api_key, book.get("notes", "")
-        )
+        payload = generate_book_posts(material, secrets.anthropic_api_key)
 
         targets = bookqueue.free_dates(start, DAYS_PER_BOOK)
         days = sorted(payload["days"], key=lambda d: d["day_index"])
