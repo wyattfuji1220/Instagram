@@ -1,0 +1,101 @@
+name: 週次 下書き生成
+
+on:
+  schedule:
+    # 日曜 20:00 JST = 日曜 11:00 UTC
+    - cron: "0 11 * * 0"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "生成開始日 (YYYY-MM-DD)。空なら明日から。"
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 日本語フォントを導入
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra
+
+      - name: 依存関係をインストール
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: 下書きを生成
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
+          PYTHONPATH: src
+        run: python -m bookgram generate ${{ inputs.start && format('--start {0}', inputs.start) || '' }}
+
+      - name: 古い画像を削除
+        env:
+          PYTHONPATH: src
+        run: python -m bookgram cleanup
+
+      - name: Pull Request を作成
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "変更がないため PR は作成しません。"
+            exit 0
+          fi
+
+          WEEK=$(date -u -d "+1 day" +%G-W%V)
+          BRANCH="drafts/${WEEK}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add -A
+          git commit -m "生成: ${WEEK} の投稿下書き"
+          git push -f origin "$BRANCH"
+
+          BASE="${PAGES_BASE_URL:-https://wyattfuji1220.github.io/Instagram}"
+          BODY=$(printf '%s\n' \
+            "## ${WEEK} の投稿下書き" \
+            "" \
+            "プレビュー: ${BASE}/preview/${WEEK}.html" \
+            "" \
+            "※ プレビューは **このPRをマージしたあと** に表示されます（GitHub Pages が main を配信するため）。" \
+            "先に中身を見たい場合は \`drafts/\` 以下の JSON を確認してください。" \
+            "" \
+            "### レビュー観点" \
+            "- [ ] 書誌データに無い事実を書いていないか（各日の grounding を確認）" \
+            "- [ ] 文字が画像からはみ出していないか" \
+            "- [ ] キャプションとハッシュタグが妥当か" \
+            "" \
+            "**このPRをマージした日付だけが自動投稿されます。**")
+
+          if ! gh pr view "$BRANCH" >/dev/null 2>&1; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "投稿下書き ${WEEK}" --body "$BODY"
+          else
+            gh pr edit "$BRANCH" --body "$BODY"
+          fi
+
+      - name: キュー切れを通知
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "週次生成に失敗しました ($(date -u +%Y-%m-%d))" \
+            --body "ワークフローのログを確認してください: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

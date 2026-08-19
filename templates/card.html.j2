@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #0B0E14;
+    --bg-raised: #131822;
+    --ink: #F2F5F9;
+    --ink-dim: #8C97A8;
+    --accent: #F5B94A;
+    --rule: #232B39;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: {{ width }}px;
+    height: {{ height }}px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+    font-feature-settings: "palt" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .card {
+    position: relative;
+    width: {{ width }}px;
+    height: {{ height }}px;
+    padding: 96px 88px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* 左端のアクセントバー */
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 12px;
+    background: var(--accent);
+  }
+
+  /* 背面の巨大な連番 */
+  .ghost-number {
+    position: absolute;
+    right: -40px;
+    bottom: -120px;
+    font-size: 460px;
+    font-weight: 900;
+    line-height: 1;
+    color: #FFFFFF;
+    opacity: 0.028;
+    letter-spacing: -0.05em;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+
+  .kicker {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 2px solid var(--accent);
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .pager {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink-dim);
+    letter-spacing: 0.12em;
+  }
+
+  .main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+  .headline {
+    font-size: {{ 78 if variant == 'hook' else 62 }}px;
+    font-weight: 900;
+    line-height: 1.38;
+    letter-spacing: -0.01em;
+    margin-bottom: 44px;
+  }
+  .headline .mark {
+    color: var(--accent);
+  }
+
+  .body {
+    font-size: 38px;
+    line-height: 2.0;
+    color: #D5DCE6;
+    letter-spacing: 0.01em;
+  }
+
+  .oneline {
+    font-family: "Noto Serif JP", "Noto Serif CJK JP", "Hiragino Mincho ProN", serif;
+    font-size: 40px;
+    line-height: 1.8;
+    color: var(--accent);
+    padding-left: 28px;
+    border-left: 4px solid var(--rule);
+    margin-top: 20px;
+  }
+
+  .cta {
+    margin-top: 48px;
+    padding: 34px 38px;
+    background: var(--bg-raised);
+    border-radius: 20px;
+    border: 1px solid var(--rule);
+  }
+  .cta-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .cta-text {
+    font-size: 30px;
+    line-height: 1.7;
+    color: var(--ink-dim);
+  }
+
+  .foot {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .foot-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 640px;
+  }
+  .foot-author {
+    font-size: 26px;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="ghost-number">{{ card_index }}</div>
+
+    <div class="head">
+      <span class="kicker">{{ kicker }}</span>
+      <span class="pager">{{ card_index }} / {{ card_total }}</span>
+    </div>
+
+    <div class="main">
+      <div class="headline">{{ headline }}</div>
+
+      {% if variant == 'hook' and one_line %}
+        <div class="oneline">{{ one_line }}</div>
+      {% else %}
+        <div class="body">{{ body }}</div>
+      {% endif %}
+
+      {% if variant == 'outro' %}
+        <div class="cta">
+          <div class="cta-title">{{ cta_title }}</div>
+          <div class="cta-text">{{ cta_text }}</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="foot">
+      <span class="foot-title">{{ book_title }}</span>
+      <span class="foot-author">{{ book_author }}</span>
+    </div>
+  </div>
+</body>
+</html>

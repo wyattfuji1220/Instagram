@@ -1,0 +1,74 @@
+name: 毎日 Instagram 投稿
+
+on:
+  schedule:
+    # 07:00 JST = 前日 22:00 UTC
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "投稿対象日 (YYYY-MM-DD)。空なら本日。"
+        required: false
+      dry_run:
+        description: "投稿せず内容だけ表示する"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: daily-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 依存関係をインストール
+        run: pip install requests pyyaml python-dotenv
+
+      - name: 投稿
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
+          IG_API_HOST: ${{ vars.IG_API_HOST || 'https://graph.facebook.com' }}
+          PYTHONPATH: src
+        run: |
+          python -m bookgram post \
+            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: 投稿記録をコミット
+        if: ${{ !inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "記録の変更はありません。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "投稿記録: $(date -u -d '+9 hours' +%Y-%m-%d)"
+          git push origin main
+
+      - name: 失敗を通知
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "投稿に失敗しました ($(date -u -d '+9 hours' +%Y-%m-%d))" \
+            --body "ログ: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
