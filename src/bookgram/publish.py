@@ -99,6 +99,13 @@ class InstagramClient:
         )
         return result["id"]
 
+    def create_story(self, image_url: str) -> str:
+        result = self._post(
+            f"{self.ig_user_id}/media",
+            {"image_url": image_url, "media_type": "STORIES"},
+        )
+        return result["id"]
+
     def account_info(self) -> dict[str, Any]:
         """接続確認用にアカウント名を取得する。"""
         return self._get(self.ig_user_id, {"fields": "username,name"})
@@ -178,6 +185,14 @@ def publish_carousel(
     verify_images_public(image_urls)
     children = [client.create_carousel_item(url) for url in image_urls]
     creation_id = client.create_carousel(children, caption)
+    client.wait_until_ready(creation_id)
+    return client.publish(creation_id)
+
+
+def publish_story(client: InstagramClient, image_url: str) -> str:
+    """ストーリーを投稿して media_id を返す。"""
+    verify_images_public([image_url])
+    creation_id = client.create_story(image_url)
     client.wait_until_ready(creation_id)
     return client.publish(creation_id)
 

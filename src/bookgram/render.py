@@ -28,12 +28,15 @@ from .config import (
     CARD_HEIGHT,
     CARD_WIDTH,
     CARDS_PER_POST,
+    STORY_HEIGHT,
+    STORY_WIDTH,
     TEMPLATES_DIR,
     find_profile_icon,
     load_account,
 )
 
 JPEG_QUALITY = 92
+STORY_FILENAME = "story.jpg"
 LONG_TEXT_CHARS = 34
 COVER_TIMEOUT = 30
 
@@ -181,6 +184,42 @@ def render_post(post: dict[str, Any], out_dir: Path) -> list[Path]:
     if len(paths) != CARDS_PER_POST:
         raise RuntimeError(f"カード枚数が想定と異なります: {len(paths)}")
     return paths
+
+
+def build_story_context(post: dict[str, Any]) -> dict[str, Any]:
+    account = load_account()
+    icon_path = find_profile_icon()
+    return {
+        "width": STORY_WIDTH,
+        "height": STORY_HEIGHT,
+        "bg": _pick_background(post["book_title"], 0),
+        "icon": _data_uri(icon_path) if icon_path else "",
+        "cover_image": post.get("cover_data_uri", ""),
+        "book_title": post["book_title"],
+        "book_author": post["book_author"],
+        "handle": account["handle"],
+        "label": account.get("story_label", "本日の１冊"),
+        "cta": account.get("story_cta", "詳しくはフィード投稿から →"),
+    }
+
+
+def render_story(post: dict[str, Any], out_dir: Path) -> Path:
+    """ストーリー用の縦長画像を1枚書き出す。"""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    template = _env().get_template("story.html.j2")
+    path = out_dir / STORY_FILENAME
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": STORY_WIDTH, "height": STORY_HEIGHT},
+            device_scale_factor=1,
+        )
+        page.set_content(template.render(**build_story_context(post)), wait_until="load")
+        page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
+        browser.close()
+
+    return path
 
 
 def fetch_cover_data_uri(url: str) -> str:

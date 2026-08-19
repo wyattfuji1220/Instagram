@@ -40,8 +40,19 @@ from .preview import (
     render_pr_body,
     render_week_preview,
 )
-from .publish import InstagramClient, PublishError, build_caption, publish_carousel
-from .render import fetch_cover_data_uri, render_post
+from .publish import (
+    InstagramClient,
+    PublishError,
+    build_caption,
+    publish_carousel,
+    publish_story,
+)
+from .render import (
+    STORY_FILENAME,
+    fetch_cover_data_uri,
+    render_post,
+    render_story,
+)
 
 TARGET_COVERAGE_DAYS = 7
 
@@ -98,10 +109,16 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
         print(f"[generate] 原稿を生成中（sources={material.sources}）…")
         post = generate_book_post(material, secrets.anthropic_api_key)
+        # 発行日はAIに書かせず、書誌データの値をそのまま使う（日付まで入れるため）
+        if material.published_date:
+            post["published"] = material.published_date
         post["cover_url"] = material.cover_url
         post["cover_data_uri"] = fetch_cover_data_uri(material.cover_url)
 
-        print(f"[render]   カード{len(render_post(post, IMG_DIR / target.isoformat()))}枚")
+        out_dir = IMG_DIR / target.isoformat()
+        print(f"[render]   カード{len(render_post(post, out_dir))}枚")
+        render_story(post, out_dir)
+        print("[render]   ストーリー1枚")
         post.pop("cover_data_uri", None)
         bookqueue.save_draft(
             target,
@@ -168,6 +185,9 @@ def cmd_post(args: argparse.Namespace) -> int:
         print(f"[dry-run] {day} 『{draft['book_title']}』 / {draft['book_author']}")
         for url in image_urls:
             print(f"  image: {url}")
+        print(
+            f"  story: {secrets.pages_base_url}/img/{day.isoformat()}/{STORY_FILENAME}"
+        )
         print("--- caption ---")
         print(caption)
         return 0
@@ -198,6 +218,17 @@ def cmd_post(args: argparse.Namespace) -> int:
         }
     )
     print(f"[done] 投稿しました: media_id={media_id}")
+
+    story_url = f"{secrets.pages_base_url}/img/{day.isoformat()}/{STORY_FILENAME}"
+    try:
+        story_id = publish_story(client, story_url)
+    except PublishError as error:
+        # ストーリーはおまけなので、失敗してもフィード投稿は成功扱いにする
+        print(f"::warning::ストーリーの投稿に失敗しました: {error}", file=sys.stderr)
+    else:
+        draft["story_media_id"] = story_id
+        bookqueue.save_draft(day, draft)
+        print(f"[done] ストーリーも投稿しました: media_id={story_id}")
 
     days_left = client.token_days_remaining()
     if days_left is not None and days_left <= 14:
@@ -234,7 +265,9 @@ def cmd_rerender(args: argparse.Namespace) -> int:
             continue
         post = dict(draft)
         post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
-        render_post(post, IMG_DIR / day.isoformat())
+        out_dir = IMG_DIR / day.isoformat()
+        render_post(post, out_dir)
+        render_story(post, out_dir)
         print(f"[render] {day} 『{draft['book_title']}』")
         rendered += 1
 

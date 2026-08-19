@@ -27,9 +27,13 @@ POSTED_LOG = ROOT / "posted.jsonl"
 JST = timezone(timedelta(hours=9), "JST")
 
 MODEL = "claude-opus-5"
-# 過去投稿に合わせた正方形。1冊 = 1投稿で完結させる。
+# Instagram のプロフィールグリッドは 4:5 で表示される。
+# 正方形だと左右が切られてグリッドが崩れるため、最初から 4:5 で作る。
 CARD_WIDTH = 1080
-CARD_HEIGHT = 1080
+CARD_HEIGHT = 1350
+# ストーリーは 9:16
+STORY_WIDTH = 1080
+STORY_HEIGHT = 1920
 CARDS_PER_POST = 10
 DAYS_PER_BOOK = 1
 # 1冊1日消費なので、在庫警告はこの日数を基準にする

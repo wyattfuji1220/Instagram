@@ -19,6 +19,7 @@ from __future__ import annotations
 import os
 import random
 import time
+import re
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass, field
 from typing import Any
@@ -184,6 +185,28 @@ def _normalize_isbn(raw: str) -> str:
     return "".join(ch for ch in raw if ch.isdigit() or ch in "Xx").upper()
 
 
+def normalize_published(raw: str) -> str:
+    """出版日の表記を「2021年9月30日」の形に揃える。
+
+    ソースごとに 20210930 / 202109 / 2021年09月30日 / 2021-09 と表記が割れるため、
+    取れた精度に応じて日まで・月まで・年までを出し分ける。
+    """
+    if not raw:
+        return ""
+    digits = re.sub(r"\D", "", raw)
+    if len(digits) >= 8:
+        return f"{int(digits[:4])}年{int(digits[4:6])}月{int(digits[6:8])}日"
+    if len(digits) >= 6:
+        return f"{int(digits[:4])}年{int(digits[4:6])}月"
+    if len(digits) >= 4:
+        return f"{int(digits[:4])}年"
+    return raw
+
+
+def _publication_precision(raw: str) -> int:
+    return len(re.sub(r"\D", "", raw or ""))
+
+
 def _normalize_person(raw: str) -> str:
     """NDL の「相良, 奈美香」形式を「相良奈美香」に整える。"""
     return raw.replace(", ", "").replace(",", "").strip()
@@ -285,7 +308,9 @@ def _apply_rakuten(material: BookMaterial, entry: dict[str, Any]) -> None:
             if name.strip()
         ]
     material.publisher = material.publisher or entry.get("publisherName", "")
-    material.published_date = material.published_date or entry.get("salesDate", "")
+    sales_date = entry.get("salesDate", "")
+    if _publication_precision(sales_date) > _publication_precision(material.published_date):
+        material.published_date = sales_date
     material.isbn = material.isbn or _normalize_isbn(entry.get("isbn", ""))
     material.cover_url = material.cover_url or (
         entry.get("largeImageUrl") or entry.get("mediumImageUrl") or ""
@@ -398,7 +423,9 @@ def fetch_material(
         material.official_title = google_title or material.official_title
         material.authors = volume.get("authors") or material.authors
         material.publisher = volume.get("publisher") or material.publisher
-        material.published_date = volume.get("publishedDate") or material.published_date
+        google_date = volume.get("publishedDate") or ""
+        if _publication_precision(google_date) > _publication_precision(material.published_date):
+            material.published_date = google_date
         material.page_count = volume.get("pageCount") or material.page_count
         google_description = (volume.get("description") or "").strip()
         if len(google_description) > len(material.description):
@@ -425,7 +452,11 @@ def fetch_material(
                 ]
             material.cover_url = material.cover_url or summary.get("cover", "")
             material.publisher = material.publisher or summary.get("publisher", "")
-            material.published_date = material.published_date or summary.get("pubdate", "")
+            openbd_date = summary.get("pubdate", "")
+            if _publication_precision(openbd_date) > _publication_precision(
+                material.published_date
+            ):
+                material.published_date = openbd_date
 
             texts = _extract_openbd_texts(record)
             # openBD の日本語内容紹介は Google Books より詳しいことが多いので優先。
@@ -433,6 +464,8 @@ def fetch_material(
                 material.description = texts["description"]
             material.table_of_contents = texts.get("table_of_contents", "")
             material.author_bio = texts.get("author_bio", "")
+
+    material.published_date = normalize_published(material.published_date)
 
     if strict and not material.has_substance():
         raise BookNotFoundError(
