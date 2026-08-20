@@ -170,9 +170,9 @@
       <div class="cover-center">
         <div class="cover-lead">{{ cover_lead }}</div>
         <div class="cover-rule"></div>
-        <div class="cover-period">{{ period_year }}<span class="num">{{ period_month }}</span>{{ period_half }}</div>
-        <div class="cover-main">ビジネス書</div>
-        <div class="cover-count">新刊<span class="num">{{ book_count }}</span>選</div>
+        <div class="cover-period">{{ period_year }}{%- if period_month %}<span class="num">{{ period_month }}</span>{% endif -%}{{ period_half }}</div>
+        <div class="cover-main">{{ cover_main }}</div>
+        <div class="cover-count">{{ count_word }}<span class="num">{{ book_count }}</span>選</div>
         <div class="cover-rule"></div>
       </div>
       <div class="foot">
@@ -190,8 +190,8 @@
         </div>
         <div class="book-facts">
           <div class="fact">
-            <div class="fact-label">▶ 発売日</div>
-            <div class="fact-value">{{ sales_date }}</div>
+            <div class="fact-label">▶ {{ fact_label }}</div>
+            <div class="fact-value">{{ fact_value }}</div>
           </div>
           <div class="fact">
             <div class="fact-label">▶ 著者</div>
@@ -200,7 +200,7 @@
         </div>
       </div>
       <div>
-        <div class="point-label">▶ 私の注目ポイント</div>
+        <div class="point-label">▶ {{ point_label }}</div>
         <div class="point-text">{{ point }}</div>
       </div>
     </div>
@@ -212,7 +212,7 @@
           <div class="sum-item">
             <span class="sum-check">✓</span>
             <div>
-              <div class="sum-date">{{ item.sales_date }}（{{ item.author or '著者不明' }}）</div>
+              <div class="sum-date">{{ item.fact_value or item.sales_date }}（{{ item.author or '著者不明' }}）</div>
               <div class="sum-title">{{ item.title }}</div>
             </div>
           </div>

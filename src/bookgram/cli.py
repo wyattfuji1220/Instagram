@@ -2,7 +2,9 @@
 
   python -m bookgram generate    週次: 在庫が7日分に満たなければ本を消化して下書きを作る
   python -m bookgram post        毎日: その日の下書きを Instagram に投稿する
-  python -m bookgram feature     週次: ビジネス書の新刊特集をつくる（月曜枠）
+  python -m bookgram feature     週次: 特集をつくる（月=新刊 / 木=殿堂入り・小説）
+  python -m bookgram reel        投稿済みのカードから縦動画を組み立てる
+  python -m bookgram post-reel   組み立てた動画をリールとして投稿する
   python -m bookgram rerender    下書きJSONから画像を作り直す（JSON修正後に使う）
   python -m bookgram preview     プレビューページだけ作り直す
   python -m bookgram doctor      認証・トークン・キューの状態を点検する
@@ -25,18 +27,24 @@ from . import queue as bookqueue
 from .bookdata import fetch_material
 from .config import (
     CARDS_PER_POST,
-    FEATURE_WEEKDAY,
+    FEATURE_WEEKDAYS,
     DRAFTS_DIR,
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
     JST,
     POSTED_LOG,
     QUEUE_LOW_THRESHOLD,
+    feature_kind_for,
     load_secrets,
 )
 from .generate import generate_book_post
-from .feature import generate_feature_post
-from .newbooks import NewBooksUnavailableError, fetch_new_business_books
+from .feature import SPECS, generate_feature_post, spec_for
+from .newbooks import (
+    NewBooksUnavailableError,
+    fetch_classics,
+    fetch_new_business_books,
+    fetch_new_novels,
+)
 from .websearch import enrich_with_web_search
 from .preview import (
     load_week_drafts,
@@ -49,8 +57,10 @@ from .publish import (
     PublishError,
     build_caption,
     publish_carousel,
+    publish_reel,
     publish_story,
 )
+from .reel import REEL_FILENAME, build_reel, reel_cards
 from .render import (
     STORY_FILENAME,
     fetch_cover_data_uri,
@@ -82,7 +92,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
     generated = 0
 
     target_days = args.days or TARGET_COVERAGE_DAYS
-    slots = bookqueue.open_slots(start, target_days, skip_weekday=FEATURE_WEEKDAY)
+    slots = bookqueue.open_slots(start, target_days, skip_weekdays=FEATURE_WEEKDAYS)
     if not slots:
         print(f"[skip] {start} から{target_days}日間はすべて埋まっています。")
         _write_previews(start, secrets.pages_base_url)
@@ -191,7 +201,8 @@ def _write_previews(start: date, pages_base_url: str) -> None:
 def draft_label(draft: dict[str, Any]) -> str:
     """書籍投稿と新刊特集のどちらでも使える表示名。"""
     if draft.get("kind") == "feature":
-        return f"新刊特集 {draft.get('period_label', '')}"
+        name = draft.get("feature_name", "新刊特集")
+        return f"{name} {draft.get('period_label', '')}"
     return draft.get("book_title", "(無題)")
 
 
@@ -320,33 +331,101 @@ def cmd_rerender(args: argparse.Namespace) -> int:
 # --------------------------------------------------------------------------- feature
 
 
-def next_weekday(start: date, weekday: int) -> date:
-    """start 以降で最初に該当曜日になる日付。"""
-    return start + timedelta(days=(weekday - start.weekday()) % 7)
+FEATURE_HORIZON_DAYS = 28
+
+
+def next_feature_day(start: date, *, skip_filled: bool = False) -> date | None:
+    """start 以降で特集が割り当たっている最初の日。
+
+    skip_filled=True なら、既に下書きがある日は飛ばす。
+    週次のまとめ生成で、空いている特集枠だけを順に埋めるのに使う。
+    """
+    for offset in range(FEATURE_HORIZON_DAYS):
+        day = start + timedelta(days=offset)
+        if not feature_kind_for(day):
+            continue
+        if skip_filled and bookqueue.load_draft(day):
+            continue
+        return day
+    return None
+
+
+def covered_books() -> tuple[set[str], set[str]]:
+    """自分が既に扱った本の ISBN と書名。殿堂入りの重複を防ぐのに使う。"""
+    isbns: set[str] = set()
+    titles: set[str] = set()
+
+    for book in bookqueue.load_queue()["books"]:
+        if book.get("isbn"):
+            isbns.add(str(book["isbn"]))
+        if book.get("title"):
+            titles.add(book["title"])
+
+    for path in DRAFTS_DIR.glob("*/post.json"):
+        draft = json.loads(path.read_text(encoding="utf-8"))
+        if draft.get("kind") == "feature":
+            for book in draft.get("books", []):
+                isbns.add(str(book.get("isbn", "")))
+                titles.add(book.get("title", ""))
+        elif draft.get("book_title"):
+            titles.add(draft["book_title"])
+
+    return isbns - {""}, titles - {""}
+
+
+def collect_candidates(kind: str, target: date, limit: int):
+    """特集の種類に応じて候補を集める。"""
+    if kind == "business":
+        return fetch_new_business_books(target, limit=limit)
+    if kind == "novel":
+        return fetch_new_novels(target, limit=limit)
+    isbns, titles = covered_books()
+    return fetch_classics(exclude_isbns=isbns, exclude_titles=titles, limit=limit)
 
 
 def cmd_feature(args: argparse.Namespace) -> int:
-    """ビジネス書の新刊特集を1本つくる。"""
+    """空いている特集枠を、指定本数ぶん埋める。"""
     secrets = load_secrets(require=("ANTHROPIC_API_KEY",))
-    target = (
-        date.fromisoformat(args.date)
-        if args.date
-        else next_weekday(today_jst() + timedelta(days=1), FEATURE_WEEKDAY)
-    )
+
+    if args.date:
+        return build_feature(date.fromisoformat(args.date), args, secrets)
+
+    cursor = today_jst() + timedelta(days=1)
+    made = 0
+    for _ in range(args.ahead):
+        target = next_feature_day(cursor, skip_filled=True)
+        if target is None:
+            break
+        if build_feature(target, args, secrets) != 0:
+            return 1
+        cursor = target + timedelta(days=1)
+        made += 1
+
+    if not made:
+        print("[skip] 埋めるべき特集枠がありません。")
+    return 0
+
+
+def build_feature(
+    target: date, args: argparse.Namespace, secrets: Any
+) -> int:
+    """特集を1本つくる（ビジネス書の新刊 / 小説の新刊 / 殿堂入り）。"""
+    kind = args.kind or feature_kind_for(target) or "business"
+    spec = spec_for(kind)
 
     if bookqueue.load_draft(target) and not args.force:
         print(f"[skip] {target} には既に下書きがあります。上書きするには --force を付けてください。")
         return 0
 
-    print(f"[feature] {target} 向けの新刊を収集中…")
+    print(f"[feature] {target} 向けに「{spec.name}」の候補を収集中…")
     try:
-        candidates = fetch_new_business_books(target, limit=args.candidates)
+        candidates = collect_candidates(kind, target, args.candidates)
     except NewBooksUnavailableError as error:
         print(f"[error] {error}", file=sys.stderr)
         return 1
     print(f"[feature] 候補 {len(candidates)} 冊から選抜します…")
 
-    post = generate_feature_post(candidates, secrets.anthropic_api_key, target)
+    post = generate_feature_post(candidates, secrets.anthropic_api_key, target, spec)
     for book in post["books"]:
         book["cover_data_uri"] = fetch_cover_data_uri(book["cover_url"])
 
@@ -369,7 +448,154 @@ def cmd_feature(args: argparse.Namespace) -> int:
     )
 
     _write_previews(target, secrets.pages_base_url)
-    print(f"[done] {target} の新刊特集を作成しました。")
+    print(f"[done] {target} の「{spec.name}」を作成しました。")
+    return 0
+
+
+# ------------------------------------------------------------------------------- reel
+
+
+def _draft_days() -> list[date]:
+    days = []
+    for path in DRAFTS_DIR.glob("*/post.json"):
+        try:
+            days.append(date.fromisoformat(path.parent.name))
+        except ValueError:
+            continue
+    return sorted(days, reverse=True)
+
+
+def pick_reel_source(*, built: bool) -> date | None:
+    """リールの元にする投稿日を選ぶ。
+
+    built=False なら、投稿済みでまだ動画にしていない日のうち最も新しい日。
+    直後の投稿を動画化したほうが話題が繋がるため新しい順に選ぶ。
+    built=True なら、動画はできているがまだリールを出していない日のうち
+    最も古い日。作った順に捌く。
+    """
+    candidates = []
+    for day in _draft_days():
+        draft = bookqueue.load_draft(day)
+        if not draft or draft.get("status") != "posted":
+            continue
+        reel = draft.get("reel") or {}
+        if reel.get("media_id"):
+            continue
+        if built and not reel.get("built_at"):
+            continue
+        if not built and reel.get("built_at"):
+            continue
+        candidates.append(day)
+    if not candidates:
+        return None
+    return min(candidates) if built else max(candidates)
+
+
+def cmd_reel(args: argparse.Namespace) -> int:
+    """投稿済みのカード画像から縦動画を組み立てる。"""
+    if not args.date:
+        # 未投稿の動画を積み上げない。1本ずつ作って、出してから次を作る。
+        waiting = pick_reel_source(built=True)
+        if waiting is not None:
+            print(f"[skip] {waiting} の動画がまだ投稿待ちです。")
+            return 0
+
+    day = (
+        date.fromisoformat(args.date) if args.date else pick_reel_source(built=False)
+    )
+    if day is None:
+        print("[skip] 動画にできる投稿済みの下書きがありません。")
+        return 0
+
+    draft = bookqueue.load_draft(day)
+    if draft is None:
+        print(f"[error] {day} の下書きがありません。", file=sys.stderr)
+        return 1
+
+    image_dir = IMG_DIR / day.isoformat()
+    cards = reel_cards(image_dir, draft.get("kind", "book"))
+    if len(cards) < 3:
+        print(
+            f"[error] {day} のカード画像が足りません（{len(cards)}枚）。"
+            " cleanup で消えている可能性があります。",
+            file=sys.stderr,
+        )
+        return 1
+
+    out_path = image_dir / REEL_FILENAME
+    print(f"[reel] {day} 『{draft_label(draft)}』 カード{len(cards)}枚を動画にします…")
+    build_reel(cards, out_path)
+    size_mb = out_path.stat().st_size / 1_000_000
+
+    draft["reel"] = {
+        "built_at": datetime.now(JST).isoformat(),
+        "cards": len(cards),
+        "bytes": out_path.stat().st_size,
+    }
+    bookqueue.save_draft(day, draft)
+    print(f"[done] {out_path} ({size_mb:.1f}MB)")
+    return 0
+
+
+def cmd_post_reel(args: argparse.Namespace) -> int:
+    """組み立て済みの動画をリールとして投稿する。"""
+    required = () if args.dry_run else ("IG_USER_ID", "IG_ACCESS_TOKEN")
+    secrets = load_secrets(require=required)
+
+    day = date.fromisoformat(args.date) if args.date else pick_reel_source(built=True)
+    if day is None:
+        print("[skip] 投稿待ちのリールがありません。")
+        return 0
+
+    draft = bookqueue.load_draft(day)
+    if draft is None:
+        print(f"[error] {day} の下書きがありません。", file=sys.stderr)
+        return 1
+
+    video_url = f"{secrets.pages_base_url}/img/{day.isoformat()}/{REEL_FILENAME}"
+    caption = build_caption(draft)
+
+    if args.dry_run:
+        print(f"[dry-run] リール {day} 『{draft_label(draft)}』")
+        print(f"  video: {video_url}")
+        print("--- caption ---")
+        print(caption)
+        return 0
+
+    client = InstagramClient(
+        secrets.ig_user_id,
+        secrets.ig_access_token,
+        secrets.graph_api_version,
+        secrets.api_host,
+    )
+    print(f"[reel] {day} 『{draft_label(draft)}』 をリール投稿中…")
+    try:
+        media_id = publish_reel(client, video_url, caption)
+    except PublishError as error:
+        print(f"::error::リールの投稿に失敗しました: {error}", file=sys.stderr)
+        return 1
+
+    reel = draft.setdefault("reel", {})
+    reel["media_id"] = media_id
+    reel["posted_at"] = datetime.now(JST).isoformat()
+    bookqueue.save_draft(day, draft)
+    _append_log(
+        {
+            "date": day.isoformat(),
+            "media_id": media_id,
+            "title": draft_label(draft),
+            "kind": "reel",
+            "posted_at": reel["posted_at"],
+        }
+    )
+    print(f"[done] リールを投稿しました: media_id={media_id}")
+
+    # 公開が済んだ動画はリポジトリに残さない。画像と違い1本2MB前後あり、
+    # 週3本のペースで積み上がると履歴が膨らむ。
+    video_path = IMG_DIR / day.isoformat() / REEL_FILENAME
+    if video_path.exists():
+        video_path.unlink()
+        print(f"[cleanup] {video_path.name} を削除しました。")
     return 0
 
 
@@ -526,13 +752,30 @@ def main(argv: list[str] | None = None) -> int:
     p_prev.add_argument("--start", help="表示開始日 (YYYY-MM-DD)。既定は本日。")
     p_prev.set_defaults(func=cmd_preview)
 
-    p_feat = sub.add_parser("feature", help="ビジネス書の新刊特集をつくる")
-    p_feat.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は次の月曜。")
+    p_feat = sub.add_parser("feature", help="特集をつくる")
+    p_feat.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は次の特集日。")
+    p_feat.add_argument(
+        "--kind",
+        choices=sorted(SPECS),
+        help="特集の種類。既定は曜日から自動で決まる。",
+    )
     p_feat.add_argument(
         "--candidates", type=int, default=20, help="Claudeに渡す候補冊数"
     )
+    p_feat.add_argument(
+        "--ahead", type=int, default=1, help="まとめて埋める特集の本数。既定は1本。"
+    )
     p_feat.add_argument("--force", action="store_true", help="既存の下書きを上書き")
     p_feat.set_defaults(func=cmd_feature)
+
+    p_reel = sub.add_parser("reel", help="投稿済みのカードから縦動画を作る")
+    p_reel.add_argument("--date", help="元にする投稿日 (YYYY-MM-DD)。既定は自動選択。")
+    p_reel.set_defaults(func=cmd_reel)
+
+    p_preel = sub.add_parser("post-reel", help="作った動画をリールとして投稿")
+    p_preel.add_argument("--date", help="元にした投稿日 (YYYY-MM-DD)。既定は自動選択。")
+    p_preel.add_argument("--dry-run", action="store_true", help="投稿せず内容を表示する")
+    p_preel.set_defaults(func=cmd_post_reel)
 
     p_re = sub.add_parser("rerender", help="下書きJSONから画像を作り直す")
     p_re.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は全下書き。")

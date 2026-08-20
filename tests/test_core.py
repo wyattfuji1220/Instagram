@@ -238,8 +238,8 @@ def test_publish_rejects_single_image():
         publish_carousel(None, ["https://example.com/1.jpg"], "caption")
 
 
-def test_open_slots_skips_feature_weekday(tmp_path, monkeypatch):
-    """月曜は新刊特集の枠なので、通常投稿の割り当て対象から外れる。"""
+def test_open_slots_skips_feature_weekdays(tmp_path, monkeypatch):
+    """特集の曜日は通常投稿の割り当て対象から外れる。"""
     from datetime import date
 
     from bookgram import queue as bookqueue
@@ -248,9 +248,10 @@ def test_open_slots_skips_feature_weekday(tmp_path, monkeypatch):
     monday = date(2026, 8, 24)
     assert monday.weekday() == 0
 
-    slots = bookqueue.open_slots(date(2026, 8, 21), 7, skip_weekday=0)
+    slots = bookqueue.open_slots(date(2026, 8, 21), 7, skip_weekdays=(0, 3))
     assert monday not in slots
-    assert len(slots) == 6
+    assert date(2026, 8, 27) not in slots  # 木曜も特集枠
+    assert len(slots) == 5
 
 
 def test_open_slots_skips_dates_that_already_have_drafts(tmp_path, monkeypatch):
@@ -275,8 +276,9 @@ def test_open_slots_reaches_far_dates(tmp_path, monkeypatch):
     from bookgram import queue as bookqueue
 
     monkeypatch.setattr(bookqueue, "DRAFTS_DIR", tmp_path)
-    slots = bookqueue.open_slots(date(2026, 8, 21), 60, skip_weekday=0)
-    assert len(slots) >= 50
+    slots = bookqueue.open_slots(date(2026, 8, 21), 60, skip_weekdays=(0, 3))
+    # 60日から特集の2曜日（週2日）を除いた日数がそのまま取れる
+    assert len(slots) == 43
 
 
 def test_simplify_title_drops_subtitle_and_parenthetical():
@@ -310,3 +312,120 @@ def test_validate_still_rejects_too_few_items():
     post["points"] = post["points"][:2]
     with pytest.raises(ValueError, match="points"):
         _validate(post)
+
+
+def test_fit_font_shrinks_for_long_lines():
+    from bookgram.render import _fit_font
+
+    short = _fit_font("短い行\nもう一行", 82, 900)
+    long = _fit_font("これはとても長い一行で枠からはみ出してしまいます", 82, 900)
+    assert short == 82
+    assert long < short
+
+
+def test_fit_font_never_goes_below_floor():
+    from bookgram.render import _fit_font
+
+    assert _fit_font("あ" * 200, 82, 900) == 32
+
+
+# ------------------------------------------------------------------------- 特集
+
+
+def test_feature_kind_rotates_between_weeks():
+    """木曜は殿堂入りと小説が週ごとに入れ替わる。"""
+    from datetime import date, timedelta
+
+    from bookgram.config import feature_kind_for
+
+    assert feature_kind_for(date(2026, 8, 24)) == "business"  # 月曜
+    assert feature_kind_for(date(2026, 8, 25)) is None  # 火曜は通常投稿
+
+    thursday = date(2026, 8, 27)
+    assert feature_kind_for(thursday) != feature_kind_for(thursday + timedelta(days=7))
+    assert {
+        feature_kind_for(thursday),
+        feature_kind_for(thursday + timedelta(days=7)),
+    } == {"classic", "novel"}
+
+
+def test_classic_cover_has_no_month_number():
+    """殿堂入りの表紙は日付ではなく「今も読み継がれる」を出す。"""
+    from datetime import date
+
+    from bookgram.feature import _cover_parts, spec_for
+
+    parts = _cover_parts(spec_for("classic"), date(2026, 8, 24))
+    assert parts["month"] == ""
+    assert parts["year"] == "今も読み継がれる"
+
+
+def test_volume_titles_are_excluded_from_novel_feature():
+    """続刊や資料集は1冊で読み切れないため特集に載せない。"""
+    from bookgram.newbooks import is_standalone_title
+
+    assert is_standalone_title("永遠の記憶")
+    assert not is_standalone_title("後宮の棘（6）")
+    assert not is_standalone_title("白鳥とコウモリ（上）")
+    assert not is_standalone_title("シェスールの冒険者たち　設定資料集")
+    assert not is_standalone_title("これは経費で落ちません！ 14 〜経理部の森若さん〜")
+    assert not is_standalone_title("ブラッディダイスの殺人 上")
+    assert not is_standalone_title("るるぶ■■版 蓋ヶ瀬")  # 仮題
+    # 巻数に見える数字を含んでいても、区切られていなければ残す
+    assert is_standalone_title("52ヘルツのクジラたち")
+    assert is_standalone_title("777 トリプルセブン")
+    assert is_standalone_title("文庫版 書楼弔堂 待宵")
+
+
+def test_review_label_formats_count_and_average():
+    from datetime import date
+
+    from bookgram.newbooks import NewBook
+
+    book = NewBook(
+        title="嫌われる勇気",
+        author="岸見一郎",
+        publisher="ダイヤモンド社",
+        sales_date=date(2013, 12, 13),
+        sales_date_label="2013年12月13日",
+        isbn="9784478025819",
+        cover_url="https://example.com/x.jpg",
+        caption="アドラー心理学の入門書。",
+        review_count=3987,
+        review_average=4.3,
+    )
+    assert book.review_label == "レビュー3,987件　★4.3"
+    assert NewBook(
+        title="", author="", publisher="", sales_date=date(2020, 1, 1),
+        sales_date_label="", isbn="", cover_url="", caption="",
+    ).review_label == ""
+
+
+# ------------------------------------------------------------------------- リール
+
+
+def test_reel_order_starts_with_the_question_card(tmp_path):
+    """リールは表紙ではなく問いかけから始め、書誌情報は落とす。"""
+    from bookgram.reel import reel_cards
+
+    for i in range(1, 11):
+        (tmp_path / f"{i:02d}.jpg").write_bytes(b"")
+    (tmp_path / "story.jpg").write_bytes(b"")
+
+    cards = [p.name for p in reel_cards(tmp_path, "book")]
+    assert cards[0] == "04.jpg"
+    assert cards[1] == "01.jpg"
+    assert "02.jpg" not in cards
+    assert "story.jpg" not in cards
+    assert len(cards) == 8
+
+
+def test_reel_uses_every_card_for_features(tmp_path):
+    """特集は枚数が少なく順番自体が読み物なので、並べ替えない。"""
+    from bookgram.reel import reel_cards
+
+    for i in range(1, 7):
+        (tmp_path / f"{i:02d}.jpg").write_bytes(b"")
+
+    cards = [p.name for p in reel_cards(tmp_path, "feature")]
+    assert cards == [f"{i:02d}.jpg" for i in range(1, 7)]

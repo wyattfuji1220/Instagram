@@ -47,7 +47,7 @@ jobs:
           PYTHONPATH: src
         run: python -m bookgram generate ${{ inputs.start && format('--start {0}', inputs.start) || '' }}
 
-      - name: 新刊特集を生成（月曜枠）
+      - name: 特集を生成（月=新刊 / 木=殿堂入り・小説）
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -56,7 +56,7 @@ jobs:
           RAKUTEN_REFERER: ${{ vars.RAKUTEN_REFERER || format('{0}/{1}', github.server_url, github.repository) }}
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
           PYTHONPATH: src
-        run: python -m bookgram feature
+        run: python -m bookgram feature --ahead 3
 
       - name: 古い画像を削除
         env:

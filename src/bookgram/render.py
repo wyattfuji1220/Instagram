@@ -37,6 +37,12 @@ from .config import (
 
 JPEG_QUALITY = 92
 STORY_FILENAME = "story.jpg"
+# 文字が枠からはみ出さないよう、最長行の文字数から字送りを決める。
+# 和文は1文字がほぼ字送りぶんの幅を取るため、有効幅÷文字数で近似できる。
+COVER_MAX_FONT = 82
+COVER_USABLE_WIDTH = 900
+LEAD_MAX_FONT = 58
+LEAD_USABLE_WIDTH = 880
 LONG_TEXT_CHARS = 34
 COVER_TIMEOUT = 30
 
@@ -95,6 +101,12 @@ def _pick_background(seed: str, index: int) -> str:
     return _data_uri(images[(offset + index) % len(images)])
 
 
+def _fit_font(text: str, max_font: int, usable_width: int) -> int:
+    """最長行がはみ出さない最大の文字サイズを返す。"""
+    longest = max((len(line) for line in text.splitlines() if line.strip()), default=1)
+    return max(32, min(max_font, usable_width // max(longest, 1)))
+
+
 def _highlighted(text: str, highlight: str) -> Markup:
     """ハイライト部分だけ色を変えた HTML を作る。"""
     escaped = html.escape(text)
@@ -135,17 +147,24 @@ def build_card_contexts(post: dict[str, Any]) -> list[dict[str, Any]]:
             "bg": _pick_background(seed, index),
             "variant": variant,
             "long_text": False,
+            "font_size": 0,
             "text_html": Markup(""),
             "items": [],
             **extra,
         }
 
     def text_slide(index: int, data: dict[str, str], variant: str = "text") -> dict[str, Any]:
+        is_cover = variant == "cover"
         return slide(
             index,
             variant,
             text_html=_highlighted(data["text"], data.get("highlight", "")),
             long_text=len(data["text"]) > LONG_TEXT_CHARS,
+            font_size=_fit_font(
+                data["text"],
+                COVER_MAX_FONT if is_cover else LEAD_MAX_FONT,
+                COVER_USABLE_WIDTH if is_cover else LEAD_USABLE_WIDTH,
+            ),
         )
 
     contexts = [
@@ -201,7 +220,8 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
     account = load_account()
     icon_path = find_profile_icon()
     books = post["books"]
-    seed = post["period_label"]
+    # 特集の種類ごとに背景の並びを変え、同じ週でも見た目が重ならないようにする
+    seed = f"{post.get('feature_kind', 'business')}-{post['period_label']}"
     parts = post.get("period_parts") or {}
 
     base = {
@@ -215,6 +235,10 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
         "period_half": parts.get("half", ""),
         "cover_lead": post.get("cover_lead")
         or account.get("feature_lead", "楽しみにしている"),
+        "cover_main": post.get("cover_main", "ビジネス書"),
+        "count_word": post.get("count_word", "新刊"),
+        "fact_label": post.get("fact_label", "発売日"),
+        "point_label": post.get("point_label", "私の注目ポイント"),
         "book_count": len(books),
     }
 
@@ -230,7 +254,7 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
                 "cover_image": book.get("cover_data_uri", ""),
                 "book_title": book["title"],
                 "book_author": book["author"],
-                "sales_date": book["sales_date"],
+                "fact_value": book.get("fact_value") or book["sales_date"],
                 "point": book["point"],
             }
         )

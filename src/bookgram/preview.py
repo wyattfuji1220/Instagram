@@ -76,12 +76,18 @@ def _esc(value: Any) -> str:
 def _slide_lines(draft: dict[str, Any]) -> list[str]:
     """カードに載る文言を、並び順どおりに取り出す。"""
     if draft.get("kind") == "feature":
-        lines = [f"1 表紙: {draft['cover_lead']} {draft['period_label']} 新刊"
-                 f"{len(draft['books'])}選"]
+        top = draft.get("period_parts", {}).get("year") or draft["period_label"]
+        lines = [
+            f"1 表紙: {draft['cover_lead']} / {top}"
+            f"{draft.get('cover_main', 'ビジネス書')}"
+            f"{draft.get('count_word', '新刊')}{len(draft['books'])}選"
+        ]
+        label = draft.get("point_label", "注目")
         for i, book in enumerate(draft["books"], start=2):
+            fact = book.get("fact_value") or book["sales_date"]
             lines.append(
-                f"{i} {book['title']}（{book['sales_date']} / {book['author']}）"
-                f" 注目: {book['point']}"
+                f"{i} {book['title']}（{fact} / {book['author']}）"
+                f" {label}: {book['point']}"
             )
         lines.append(f"{len(draft['books']) + 2} まとめ: チェックリスト")
         return lines
@@ -112,7 +118,7 @@ def _render_day_block(day_date: date, draft: dict[str, Any]) -> str:
       <div class="day-head">
         <span class="date">{day_date.strftime('%m/%d (%a)')}</span>
         <span class="badge">{_esc(draft.get('book_title') or draft.get('period_label'))}</span>
-        <span class="book">{_esc(draft.get('book_author') or '新刊特集')}</span>
+        <span class="book">{_esc(draft.get('book_author') or draft.get('feature_name') or '特集')}</span>
       </div>
       <div class="cards">{images}</div>
       <h3>カードの文言</h3>

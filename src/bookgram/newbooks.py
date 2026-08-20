@@ -1,8 +1,14 @@
-"""週次「ビジネス書 新刊特集」用に、楽天ブックスから新刊を集める。
+"""楽天ブックスから、特集に載せる本を集める。
 
-楽天の新刊一覧は発売日の降順で引けるが、先頭には発売日未定の
-プレースホルダ（2225年など）が並ぶため、目的の日付帯に届くまで
-ページを送る必要がある。日付が窓を通り過ぎたら打ち切る。
+3種類の特集を同じ仕組みで賄う。
+
+  business  ビジネス書の新刊   発売日の降順から期間内のものを拾う
+  novel     小説の新刊         売れ筋順から期間内のものを拾う
+            （発売日順は同人的なシリーズ物で埋まり、選びようがないため）
+  classic   殿堂入り書評       レビュー件数順から、評価の高い定番を拾う
+
+新刊一覧の先頭には発売日未定のプレースホルダ（2225年など）が並ぶため、
+目的の日付帯に届くまでページを送る。日付が窓を通り過ぎたら打ち切る。
 """
 
 from __future__ import annotations
@@ -21,6 +27,23 @@ from .bookdata import (
 )
 
 BUSINESS_GENRE_ID = "001006"  # ビジネス・経済・就職
+# 小説は「その他」(001004015) にウェブ小説が大量に入るため、
+# 文芸として読まれる4ジャンルだけを名指しで拾う。
+NOVEL_GENRE_IDS = (
+    "001004008",  # 日本の小説
+    "001004009",  # 外国の小説
+    "001004001",  # ミステリー・サスペンス
+    "001004002",  # SF・ホラー
+)
+NOVEL_PAGES = 2
+NOVEL_DAYS_BACK = 30
+NOVEL_DAYS_AHEAD = 30
+NOVEL_MIN_CAPTION_CHARS = 120
+# 殿堂入りの足切り。この線を超える本はどれも「読み継がれている」と言える。
+CLASSIC_PAGES = 6
+CLASSIC_MIN_REVIEWS = 200
+CLASSIC_MIN_AVERAGE = 4.0
+CLASSIC_MIN_CAPTION_CHARS = 100
 HITS_PER_PAGE = 30
 MAX_PAGES = 25
 MIN_CAPTION_CHARS = 60
@@ -42,19 +65,28 @@ class NewBook:
     isbn: str
     cover_url: str
     caption: str
+    review_count: int = 0
+    review_average: float = 0.0
     tags: list[str] = field(default_factory=list)
 
+    @property
+    def review_label(self) -> str:
+        """「レビュー1,234件 ★4.3」。件数が無ければ空。"""
+        if not self.review_count:
+            return ""
+        return f"レビュー{self.review_count:,}件　★{self.review_average:.1f}"
+
     def to_prompt_block(self) -> str:
-        return "\n".join(
-            [
-                f"書名: {self.title}",
-                f"著者: {self.author or '不明'}",
-                f"出版社: {self.publisher or '不明'}",
-                f"発売日: {self.sales_date_label}",
-                "内容紹介:",
-                self.caption,
-            ]
-        )
+        lines = [
+            f"書名: {self.title}",
+            f"著者: {self.author or '不明'}",
+            f"出版社: {self.publisher or '不明'}",
+            f"発売日: {self.sales_date_label}",
+        ]
+        if self.review_label:
+            lines.append(f"読者の評価: {self.review_label}")
+        lines += ["内容紹介:", self.caption]
+        return chr(10).join(lines)
 
 
 def parse_sales_date(raw: str) -> date | None:
@@ -83,9 +115,45 @@ def _auth() -> dict[str, str]:
     access_key = os.getenv("RAKUTEN_ACCESS_KEY", "").strip()
     if not app_id or not access_key:
         raise NewBooksUnavailableError(
-            "新刊特集には楽天の RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY が必要です。"
+            "特集には楽天の RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY が必要です。"
         )
     return {"applicationId": app_id, "accessKey": access_key}
+
+
+def _headers() -> dict[str, str]:
+    """楽天は Referer と Origin の両方を見る。片方だけでは 403 になる。"""
+    site = os.getenv("RAKUTEN_REFERER", DEFAULT_RAKUTEN_REFERER)
+    return {"Referer": site, "Origin": site}
+
+
+def _search(auth: dict[str, str], headers: dict[str, str], **params: Any) -> list[dict]:
+    payload = _request(
+        RAKUTEN_ENDPOINT,
+        {
+            **auth,
+            "hits": HITS_PER_PAGE,
+            "format": "json",
+            "formatVersion": 2,
+            **params,
+        },
+        headers,
+    ).json()
+    return payload.get("Items") or []
+
+
+def _to_book(item: dict[str, Any], sales_date: date) -> NewBook:
+    return NewBook(
+        title=(item.get("title") or "").strip(),
+        author=(item.get("author") or "").replace("/", "、").strip(),
+        publisher=item.get("publisherName", ""),
+        sales_date=sales_date,
+        sales_date_label=format_sales_date(sales_date),
+        isbn=item.get("isbn") or item.get("title", ""),
+        cover_url=item.get("largeImageUrl") or item.get("mediumImageUrl") or "",
+        caption=(item.get("itemCaption") or "").strip(),
+        review_count=int(item.get("reviewCount") or 0),
+        review_average=float(item.get("reviewAverage") or 0),
+    )
 
 
 def fetch_new_business_books(
@@ -96,29 +164,19 @@ def fetch_new_business_books(
     limit: int = 12,
 ) -> list[NewBook]:
     """指定期間に発売される（された）ビジネス書を集める。"""
-    auth = _auth()
+    auth, headers = _auth(), _headers()
     today = today or date.today()
     low, high = today - timedelta(days=days_back), today + timedelta(days=days_ahead)
-    site = os.getenv("RAKUTEN_REFERER", DEFAULT_RAKUTEN_REFERER)
-    headers = {"Referer": site, "Origin": site}
 
     found: dict[str, NewBook] = {}
     for page in range(1, MAX_PAGES + 1):
-        payload = _request(
-            RAKUTEN_ENDPOINT,
-            {
-                **auth,
-                "booksGenreId": BUSINESS_GENRE_ID,
-                "sort": "-releaseDate",
-                "hits": HITS_PER_PAGE,
-                "page": page,
-                "format": "json",
-                "formatVersion": 2,
-            },
+        items = _search(
+            auth,
             headers,
-        ).json()
-
-        items = payload.get("Items") or []
+            booksGenreId=BUSINESS_GENRE_ID,
+            sort="-releaseDate",
+            page=page,
+        )
         if not items:
             break
 
@@ -126,24 +184,10 @@ def fetch_new_business_books(
         for item, sales_date in zip(items, dates):
             if sales_date is None or not (low <= sales_date <= high):
                 continue
-            caption = (item.get("itemCaption") or "").strip()
-            cover = item.get("largeImageUrl") or item.get("mediumImageUrl") or ""
-            if len(caption) < MIN_CAPTION_CHARS or not cover:
+            book = _to_book(item, sales_date)
+            if len(book.caption) < MIN_CAPTION_CHARS or not book.cover_url:
                 continue
-            isbn = item.get("isbn") or item.get("title", "")
-            found.setdefault(
-                isbn,
-                NewBook(
-                    title=item.get("title", "").strip(),
-                    author=(item.get("author") or "").replace("/", "、").strip(),
-                    publisher=item.get("publisherName", ""),
-                    sales_date=sales_date,
-                    sales_date_label=format_sales_date(sales_date),
-                    isbn=isbn,
-                    cover_url=cover,
-                    caption=caption,
-                ),
-            )
+            found.setdefault(book.isbn, book)
 
         known = [d for d in dates if d]
         if known and min(known) < low:
@@ -156,6 +200,122 @@ def fetch_new_business_books(
             f"{low} 〜 {high} に該当するビジネス書の新刊が見つかりませんでした。"
         )
     return books[:limit]
+
+
+# 巻数つきの続刊は、途中から読めないので特集には向かない。
+VOLUME_PATTERN = re.compile(
+    r"（\s*\d+\s*）|\(\s*\d+\s*\)|第\d+巻"
+    # 「これは経費で落ちません！ 14 〜経理部の森若さん〜」のような巻数表記。
+    # 前後を区切られた1〜2桁だけを見て、「52ヘルツのクジラたち」は残す。
+    r"|[\s　]\d{1,2}([\s　〜~]|$)"
+    r"|（上|（下|（前編|（後編|上巻|下巻"
+    # 「ブラッディダイスの殺人 上」のように括弧なしで分冊されたもの
+    r"|[\s　](上|下|前編|後編)$"
+    r"|設定資料集|写真集|特装版"
+)
+# 「るるぶ■■版」「◯◯（仮）」など、書名が確定していない本は載せない。
+PROVISIONAL_PATTERN = re.compile(r"■|●●|（仮）|\(仮\)|未定")
+
+
+def is_standalone_title(title: str) -> bool:
+    """1冊で読み切れそうな書名か。続刊・資料集・仮題を弾く。"""
+    title = title or ""
+    return not (VOLUME_PATTERN.search(title) or PROVISIONAL_PATTERN.search(title))
+
+
+def fetch_new_novels(
+    today: date | None = None,
+    *,
+    days_back: int = NOVEL_DAYS_BACK,
+    days_ahead: int = NOVEL_DAYS_AHEAD,
+    limit: int = 12,
+) -> list[NewBook]:
+    """最近発売された小説を、売れ筋順に集める。
+
+    発売日順で引くとシリーズ物のウェブ小説で埋まってしまい選べないため、
+    売れ筋順に並べたうえで発売日の窓を当てる。
+    """
+    auth, headers = _auth(), _headers()
+    today = today or date.today()
+    low, high = today - timedelta(days=days_back), today + timedelta(days=days_ahead)
+
+    found: dict[str, NewBook] = {}
+    for genre_id in NOVEL_GENRE_IDS:
+        for page in range(1, NOVEL_PAGES + 1):
+            items = _search(
+                auth, headers, booksGenreId=genre_id, sort="sales", page=page
+            )
+            if not items:
+                break
+            for item in items:
+                sales_date = parse_sales_date(item.get("salesDate", ""))
+                if sales_date is None or not (low <= sales_date <= high):
+                    continue
+                book = _to_book(item, sales_date)
+                if len(book.caption) < NOVEL_MIN_CAPTION_CHARS or not book.cover_url:
+                    continue
+                if not is_standalone_title(book.title):
+                    continue
+                found.setdefault(book.isbn, book)
+            _polite_sleep()
+
+    books = sorted(found.values(), key=lambda b: b.sales_date, reverse=True)
+    if not books:
+        raise NewBooksUnavailableError(
+            f"{low} 〜 {high} に該当する小説の新刊が見つかりませんでした。"
+        )
+    return books[:limit]
+
+
+def fetch_classics(
+    *,
+    exclude_isbns: set[str] | None = None,
+    exclude_titles: set[str] | None = None,
+    limit: int = 16,
+) -> list[NewBook]:
+    """レビュー件数の多い定番ビジネス書を集める。
+
+    「殿堂入り」の根拠は楽天の実データ（件数と平均点）そのもの。
+    自分が既に紹介した本は除外して、内容が重ならないようにする。
+    """
+    auth, headers = _auth(), _headers()
+    exclude_isbns = exclude_isbns or set()
+    normalized = {_normalize_title(t) for t in (exclude_titles or set())}
+
+    found: dict[str, NewBook] = {}
+    for page in range(1, CLASSIC_PAGES + 1):
+        items = _search(
+            auth, headers, booksGenreId=BUSINESS_GENRE_ID, sort="reviewCount", page=page
+        )
+        if not items:
+            break
+        for item in items:
+            sales_date = parse_sales_date(item.get("salesDate", "")) or date(1970, 1, 1)
+            book = _to_book(item, sales_date)
+            if book.review_count < CLASSIC_MIN_REVIEWS:
+                continue
+            if book.review_average < CLASSIC_MIN_AVERAGE:
+                continue
+            if len(book.caption) < CLASSIC_MIN_CAPTION_CHARS or not book.cover_url:
+                continue
+            if book.isbn in exclude_isbns:
+                continue
+            if _normalize_title(book.title) in normalized:
+                continue
+            found.setdefault(book.isbn, book)
+        _polite_sleep()
+
+    books = sorted(found.values(), key=lambda b: b.review_count, reverse=True)
+    if not books:
+        raise NewBooksUnavailableError(
+            "殿堂入りの候補が見つかりませんでした。除外条件が厳しすぎる可能性があります。"
+        )
+    return books[:limit]
+
+
+def _normalize_title(title: str) -> str:
+    """表記ゆれを吸収して書名を突き合わせる。"""
+    return re.sub(r"[\s　・:：\-−―ー『』「」【】（）()]", "", title or "").lower()
 
 
 def period_parts(today: date) -> dict[str, str]:

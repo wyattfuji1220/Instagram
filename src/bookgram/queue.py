@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 import yaml
 
@@ -76,19 +76,21 @@ def save_draft(day: date, payload: dict[str, Any]) -> Path:
     return path
 
 
-def free_dates(start: date, count: int, *, skip_weekday: int | None = None) -> list[date]:
+def free_dates(
+    start: date, count: int, *, skip_weekdays: Iterable[int] | None = None
+) -> list[date]:
     """start 以降で下書きがまだ無い日付を count 件返す。
 
-    skip_weekday を指定すると、その曜日は割り当て対象から外す
-    （新刊特集の枠を空けておくため）。
+    skip_weekdays に挙げた曜日は割り当て対象から外す（特集の枠を空けるため）。
     """
+    skipped = set(skip_weekdays or ())
     found: list[date] = []
     cursor = start
     # 割り当て済みの日や特集日が続いても止まらないよう、1年先まで探す。
     for _ in range(400):
         if len(found) >= count:
             break
-        if skip_weekday is not None and cursor.weekday() == skip_weekday:
+        if cursor.weekday() in skipped:
             cursor += timedelta(days=1)
             continue
         if not draft_path(cursor).exists():
@@ -98,17 +100,18 @@ def free_dates(start: date, count: int, *, skip_weekday: int | None = None) -> l
 
 
 def open_slots(
-    start: date, days: int, *, skip_weekday: int | None = None
+    start: date, days: int, *, skip_weekdays: Iterable[int] | None = None
 ) -> list[date]:
     """start から days 日間のうち、下書きがまだ無い日付を返す。
 
-    skip_weekday の曜日は新刊特集の枠なので対象から外す。
+    skip_weekdays の曜日は特集の枠なので対象から外す。
     連続性は見ないので、途中に埋まっている日があっても先の日付まで拾える。
     """
+    skipped = set(skip_weekdays or ())
     slots: list[date] = []
     for offset in range(days):
         day = start + timedelta(days=offset)
-        if skip_weekday is not None and day.weekday() == skip_weekday:
+        if day.weekday() in skipped:
             continue
         if not draft_path(day).exists():
             slots.append(day)

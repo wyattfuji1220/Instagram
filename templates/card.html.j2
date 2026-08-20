@@ -231,7 +231,7 @@
     <div class="layer">
       <div class="cover-tagline">{{ top_note }}</div>
       <div class="center">
-        <div class="cover-title">{{ text_html }}</div>
+        <div class="cover-title" style="font-size: {{ font_size }}px">{{ text_html }}</div>
       </div>
       <div class="cover-tag">{{ cover_tag }}</div>
       <div class="foot">
@@ -292,7 +292,7 @@
 
       {% else %}
         <div class="center">
-          <div class="lead{{ ' small' if long_text }}">{{ text_html }}</div>
+          <div class="lead" style="font-size: {{ font_size }}px">{{ text_html }}</div>
         </div>
         <div class="foot">
           <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>

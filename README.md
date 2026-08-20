@@ -24,20 +24,26 @@ Pull Request が自動で作られる  ←  あなたがレビュー＆マージ
 Instagram Graph API でカルーセル投稿
 ```
 
-1冊 = 1投稿。月曜は書籍紹介ではなく「ビジネス書 新刊特集」を配信します。
+1冊 = 1投稿。月曜と木曜は書籍紹介ではなく特集を配信します。
 
 | 曜日 | 内容 | 枚数 |
 |---|---|---|
-| 火〜日 | 読了した本の紹介（読書メモが根拠） | 10枚 |
-| 月 | ビジネス書 新刊特集（楽天の新刊から4冊選抜） | 6枚 |
+| 火・水・金・土・日 07:00 | 読了した本の紹介（読書メモが根拠） | 10枚 |
+| 月 07:00 | ビジネス書 新刊特集（楽天の新刊から4冊選抜） | 6枚 |
+| 木 07:00 | 殿堂入り書評 / 小説 新刊特集（隔週で交代） | 6枚 |
+| 月・水・金 19:00 | リール（投稿済みのカードを動画化） | 約13秒 |
 
 投稿と同時に、9:16のストーリーも自動で流れます。
+リールは既にある画像を組み直すだけなので、生成AIの費用はかかりません。
 
 ## コマンド
 
 ```bash
 PYTHONPATH=src python -m bookgram generate       # 下書きを生成（週次相当）
-PYTHONPATH=src python -m bookgram feature        # ビジネス書の新刊特集（月曜枠）
+PYTHONPATH=src python -m bookgram feature        # 次の特集枠を埋める（曜日で種別が決まる）
+PYTHONPATH=src python -m bookgram feature --kind classic  # 種別を指定する
+PYTHONPATH=src python -m bookgram reel           # 投稿済みのカードから縦動画を作る
+PYTHONPATH=src python -m bookgram post-reel      # 作った動画をリールとして投稿
 PYTHONPATH=src python -m bookgram post --dry-run # 今日の投稿内容を確認
 PYTHONPATH=src python -m bookgram post           # 今日の分を投稿
 PYTHONPATH=src python -m bookgram preview        # プレビューを作り直す

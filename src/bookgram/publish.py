@@ -21,6 +21,8 @@ DEFAULT_HOST = "https://graph.facebook.com"
 TIMEOUT = 60
 STATUS_POLL_INTERVAL = 5
 STATUS_POLL_MAX = 24  # 最大2分待つ
+# 動画は変換が入るぶん待たされる。画像と同じ2分では足りない。
+REEL_POLL_MAX = 72  # 最大6分待つ
 
 
 class PublishError(RuntimeError):
@@ -82,8 +84,8 @@ class InstagramClient:
         )
         return result["id"]
 
-    def wait_until_ready(self, creation_id: str) -> None:
-        for _ in range(STATUS_POLL_MAX):
+    def wait_until_ready(self, creation_id: str, max_polls: int = STATUS_POLL_MAX) -> None:
+        for _ in range(max_polls):
             status = self._get(creation_id, {"fields": "status_code,status"})
             code = status.get("status_code")
             if code == "FINISHED":
@@ -96,6 +98,22 @@ class InstagramClient:
     def publish(self, creation_id: str) -> str:
         result = self._post(
             f"{self.ig_user_id}/media_publish", {"creation_id": creation_id}
+        )
+        return result["id"]
+
+    def create_reel(self, video_url: str, caption: str) -> str:
+        result = self._post(
+            f"{self.ig_user_id}/media",
+            {
+                "media_type": "REELS",
+                "video_url": video_url,
+                "caption": caption,
+                # フィードにも出す。リーチを取りに行くのがリールの目的なので、
+                # プロフィールグリッドに並ぶことより露出を優先する。
+                "share_to_feed": "true",
+                # 先頭フレーム（＝問いかけのカード）をサムネイルにする
+                "thumb_offset": "0",
+            },
         )
         return result["id"]
 
@@ -186,6 +204,14 @@ def publish_carousel(
     children = [client.create_carousel_item(url) for url in image_urls]
     creation_id = client.create_carousel(children, caption)
     client.wait_until_ready(creation_id)
+    return client.publish(creation_id)
+
+
+def publish_reel(client: InstagramClient, video_url: str, caption: str) -> str:
+    """リールを投稿して media_id を返す。"""
+    verify_images_public([video_url])
+    creation_id = client.create_reel(video_url, caption)
+    client.wait_until_ready(creation_id, REEL_POLL_MAX)
     return client.publish(creation_id)
 
 

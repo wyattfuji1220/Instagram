@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from datetime import timedelta, timezone
+from datetime import date, timedelta, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -38,8 +38,15 @@ CARDS_PER_POST = 10
 DAYS_PER_BOOK = 1
 # 1冊1日消費なので、在庫警告はこの日数を基準にする
 QUEUE_LOW_THRESHOLD = 14
-# 新刊特集の曜日（0=月曜）。この日は通常の書籍投稿を割り当てない。
-FEATURE_WEEKDAY = 0
+# 特集の曜日割り（0=月曜）。この曜日には通常の書籍投稿を割り当てない。
+# 木曜は殿堂入りと小説を隔週で入れ替え、ひと月に2本ずつ流す。
+FEATURE_SCHEDULE: dict[int, tuple[str, ...]] = {
+    0: ("business",),
+    3: ("classic", "novel"),
+}
+FEATURE_WEEKDAYS = tuple(FEATURE_SCHEDULE)
+# リールを出す曜日（月・水・金）。フィードとは別枠で、過去の投稿を動画化する。
+REEL_WEEKDAYS = (0, 2, 4)
 IMAGE_RETENTION_DAYS = 45
 PAGES_PREVIEW_DIRNAME = "preview"
 
@@ -93,3 +100,14 @@ def find_profile_icon() -> Path | None:
         if candidate.exists():
             return candidate
     return None
+
+
+def feature_kind_for(day: date) -> str | None:
+    """その日に出す特集の種別。特集の日でなければ None。
+
+    複数種別が割り当たっている曜日は、ISO週番号で順番に切り替える。
+    """
+    kinds = FEATURE_SCHEDULE.get(day.weekday())
+    if not kinds:
+        return None
+    return kinds[day.isocalendar()[1] % len(kinds)]
