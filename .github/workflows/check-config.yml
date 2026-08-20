@@ -38,6 +38,7 @@ jobs:
 
       - name: 点検して結果を書き出す
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}

@@ -616,12 +616,15 @@ def cmd_preview(args: argparse.Namespace) -> int:
 def cmd_doctor(_: argparse.Namespace) -> int:
     problems = 0
 
-    try:
-        secrets = load_secrets()
-        print("[ok] 環境変数はすべて設定されています。")
-    except RuntimeError as error:
-        print(f"[NG] {error}")
-        return 1
+    # 1つ足りないだけで全部の点検が止まると、原因が1回に1つしか分からない。
+    # 個別に見て、可能なところまで進める。
+    secrets = load_secrets(require=())
+    for name in ("ANTHROPIC_API_KEY", "IG_USER_ID", "IG_ACCESS_TOKEN"):
+        if os.getenv(name):
+            print(f"[ok] {name} は設定されています。")
+        else:
+            print(f"[NG] {name} が未設定です。")
+            problems += 1
 
     print(f"[--] IG_API_HOST: {secrets.api_host}")
     if "graph.instagram.com" not in secrets.api_host:
@@ -637,19 +640,27 @@ def cmd_doctor(_: argparse.Namespace) -> int:
         secrets.graph_api_version,
         secrets.api_host,
     )
-    try:
-        info = client.account_info()
-        print(f"[ok] Instagram アカウント: @{info.get('username')} ({info.get('name', '')})")
-    except PublishError as error:
-        print(f"[NG] Instagram アカウントに接続できません: {error}")
-        problems += 1
+    if secrets.ig_user_id and secrets.ig_access_token:
+        try:
+            info = client.account_info()
+            print(
+                f"[ok] Instagram アカウント: @{info.get('username')}"
+                f" ({info.get('name', '')})"
+            )
+        except PublishError as error:
+            print(f"[NG] Instagram アカウントに接続できません: {error}")
+            problems += 1
 
     for level, message in diagnose_rakuten():
         print(f"[{level}] {message}")
         if level == "NG":
             problems += 1
 
-    days_left = client.token_days_remaining()
+    days_left = (
+        client.token_days_remaining()
+        if secrets.ig_user_id and secrets.ig_access_token
+        else None
+    )
     if days_left is None:
         print("[--] トークンの有効期限を取得できませんでした（無期限トークンの可能性があります）。")
     elif days_left <= 14:
