@@ -1,4 +1,4 @@
-## 2026-W35 の投稿下書き
+## 2026-W34 の投稿下書き
 
 13 投稿分（1投稿 = 1冊）。
 
@@ -13,9 +13,218 @@
 
 ---
 
+### 08/21 (Fri) — 月の立つ林で / 青山美智子
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 満ち欠けを繰り返しながら
+今日を生きる
+五人の物語
+> 2 書誌情報: 2022年11月9日 / 青山美智子
+> 3 おすすめ1: つまずいてばかりの毎日に
+少し疲れている方
+> 3 おすすめ2: 短編がゆるやかにつながる
+オムニバスを味わいたい方
+> 3 おすすめ3: 何かを新しく
+始めたい気持ちのある方
+> 4 問いかけ: 似ているようで違う一日を、
+あなたはどう始めますか
+> 5 本文: 元看護師、芸人、整備士、
+女子高生、アクセサリー作家。
+五人それぞれの日常が描かれる
+> 6 本文: 彼らをつなぐのは
+タケトリ・オキナの
+ポッドキャスト『ツキない話』
+> 7 本文: 各章の主人公が微妙に
+つながりあうオムニバス形式
+> 8 本文: 朔（つきたち）は旧暦の新月。
+何かを始めるのに
+ちょうどいい日
+> 9 まとめ: 月の満ち欠けに重ねて
+新しい一日を思い出させる一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、久しぶりに小説を。2023年本屋大賞にノミネートされた青山美智子さんの『月の立つ林で』です。
+
+登場するのは、長年勤めた病院を辞めた元看護師、夢を諦めきれない芸人、家族との関係の変化に寂しさを抱える二輪自動車整備士、早く自立したい女子高生、仕事と家族のバランスに悩むアクセサリー作家。それぞれが日常でつまずきながら、タケトリ・オキナという男性のポッドキャスト『ツキない話』に耳を傾けます。
+
+面白かったのは、各章の主人公たちが微妙につながりあうオムニバス形式であること。読み進めるうちに、さっきの話の隅にいた人が次の章の主役になっている、そんな感覚がありました。
+
+もうひとつ、私にとっての発見は「朔（つきたち）」という言葉です。一日（ついたち）は旧暦で新月のこと。月がまた満ちていく起点だから、何かを始めるのにちょうどいい日なのだと理解しました。人も同じで、満ち欠けを繰り返しながら新しい毎日を紡いでいく。そう思うと、うまくいかない日にも意味がある気がします。
+
+出版社の紹介によると、最後に仕掛けられた事実と読後に気づく繋がりが胸を打つ一冊とのこと。そこはぜひご自身で確かめてみてください。
+
+#月の立つ林で #青山美智子 #本屋大賞ノミネート #ポプラ社 #連作短編 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 書名・著者・出版社・出版日：書誌データ
+> - 表紙「満ち欠けを繰り返しながら」：内容紹介『満ち欠けを繰り返し、新しくてかけがえのない毎日を紡いでいく』
+> - recommend「つまずいてばかりの毎日」：内容紹介『つまずいてばかりの日常』
+> - recommend「新しく始めたい」：読書メモ『何かを始めるのにちょうどいい日』
+> - question「似ているようで違う一日」：内容紹介『似ているようでまったく違う、新しい一日を懸命に生きるあなたへ』
+> - point1 五人の職業：内容紹介の登場人物の記述
+> - point2 タケトリ・オキナ／『ツキない話』：内容紹介
+> - point3 オムニバス形式：読書メモ
+> - point4 朔＝旧暦の新月：読書メモ
+> - キャプションの本屋大賞ノミネート・最後の仕掛け：出版社の内容紹介（キャプション内で出典を明示）
+> - ジャンル「小説」：内容紹介の記述からの判断
+
+</details>
+
+---
+
+### 08/22 (Sat) — GAFA nest stage / スコット・ギャロウェイ, 渡会 圭子
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: コロナで肥え太った
+巨大帝国が
+再び世界を変える
+> 2 書誌情報: 2021年12月3日 / スコット・ギャロウェイ, 渡会 圭子
+> 3 おすすめ1: GAFAの次の一手を
+知っておきたい方
+> 3 おすすめ2: コロナが経済に何を
+残したのか整理したい方
+> 3 おすすめ3: 自分の業界の未来を
+考えておきたい方
+> 4 問いかけ: 彼らは何を壊し、何を創るのか。
+私たちはその世界で
+どう生きるのか
+> 5 本文: 米国のeコマースは
+コロナ後のたった8週間で
+10年分の成長が起きた
+> 6 本文: 極小のウイルスが
+特大の加速装置となり
+GAFAの成長を促した
+> 7 本文: 痛みは弱者に
+アウトソーシングされ
+貧富の差はさらに広がる
+> 8 本文: GAFAは今後5年で
+収益を1兆ドル増やす必要がある。
+次の獲物はどの業界か
+> 9 まとめ: 四騎士＋Xが塗り分ける
+赤と青の世界を
+先に見ておく一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、GAFAのその後を扱ったビジネス書です。『the four GAFA』の著者スコット・ギャロウェイによる最新刊で、コロナ以降に巨大帝国がどう膨らんだのかを追いかけた一冊でした。
+
+読んでいて一番手が止まったのは、米国のeコマースがコロナ以降のたった8週間で10年分の成長を遂げたという話です。極小のウイルスが特大の加速装置になり、GAFAの成長をさらに促してしまった。時間の流れそのものが変わったのだと実感しました。
+
+もうひとつ印象に残ったのが、痛みが弱者にアウトソーシングされ、貧富の差がさらに拡大していく構図です。強者はもっと強くなり、弱者はもっと弱くなる。加速の裏側で何が起きているのかを、目を逸らさずに書いているところが誠実だと感じました。
+
+そして本書は「＋X」として、マイクロソフト、エアビーアンドビー、ネットフリックス、テスラ、ショッピファイなど多くの企業を取り上げています。GAFAは今後5年で収益を1兆ドル増やす必要があり、そのために新しい市場へ入り込んでいく。次の獲物はあなたの業界かもしれない、という指摘は他人事ではありません。
+
+自分の仕事がどの側に置かれているのか、一度考えてみたくなる本でした。
+
+#GAFAnextstage #スコットギャロウェイ #東洋経済新報社 #ビジネス書 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 表紙・summary: 内容紹介「コロナで肥え太った巨大帝国が『再び』世界を変える」「四騎士＋Xが世界を『絶望の赤』と『希望の青』に塗り分ける」
+> - question: 内容紹介「彼らは何を壊し、何を創るのか？ 私たちは彼らの世界でどう生きるのか？」
+> - points1・2: 読者本人の読書メモ「コロナ以降のたった8週間で10年分の成長」「極小のウイルスが特大の加速装置」
+> - points3: 内容紹介「痛みは『弱者にアウトソーシング』された」「強者はもっと強くなり、弱者はもっと弱くなる」＋読書メモ「貧富の差がさらに拡大する構図」
+> - points4: 内容紹介「GAFAは今後5年で収益を1兆ドル増やす必要がある」「次なる獲物は、あなたの業界かもしれない」
+> - キャプションの企業名: 内容紹介の『＋X』企業リストより
+> - recommend3項目: 内容紹介の趣旨から構成（一般論を含む）
+
+</details>
+
+---
+
+### 08/23 (Sun) — プラットフォーム経済圏 / 木内登英
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: GAFA対世界。
+スマホの赤と青が
+分ける経済圏
+> 2 書誌情報: 2019年5月 / 木内登英
+> 3 おすすめ1: GAFAと世界の関係を
+ざっくり掴みたい方
+> 3 おすすめ2: 自分のデータが何と
+引き換えなのか
+考えたい方
+> 3 おすすめ3: 日本の製造業の行方を
+気にしている方
+> 4 問いかけ: あなたのスマホは
+赤と青、どちらの
+ビジネスの上にある？
+> 5 本文: 赤のビジネス、Android。
+プライバシーと引き換えに
+価値あるものを安く手に入れる
+> 6 本文: 青のビジネス、Apple。
+顧客データを売らないと
+決めた側の戦い方
+> 7 本文: ティム・クック曰く
+データを売れば巨額の利益。
+それをしないと決めた
+> 8 本文: 1500ドル以上を払う理由は
+上品なスマホという
+ブランドそのもの
+> 9 まとめ: トヨタは軍門にくだるのか。
+スマホの二つの思想から
+経済圏を読み解く一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回はプラットフォーム経済、GAFAと世界の関係を扱った一冊です。エコノミストの木内登英さんが、2019年時点の景色を読み解いています。
+
+読んでいて一番おもしろかったのは、スマホビジネスを「赤」と「青」に分ける見方でした。赤はAndroid。ユーザーはプライバシーと引き換えに、価値あるものを安く手に入れられる。無料や低価格の裏側にあるのが自分のデータだと言われると、当たり前に使っているサービスの見え方が少し変わります。
+
+もう一方の青がApple。ティム・クックの「顧客のデータを売れば巨額の利益を得られるが、Appleはそれをしないと決めた」という言葉が印象的でした。上品なスマホに1500ドル以上を払うのは、そのブランドのため。データを売らないという選択そのものが商品になっている、という構図です。
+
+読みながら私が気になったのは、ではトヨタのビジネスはこの軍門にくだるのか、ということでした。スマホの話が、そのまま日本の製造業の話につながっていく。
+
+あなたの手元のスマホは、赤と青のどちらですか。理由まで説明できるでしょうか。
+
+#プラットフォーム経済圏 #木内登英 #GAFA #ビジネス書 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 書名・著者・出版社・出版日・ISBNは書誌データ
+> - 「赤の（スマホ）ビジネス…android：プライバシーと引き換えに価値あるものを安く入手できる」は読書メモ
+> - 「青の（スマホ）ビジネス…apple」「ティムクック曰く顧客のデータを売れば巨額の利益を得られるが、appleはそれをしないと決めた」は読書メモ
+> - 「上品なスマホ、1500ドル以上払うのはそのブランドの為」は読書メモ
+> - 「トヨタのビジネスは軍門にくだるのか」は読書メモの所感
+> - 副題「トップエコノミストが今を読み解く GAFA vs.世界」から、GAFAと世界・エコノミストの視点という表現
+> - 「日本の製造業の行方を気にしている方」はトヨタに関する読書メモからの拡張（一般論寄り）
+
+</details>
+
+---
+
 ### 08/24 (Mon) — 26年8月後半 / 新刊特集
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/06.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/06.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -55,7 +264,7 @@
 
 ### 08/25 (Tue) — スタンフォード式 最高の睡眠 / 西野精治
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -126,7 +335,7 @@
 
 ### 08/26 (Wed) — メタバース*ビジネス革命 / 西田 宗千佳
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -199,7 +408,7 @@ HMDが非常に重いこと。
 
 ### 08/27 (Thu) — 論語と算盤（上 自己修養篇） / 不明
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-27/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -270,7 +479,7 @@ HMDが非常に重いこと。
 
 ### 08/28 (Fri) — サイバーエージェント 突き抜けたリーダーが育つしくみ / 上阪徹
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-28/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -346,7 +555,7 @@ HMDが非常に重いこと。
 
 ### 08/29 (Sat) — 脱日本的思考のすゝめ / 永田 公彦
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-29/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -424,7 +633,7 @@ HMDが非常に重いこと。
 
 ### 08/30 (Sun) — キーエンス解剖 最強希望のメカニズム / 不明
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-30/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -495,7 +704,7 @@ HMDが非常に重いこと。
 
 ### 09/01 (Tue) — フランス人は10着しか服を持たない / ジェニファー・スコット, 神崎朗子
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-01/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -572,7 +781,7 @@ HMDが非常に重いこと。
 
 ### 09/02 (Wed) — パナソニック覚醒 / 樋口泰行
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-02/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -642,7 +851,7 @@ HMDが非常に重いこと。
 
 ### 09/03 (Thu) — 武器としての組織心理学 / 山浦一保
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-03/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
@@ -710,222 +919,6 @@ HMDが非常に重いこと。
 > - summary＝内容紹介「科学的エビデンス」「リーダーシップの新しい教科書」「人間の本性」
 > - キャプションの謝罪の記述＝読書メモ「謝ることは自分自身のストレス低減にもつながる」
 > - 出版社紹介由来の箇所はキャプション内で「出版社の紹介では」と明示
-
-</details>
-
----
-
-### 09/04 (Fri) — ワーケーションのはじめかた / 頼定誠, 新谷雅徳
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-04/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 仕事と休暇を
-あわせて取る
-新しい働き方
-> 2 書誌情報: 2023年2月6日 / 頼定誠, 新谷雅徳
-> 3 おすすめ1: 働く場所を
-変えてみたい方
-> 3 おすすめ2: 会社にワーケーションを
-提案してみたい方
-> 3 おすすめ3: 自治体や施設として
-誘致に関わる方
-> 4 問いかけ: 休暇先で働く。
-それは会社にとって
-何の得になるのか。
-> 5 本文: ワーケーションは
-WorkとVacationの造語。
-仕事と休暇をあわせて取る
-> 6 本文: 出張に休暇を足すのは
-ブリージャー。
-休暇先で働くのとは違う
-> 7 本文: ユニリーバでは
-生産性が上がったとの
-肯定回答が75%
-> 8 本文: 三菱地所はモチベーション
-イノベーション
-コミュニケーションの向上と
-> 9 まとめ: 検討から検証まで
-導入実務を時系列で追える
-実務の教科書
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は働き方の本です。ワーケーションは「Work」と「Vacation」を組み合わせた言葉で、仕事と休暇をあわせて取る働き方。社員の福利厚生だけでなく、生産性や創造性の向上、企業の人事戦略にもつながると期待されていて、働き方改革と地方創生の両面から政府や自治体の支援もあるそうです。
-
-面白かったのは「ブリージャー」という言葉。BusinessとLeisureの造語で、出張先で観光や休息を楽しむ働き方のこと。休暇で訪れた場所で働くワーケーションとは、出発点が逆なんですね。海外出張で土日を挟むのも、ある意味ブリージャーなのかなと考えてしまいました。
-
-企業の事例も具体的でした。ロサンゼルスの法律事務所Quinn Emanuelは、24時間のネットワーク接続を条件に、指定の場所で一週間働く際に2000ドルを支給。ユニリーバは「Work from anytime anywhere」として福利厚生に位置づけ、生産性が上がったという肯定回答は75%。三菱地所はモチベーション・イノベーション・コミュニケーションの向上につながるとしています。
-
-本書は検討・準備・実施・リスクマネジメント・検証まで導入実務を時系列で紹介していて、最終章は誘致する自治体や施設側の話も。基本的に出社しがちな私も、たまにロケーションを変えたくなる時があるので、思い切って提案してみようかなと思いました。
-
-#ワーケーションのはじめかた #頼定誠 #新谷雅徳 #ワーケーション #働き方改革 #ビジネス書
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 表紙「仕事と休暇をあわせて取る新しい働き方」＝出版社紹介の冒頭定義
-> - recommend3項目＝出版社紹介の「企業が導入する際の実務」「最終章は自治体・施設・アクティビティ関係者向け」より
-> - question＝出版社紹介の「福利厚生、生産性や創造性のUP、人事戦略」を問いの形にしたもの
-> - points1＝出版社紹介「WorkとVacationを組み合わせた新しい働き方」
-> - points2＝読書メモのブリージャー（Business＋leisure、出張に休暇をくっつける）の記述
-> - points3＝読書メモのユニリーバ「生産性が上がった肯定回答率75%」
-> - points4＝読書メモの三菱地所「モチベーション/イノベーション/コミュニケーションの向上」
-> - summary＝出版社紹介「検討・準備・実施・リスクマネジメント・検証まで導入実務全般を時系列で紹介」
-> - キャプションのQuinn Emanuel（24時間接続を条件に一週間2000ドル支給）＝読書メモ
-> - キャプション末尾の「出社しがちだが提案してみようか」＝読書メモの所感をそのまま使用
-> - 「実務の教科書」という表現は出版社紹介の内容をまとめた言い換え（一般論寄り）
-
-</details>
-
----
-
-### 09/05 (Sat) — SHOE DOG / フィル・ナイト、大田黒奉之 訳
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-05/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 父から借りた50ドルが
-売上300億ドルになるまで
-ナイキ創業者の告白
-> 2 書誌情報: 2017年10月27日 / フィル・ナイト、大田黒奉之 訳
-> 3 おすすめ1: 起業や新規事業に
-挑む人の生の記録を
-読んでみたい方
-> 3 おすすめ2: うまくいかない時期を
-どう耐えたのかを
-知りたい方
-> 3 おすすめ3: 日本企業と海外企業の
-関係の歴史に
-興味がある方
-> 4 問いかけ: 馬鹿げていると言われる
-アイディアを
-人はどこまで信じられるか
-> 5 本文: 24歳で神戸のオニツカを訪ね
-「アメリカで売らせてほしい」
-と売り込んだところから始まる
-> 6 本文: 親日だった代理店関係は
-次第に険悪になり販売停止へ
-苦肉の策がナイキ創業だった
-> 7 本文: 倒産寸前で銀行が手を引いても
-日商岩井は融資を止めなかった
-商品の良さを見極めたから
-> 8 本文: 失敗も未完成もバイヤーに
-正直に伝えたこと
-それが成功の一因だったと思う
-> 9 まとめ: 誤りと闘いと犠牲がつきまとう
-混沌とした旅路を
-創業者自身が赤裸々に語る一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、起業家の自伝です。ナイキ創業者フィル・ナイトが自ら書いた『SHOE DOG』。BOOK OFFで200円だったので買いました。550ページあるので、読むのに2週間くらいかかりました。
-
-シュードッグとは、靴の製造、販売、輸入、デザインなど、そのすべてに身を捧げる人のこと。
-
-面白かったのは、日本との関わりの深さです。フィル・ナイトはもともとオレゴン州でオニツカタイガー（現アシックス）の北米販売代理店をしていました。当初はとても親日だったのに、徐々にアシックスとは険悪になり、ついには販売停止を通達される。苦肉の策として立ち上げたのがナイキでした。アシックス側の意見は書かれていないので分かりませんが、読んでいると不義理に見えてしまうし、商才がないなとも感じました。
-
-もうひとつは日商岩井（現 双日）の存在。倒産寸前で銀行でさえ融資を止めたときに、双日は止めなかった。本当に商品がいいものだと見極めたからです。
-
-そしてナイキが成功した一因として、失敗したものや未完成なものをバイヤー側に正直に伝えていたことが挙げられます。ビジネスをする上で、正直であることは何より大切なのだと思いました。
-
-分厚いですが、読み終えたときに残るものがある一冊です。
-
-#SHOEDOG #シュードッグ #フィルナイト #ナイキ #起業家の自伝 #ビジネス書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 書名・著者・出版社・出版日：書誌情報より
-> - 『父親から借りた50ドルを元手に…売上げ300億ドルの会社』：出版社内容紹介
-> - 『24歳のあるアメリカ人が日本に降り立った』『神戸にあるオニツカのオフィスを訪れ』『自分に、タイガーをアメリカで売らせてほしいと』：出版社内容紹介
-> - 『馬鹿げたアイディアにとりつかれた男』：出版社内容紹介
-> - 親日→険悪→販売停止→苦肉の策でナイキ創業、アシックスが不義理に見える・商才がないという所感：読書メモ
-> - 日商岩井（現双日）の融資、銀行が止めても止めなかった理由：読書メモ
-> - 失敗・未完成を正直に伝えたことが成功要因、正直さが何より大切：読書メモ
-> - BOOK OFFで200円、550ページ、2週間かかった：読書メモ
-> - シュードッグの定義：読書メモ
-> - 『誤りと闘いと犠牲が常につきまとう』『混沌と混乱に満ちた危険な旅』『ここまで赤裸々に自身の歩んだ道を語るCEOなど、ほとんどいない』：出版社内容紹介に掲載のビル・ゲイツ推薦文
-> - recommend3項目・questionカードの表現：本書の内容から導いた編集上の言い換え（直接の文言はデータになし）
-
-</details>
-
----
-
-### 09/06 (Sun) — ティム・クック / リーアンダー・ケイニー（堤沙織 訳）
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-06/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: ジョブズとは違う
-現場主義の経営者
-ティム・クック
-> 2 書誌情報: 2019年9月 / リーアンダー・ケイニー（堤沙織 訳）
-> 3 おすすめ1: カリスマ型とは違う
-リーダー像を知りたい方
-> 3 おすすめ2: 在庫や現場のオペレーション
-改善に関わっている方
-> 3 おすすめ3: 成果主義の厳しさを
-具体例で知りたい方
-> 4 問いかけ: 天才の後を継ぐ人に
-必要な力とは
-何だったのか
-> 5 本文: ジョブズとは異なり
-クックは現場主義者
-> 6 本文: 現場オペレーション改善に長く従事し
-JITの考え方に精通
-> 7 本文: 社長就任後7ヶ月で
-在庫の保管日数を30日から6日へ
-> 8 本文: 目標達成にシビアで容赦ない
-責任は仕組みでなく人にあるという姿勢
-> 9 まとめ: 派手さではなく
-オペレーションで
-アップルを支えた人の記録
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は経営者の評伝です。3年ほど前に立ち読みで半分まで読んで放置していた一冊を、図書館で借りて最後まで読み切りました。
-
-面白かったのは、ティム・クックがジョブズとはまったく違うタイプだという点です。彼は現場主義者で、現場オペレーションの改善に長く従事してきた人物。JITの考え方に精通していて、社長就任後わずか7ヶ月で在庫の保管日数を30日から6日間まで短縮しています。数字の落とし方が具体的で、読んでいて背筋が伸びました。
-
-もうひとつ印象に残ったのは、目標達成に対するシビアさです。韓国のギャラクシーに売上げで負けた際は就任17ヶ月で韓国のVPを更迭、アップルストア担当副社長は半年で解雇。責任は仕組みではなく人にあるものだと位置付けている、外資らしい容赦のなさが伝わってきます。
-
-一方で、世界一のEMSであるフォックスコンの労働環境の劣悪さや賃金の安さ、マネキンをバットで殴る施設があるという記述もあり、そこも含めて記録として読む価値がありました。
-
-カリスマの後を継いだ人が何で戦ったのか。気になる方はぜひ。
-
-#ティムクック #リーアンダーケイニー #アップル #経営者の本 #ビジネス書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 書名・著者・出版社・出版日：書誌情報
-> - cover／points1・2：読書メモ「ジョブズとは異なり、現場主義者。現場OPの改善に長く従事（JITの考え方に精通）」
-> - points3：読書メモ「7ヶ月で在庫の保管日数は30日から6日間までに短縮」
-> - points4：読書メモ「目標達成にシビア」「責任は仕組みでなく人にあるものだと位置付け」
-> - キャプションの更迭・解雇の記述：読書メモ「就任17ヶ月で韓国VPを更迭、アップルストア担当副社長を半年で解雇」
-> - キャプションのフォックスコン記述：読書メモ「世界#1のEMSだが労働環境劣悪、賃金激安。マネキンをバットで殴る施設がある」
-> - キャプション冒頭の再読経緯：読書メモ「3年前くらいに立ち読みして半分くらい読んだまま放置していたので、図書館で借りて再読了」
-> - question・recommend・summaryの表現：読書メモの内容から構成した要約（直接の引用ではない）
-> - 「天才」の語：正式書名の副題に基づく
 
 </details>
 

@@ -119,7 +119,21 @@ def cmd_generate(args: argparse.Namespace) -> int:
             return 1
 
         print(f"[generate] 原稿を生成中（sources={material.sources}）…")
-        post = generate_book_post(material, secrets.anthropic_api_key)
+        try:
+            post = generate_book_post(material, secrets.anthropic_api_key)
+        except (ValueError, RuntimeError) as error:
+            # 1冊の失敗で残り全部を止めないよう、一度だけ作り直して先へ進む
+            print(f"[warn] 生成に失敗しました: {error} / 作り直します")
+            try:
+                post = generate_book_post(material, secrets.anthropic_api_key)
+            except (ValueError, RuntimeError) as retry_error:
+                print(
+                    f"::warning::『{title}』の生成に2回失敗しました: {retry_error}",
+                    file=sys.stderr,
+                )
+                book["status"] = "needs_input"
+                bookqueue.save_queue(data)
+                continue
         # 発行日はAIに書かせず、書誌データの値をそのまま使う（日付まで入れるため）
         if material.published_date:
             post["published"] = material.published_date

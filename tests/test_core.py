@@ -291,3 +291,22 @@ def test_simplify_title_keeps_plain_titles():
 
     assert simplify_title("すごい左利き") == "すごい左利き"
     assert simplify_title("2030半導体の地政学") == "2030半導体の地政学"
+
+
+def test_validate_trims_extra_items_instead_of_failing():
+    """枚数が1つ多いだけで生成全体を止めない。"""
+    from bookgram.generate import POINT_SLIDES, RECOMMEND_ITEMS
+
+    post = _fake_post()
+    post["recommend"].append(_slide())
+    post["points"].append(_slide())
+    _validate(post)
+    assert len(post["recommend"]) == RECOMMEND_ITEMS
+    assert len(post["points"]) == POINT_SLIDES
+
+
+def test_validate_still_rejects_too_few_items():
+    post = _fake_post()
+    post["points"] = post["points"][:2]
+    with pytest.raises(ValueError, match="points"):
+        _validate(post)

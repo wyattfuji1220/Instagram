@@ -172,16 +172,25 @@ def _build_user_prompt(material: BookMaterial) -> str:
     )
 
 
+def _fit(items: list, required: int, label: str) -> list:
+    """多い分は切り詰める。少ない場合だけ失敗させる。
+
+    枚数が1つ多いだけで生成全体を止めるのは割に合わないため、
+    表示に収まる数へ寄せて先へ進める。
+    """
+    if len(items) > required:
+        print(f"[warn] {label} が {len(items)} 件だったので先頭{required}件に切り詰めます")
+        return items[:required]
+    if len(items) < required:
+        raise ValueError(f"{label} が {required} 件に足りません: {len(items)} 件")
+    return items
+
+
 def _validate(payload: dict[str, Any]) -> None:
-    if len(payload.get("recommend", [])) != RECOMMEND_ITEMS:
-        raise ValueError(
-            f"recommend が {RECOMMEND_ITEMS} 項目ではありません: "
-            f"{len(payload.get('recommend', []))}"
-        )
-    if len(payload.get("points", [])) != POINT_SLIDES:
-        raise ValueError(
-            f"points が {POINT_SLIDES} 枚ではありません: {len(payload.get('points', []))}"
-        )
+    payload["recommend"] = _fit(
+        payload.get("recommend", []), RECOMMEND_ITEMS, "recommend"
+    )
+    payload["points"] = _fit(payload.get("points", []), POINT_SLIDES, "points")
     if not payload.get("hashtags"):
         raise ValueError("hashtags が空です")
 
