@@ -1,0 +1,71 @@
+name: 設定の点検
+
+# Secrets は仕組み上どこからも値を読み出せないため、Actions の中で実際に
+# API を叩いて確かめ、結果だけを output/config-check.md に書き戻します。
+# 資格情報そのものは一切出力しません（doctor は値を印字しません）。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-config.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: check-config
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 依存関係をインストール
+        run: pip install requests pyyaml python-dotenv
+
+      - name: 点検して結果を書き出す
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          RAKUTEN_REFERER: ${{ vars.RAKUTEN_REFERER || format('{0}/{1}', github.server_url, github.repository) }}
+          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
+          IG_API_HOST: ${{ vars.IG_API_HOST || 'https://graph.facebook.com' }}
+          PYTHONPATH: src
+        run: |
+          mkdir -p output
+          {
+            echo "# GitHub Actions 上での設定点検"
+            echo
+            echo "実行: $(date -u -d '+9 hours' +'%Y-%m-%d %H:%M') JST"
+            echo
+            echo '```'
+            python -m bookgram doctor 2>&1 || true
+            echo '```'
+          } > output/config-check.md
+          cat output/config-check.md
+
+      - name: 結果をコミット
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain output/config-check.md)" ]; then
+            echo "結果に変化はありません。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/config-check.md
+          git commit -m "点検: Actions 上の設定確認結果"
+          git push origin main

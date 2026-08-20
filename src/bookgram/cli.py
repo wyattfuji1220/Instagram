@@ -41,6 +41,7 @@ from .generate import generate_book_post
 from .feature import SPECS, generate_feature_post, spec_for
 from .newbooks import (
     NewBooksUnavailableError,
+    diagnose_rakuten,
     fetch_classics,
     fetch_new_business_books,
     fetch_new_novels,
@@ -622,6 +623,14 @@ def cmd_doctor(_: argparse.Namespace) -> int:
         print(f"[NG] {error}")
         return 1
 
+    print(f"[--] IG_API_HOST: {secrets.api_host}")
+    if "graph.instagram.com" not in secrets.api_host:
+        print(
+            "[NG] このアカウントは Instagram ログイン方式です。"
+            " IG_API_HOST に https://graph.instagram.com を設定してください。"
+        )
+        problems += 1
+
     client = InstagramClient(
         secrets.ig_user_id,
         secrets.ig_access_token,
@@ -634,6 +643,11 @@ def cmd_doctor(_: argparse.Namespace) -> int:
     except PublishError as error:
         print(f"[NG] Instagram アカウントに接続できません: {error}")
         problems += 1
+
+    for level, message in diagnose_rakuten():
+        print(f"[{level}] {message}")
+        if level == "NG":
+            problems += 1
 
     days_left = client.token_days_remaining()
     if days_left is None:

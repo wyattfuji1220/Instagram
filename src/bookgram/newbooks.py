@@ -156,6 +156,87 @@ def _to_book(item: dict[str, Any], sales_date: date) -> NewBook:
     )
 
 
+# 楽天が発行する2つの値の想定文字数。取り違えの判定にだけ使う。
+APP_ID_LENGTH = 36
+ACCESS_KEY_LENGTH = 46
+
+
+def _probe(app_id: str, access_key: str) -> tuple[bool, str]:
+    """最小のクエリを1回だけ投げて、認証が通るかを見る。
+
+    戻り値のメッセージには資格情報を一切含めない。楽天のエラー本文は
+    値を反射しないため、そのまま載せても漏れない。
+    """
+    import requests
+
+    try:
+        response = requests.get(
+            RAKUTEN_ENDPOINT,
+            params={
+                "applicationId": app_id,
+                "accessKey": access_key,
+                "booksGenreId": BUSINESS_GENRE_ID,
+                "hits": 1,
+                "format": "json",
+                "formatVersion": 2,
+            },
+            headers=_headers(),
+            timeout=20,
+        )
+    except requests.RequestException as error:
+        return False, f"接続できません（{type(error).__name__}）"
+
+    if response.status_code == 200:
+        return True, "OK"
+    try:
+        message = response.json().get("errors", {}).get("errorMessage", "")
+    except ValueError:
+        message = ""
+    return False, f"HTTP {response.status_code} {message}".strip()
+
+
+def diagnose_rakuten() -> list[tuple[str, str]]:
+    """楽天の資格情報を点検する。値そのものは決して出力しない。"""
+    app_id = os.getenv("RAKUTEN_APP_ID", "").strip()
+    access_key = os.getenv("RAKUTEN_ACCESS_KEY", "").strip()
+
+    if not app_id or not access_key:
+        missing = [
+            name
+            for name, value in (
+                ("RAKUTEN_APP_ID", app_id),
+                ("RAKUTEN_ACCESS_KEY", access_key),
+            )
+            if not value
+        ]
+        return [("NG", "未設定です: " + "、".join(missing))]
+
+    results: list[tuple[str, str]] = []
+    if len(app_id) != APP_ID_LENGTH:
+        results.append(
+            ("--", f"RAKUTEN_APP_ID の長さが想定と違います（{len(app_id)}文字 / 想定{APP_ID_LENGTH}文字）")
+        )
+    if len(access_key) != ACCESS_KEY_LENGTH:
+        results.append(
+            ("--", f"RAKUTEN_ACCESS_KEY の長さが想定と違います（{len(access_key)}文字 / 想定{ACCESS_KEY_LENGTH}文字）")
+        )
+
+    ok, detail = _probe(app_id, access_key)
+    if ok:
+        results.append(("ok", "楽天ブックスAPIに接続できました。"))
+        return results
+
+    # 取り違えは一度やると気づきにくいので、入れ替えて試して切り分ける。
+    swapped_ok, _ = _probe(access_key, app_id)
+    if swapped_ok:
+        results.append(
+            ("NG", "RAKUTEN_APP_ID と RAKUTEN_ACCESS_KEY が入れ替わっています。")
+        )
+    else:
+        results.append(("NG", f"楽天ブックスAPIに接続できません: {detail}"))
+    return results
+
+
 def fetch_new_business_books(
     today: date | None = None,
     *,
