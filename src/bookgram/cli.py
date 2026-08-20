@@ -201,7 +201,7 @@ def _write_previews(start: date, pages_base_url: str) -> None:
 def draft_label(draft: dict[str, Any]) -> str:
     """書籍投稿と新刊特集のどちらでも使える表示名。"""
     if draft.get("kind") == "feature":
-        name = draft.get("feature_name", "新刊特集")
+        name = draft.get("feature_name") or "特集"
         return f"{name} {draft.get('period_label', '')}"
     return draft.get("book_title", "(無題)")
 

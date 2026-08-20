@@ -1,6 +1,6 @@
 ## 2026-W35 の投稿下書き
 
-12 投稿分（1投稿 = 1冊）。
+13 投稿分（1投稿 = 1冊）。
 
 **このPRをマージした日付だけが、毎朝7時に自動投稿されます。**
 修正する場合は `drafts/` 以下の JSON をこのブランチ上で直接編集してください。
@@ -10,6 +10,191 @@
 - [ ] 根拠データに無い事実を書いていないか（各日の grounding を確認）
 - [ ] 文字が画像からはみ出していないか
 - [ ] キャプションとハッシュタグが妥当か
+
+---
+
+### 08/24 (Mon) — 26年8月後半 / 新刊特集
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-24/06.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 何度も読み返したい / 今も読み継がれるビジネス書殿堂入り4選
+> 2 もし高校野球の女子マネージャーがドラッカーの『マネジメント』を読んだら（レビュー5,317件　★4.0 / 岩崎　夏海） 読み継がれている理由: ドラッカーの『マネジメント』を、高校野球部の変革という物語で読み解く一冊。
+「顧客は誰か」「真摯さとは何か」を実践として考えられます。
+> 3 エッセンシャル思考　最少の時間で成果を最大にする（レビュー1,271件　★4.2 / グレッグ・マキューン、高橋　瑠子） 読み継がれている理由: 「より少なく、しかしより良く」を掲げ、99%を捨てて1%に集中する考え方の本。
+時間術ではなく、重要なことを見極める方法論として書かれています。
+> 4 さおだけ屋はなぜ潰れないのか？（レビュー1,063件　★4.0 / 山田真哉） 読み継がれている理由: 身近な疑問から会計のエッセンスに近づく読み物。
+財務諸表も専門用語もほとんど出てこないので、数字が苦手でも読み進められます。
+> 5 改訂版　金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学（レビュー651件　★4.2 / ロバート・キヨサキ、白根 美保子） 読み継がれている理由: 刊行から20年以上、51ヶ国語に翻訳されてきたお金の基本図書。
+「金持ちはお金のためには働かない」など、六つの教えが軸になっています。
+> 6 まとめ: チェックリスト
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今も読み継がれているビジネス書を4冊まとめました。1冊目の『もし高校野球の女子マネージャーがドラッカーの「マネジメント」を読んだら』は、経営学の理論を高校野球部の物語に置き換えた一冊。2冊目の『エッセンシャル思考』は、99%の無駄を捨てて1%に集中するための方法論が書かれています。3冊目の『さおだけ屋はなぜ潰れないのか？』は、日々の生活の身近な疑問から会計のエッセンスを学んでいく読み物。4冊目の『金持ち父さん 貧乏父さん』は、刊行から20年以上読み継がれてきたお金の基本図書です。特に3冊目の『さおだけ屋はなぜ潰れないのか？』は、細かい財務諸表がひとつも出てこないと明記されているところが気になります。会計の入門書ではなく読み物として書かれた、という立ち位置が長く支持されてきた理由なのかもしれません。おすすめな本があればぜひコメントいただけると幸いです！
+
+#名著 #ビジネス書おすすめ
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 1冊目:内容紹介の『マネジメント』の理論を頼りに野球部を変革、真摯さ・顧客は誰かに基づく
+> - 2冊目:『より少なく、しかしより良く』『99%の無駄を捨て1%に集中』『単なるタイムマネジメントではない方法論』に基づく
+> - 6冊目:『身近な疑問から会計の重要なエッセンス』『細かい財務諸表はひとつも出てきません』『ひとつの読み物として』に基づく
+> - 15冊目:『刊行から20年経った今でも』『51ヶ国語に翻訳』『金持ちはお金のためには働かない』『金持ち父さんの六つの教え』に基づく
+> - テーマ分散:経営/思考法/会計/お金の4方向
+
+</details>
+
+---
+
+### 08/25 (Tue) — スタンフォード式 最高の睡眠 / 西野精治
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-25/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 睡眠は「時間」ではなく
+「質」で決まる
+最初の90分の話
+> 2 書誌情報: 2017年3月1日 / 西野精治
+> 3 おすすめ1: 寝つきが悪くて
+朝もすっきり起きられない方
+> 3 おすすめ2: 日中の眠気に
+悩まされている方
+> 3 おすすめ3: 土日の寝だめで
+疲れを取ろうとしている方
+> 4 問いかけ: 眠った時間の長さだけで
+疲れは本当に
+取れているのでしょうか
+> 5 本文: 睡眠は「時間」ではなく「質」。
+著者が30年近く研究して
+たどり着いた結論
+> 6 本文: 眠り始めの
+「黄金の90分」に
+最高の睡眠の鍵がある
+> 7 本文: 寝だめは基本できない。
+平日の不足を土日で
+取り戻すのは無理
+> 8 本文: 1時間早く寝るのは難しい。
+潔く1時間早く起きると
+心積もりする方がいい
+> 9 まとめ: 長く寝るより、
+最初の90分を整える。
+眠りの常識を見直す一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、睡眠をテーマにしたビジネス書です。スタンフォード大学の睡眠研究機関で所長を務める西野精治先生が、30年近くの研究からたどり着いた「最高の睡眠」の考え方をまとめた一冊。出版社の紹介によると、スタンフォードは「睡眠研究のメッカ」と呼ばれる場所だそうです。
+
+本書の軸は「睡眠は『時間』ではなく『質』で決まる」という一文。章立てにも「夜に秘められた『黄金の90分』の法則」とあり、眠り始めの90分がいかに大事かが繰り返し語られます。長く寝られない日があっても、最初の90分の質を上げれば手は打てる。そう考えられるだけで、少し気持ちが軽くなりました。
+
+私が読んでいて特に納得したのは、寝だめは基本的にできないという話。平均7.2時間の睡眠でも足りていないぶんを、土日でまとめて取り戻すのは無理なのだと知りました。
+
+もうひとつは、明日に備えて1時間早く寝るのは難しい、という指摘。それなら潔く1時間早く起きるつもりでいた方が、結果としてよい睡眠が得られる。早寝を頑張って布団の中で目が冴えるより、ずっと現実的です。
+
+寝つきが悪い、朝起きられない、日中眠い。心当たりがある方は、まず今夜の最初の90分から見直してみませんか。
+
+#スタンフォード式最高の睡眠 #西野精治 #睡眠 #サンマーク出版 #ビジネス書 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 書名・著者・出版社・出版日は書誌情報より
+> - cover・points1「時間ではなく質」は内容紹介の引用文より
+> - points2「黄金の90分」は目次2章より
+> - points3「寝だめは基本出来ない／平均7.2時間」は読書メモより
+> - points4「1時間早く寝るのは難しい／1時間早く起きる」は読書メモより
+> - recommend「寝つきが悪い・朝起きれない・日中眠たい」は内容紹介より
+> - キャプションの「睡眠研究のメッカ」「30年近く研究」は出版社の内容紹介より（その旨を明記）
+> - summary「最初の90分を整える」は目次2章と内容紹介からの要約
+> - キャプション中の『気持ちが軽くなりました』『納得した』等の所感は読書メモの内容に沿った感想表現（メモ外の実体験は記載していない）
+
+</details>
+
+---
+
+### 08/26 (Wed) — メタバース*ビジネス革命 / 西田 宗千佳
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-08-26/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: メタバースは
+なぜまだ
+普及しないのか
+> 2 書誌情報: 2022年12月9日 / 西田 宗千佳
+> 3 おすすめ1: メタバースの現在地を
+ビジネス目線で
+整理したい方
+> 3 おすすめ2: バズワードの正体を
+事例ベースで
+확かめたい方
+> 3 おすすめ3: VRやMRが
+仕事をどう変えるか
+考えたい方
+> 4 問いかけ: メタバースは
+何十年も追われてきた技術。
+それでも今、何が足りない？
+> 5 本文: メタバースは突然の流行ではない。
+何十年も追い求められてきた
+技術の延長線上にある
+> 6 本文: 普及の最大のハードルは
+HMDが非常に重いこと。
+ここが解消されれば一気に進む
+> 7 本文: oViceのような常時ログイン型は
+足元の現実解。
+ただ私はメリットを感じづらい
+> 8 本文: 場所の制約なく働けるImmersedは
+魅力的。
+でもゴーグルを付けたままとは…
+> 9 まとめ: 現状・拡散・課題・未来。
+メタバースを
+事例で冷静に見渡す一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、バズワードとして語られがちな「メタバース」を、事例ベースで冷静に整理してくれるビジネス書です。
+
+面白かったのは、メタバースが2021年に突然現れたものではなく、何十年も追い求められてきたテーマの延長にある、という視点。本書は現状・拡散・課題・未来という流れで、今何ができて、これから何が来るのかを企業事例を挙げながら考察していきます。
+
+読みながら私が一番腑に落ちたのは、普及の一番のハードルはHMD（ヘッドマウントデバイス）が非常に重いことだ、という点。この課題が圧倒的に大きく、逆に言えばここが解消されれば加速度的に普及すると想定されます。技術の話よりも、まず「重い」という物理の話なのだと。
+
+ビジネス寄りの現実解として挙がるoViceのようなサービスは、毎日ログインしてもらうという意味では重要なのですが、個人的にはメリットを感じづらいところ。一方で、ディスプレイや場所の制約なく仕事ができるImmersedは、現代版の精神と時の部屋のようで素直に魅力的でした。とはいえ、ゴーグルを付けたまま一日仕事をする自分はまだ想像できません。
+
+期待と現実の両方を見たい方に。あなたはゴーグルを付けて働けそうですか？
+
+#メタバースビジネス革命 #西田宗千佳 #メタバース #VR #ビジネス書
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 表紙・問いかけ：読書メモ「普及の一番のハードルはHMDが非常に重たい事」＋内容紹介「なぜ今メタバースが騒がれているのか」
+> - points1：内容紹介「唐突に現れたわけではなく、何十年も追い求められてきたもの」
+> - points2：読書メモのHMDの重さに関する記述
+> - points3：読書メモ「oVice等はメタバースの足元現実解」「個人的にはあまりメリットは感じづらい」
+> - points4：読書メモ「現代版 精神と時の部屋『Immersed』」「ゴーグル付けたまんま仕事するなんてとても想像できない」
+> - summary：目次構成 Part1現状／Part2拡散／Part3・4課題／Part5未来、および内容紹介の「多くの企業の事例を挙げながら」
+> - recommend：内容紹介の3つの問い（なぜ騒がれているか／何ができるか／これからどうなるか）に基づく
+> - キャプション末尾の問いかけ：読書メモの所感を踏まえた読者への呼びかけ（一般論）
+
+</details>
 
 ---
 
@@ -676,153 +861,6 @@ JITの考え方に精通
 > - キャプション冒頭の再読経緯：読書メモ「3年前くらいに立ち読みして半分くらい読んだまま放置していたので、図書館で借りて再読了」
 > - question・recommend・summaryの表現：読書メモの内容から構成した要約（直接の引用ではない）
 > - 「天才」の語：正式書名の副題に基づく
-
-</details>
-
----
-
-### 09/08 (Tue) — オールノット / 柚木麻子
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-08/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 全部ダメでも
-全部は落ちない
-人とのつながりの話
-> 2 書誌情報: 2023年4月19日 / 柚木麻子
-> 3 おすすめ1: 人とのつながりの
-大切さを
-改めて感じたい方
-> 3 おすすめ2: 一度の失敗が
-許されない空気に
-息苦しさを感じる方
-> 3 おすすめ3: 移動中に一気に
-読み切れる小説を
-探している方
-> 4 問いかけ: たった一回の失敗も
-許されない。
-そんなのおかしい、と
-思ったことはありませんか
-> 5 本文: 貧困にあえぐ苦学生の真央が
-山戸家の生き残り・四葉と
-出会うところから始まる物語
-> 6 本文: 四葉に託された
-一つの宝石箱が
-真央の人生を変えていく
-> 7 本文: オールノットは
-全てダメの意味と
-全てがダメではない意味を持つ
-> 8 本文: 真珠のネックレスの
-糸が切れても
-全部は落ちない結び方のこと
-> 9 まとめ: 人と人のつながりが
-やっぱり大切だと
-改めて感じさせる一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、帰省中の新幹線の往復で読み切った小説を紹介します。柚木麻子さんの『オールノット』です。
-
-物語の主人公は、友達も恋人も将来の希望もない、貧困にあえぐ苦学生の真央。彼女が出会うのが、かつて栄華を誇った山戸家の生き残り・四葉です。四葉に託された一つの宝石箱が、真央の人生を変えていく——というのが大きな流れになっています。
-
-私が一番おもしろいと思ったのは、タイトルの「オールノット」という言葉です。全てダメという意味がある一方で、全てがダメではない、という意味も持っている。さらに真珠のネックレスの結び方の名前でもあって、仮に糸が切れてしまっても、真珠が全部つながって落ちてしまうことがないタイプをオールノットと呼ぶそうです。この二重三重の意味を知ってからページをめくると、見え方が変わってきます。
-
-出版社の紹介文にある「ちゃんとした人にはたった一回の失敗も許されないなんて、そんなのおかしい」という四葉の言葉も、読み終えたあとに残りました。
-
-読み終えて改めて感じたのは、人と人のつながりがやっぱり大切だということ。移動時間のお供に、ぜひ手に取ってみてください。
-
-#オールノット #柚木麻子 #講談社 #小説好きな人と繋がりたい #シスターフッド #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 書名・著者・出版社・出版日：書誌情報より
-> - cover／summary「全部は落ちない」「人とのつながりが大切」：読書メモの真珠のネックレス記述と所感より
-> - recommend1：読書メモ「人人のつながりがやっぱり大切」より
-> - recommend2：内容紹介「たった一回の失敗も許されないなんて、そんなのおかしい」より
-> - recommend3：読書メモ「帰省中の新幹線 往復で読了」より
-> - question：内容紹介の四葉の台詞より
-> - points1・2：内容紹介の真央・四葉・宝石箱の記述より
-> - points3・4：読書メモのオールノットの意味・真珠のネックレスの説明より
-> - キャプション内「出版社の紹介文にある」と明示した箇所：出版社内容紹介が根拠
-> - ジャンル表記「小説」：内容紹介の物語形式の記述からの判断
-
-</details>
-
----
-
-### 09/09 (Wed) — 先読み！Chat GPT / 古川 渉一
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W35/docs/img/2026-09-09/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: ChatGPTから
-思い通りの答えを
-引き出す聞き方
-> 2 書誌情報: 2023年4月 / 古川 渉一
-> 3 おすすめ1: ChatGPTを仕事で
-使ってみたい方
-> 3 おすすめ2: 質問しても欲しい答えが
-返ってこないと感じる方
-> 3 おすすめ3: 資料の叩き台づくりを
-効率化したい方
-> 4 問いかけ: あなたの質問は
-ChatGPTに
-伝わっていますか
-> 5 本文: まず自分の立場を明確にする
-「私は何年目の
-どの部門の会社員か」
-> 6 本文: 一回の質問では
-意に介した答えにならない
-連続した質問が重要
-> 7 本文: 学習モデルは2011年から
-2022年初頭の情報がベース
-それ以外は分からない
-> 8 本文: 英訳や資料の叩き台づくり
-業務にどう使えるか
-ブレストしてみる価値あり
-> 9 まとめ: 聞き方を変えるだけで
-ChatGPTの答えは変わる
-仕事での使い道を考える一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回はChatGPTの使い方を扱った一冊です。
-
-読んでいていちばん腑に落ちたのは、思い通りの答えを引き出すには自分の立場を明確にする、という点でした。「私は何年目のどの部門の会社員です」「マネージャーです」と前提を渡してから聞く。当たり前のようでいて、つい省いてしまうところだと思います。
-
-もうひとつは、連続した質問が重要だということ。一回の質問だけだと意に介した答えにならないかもしれない。何度も質問を繰り返して、引き出したい答えに近づけていく。一発で正解をもらう道具ではなく、対話を重ねる道具なのだと受け取りました。
-
-そして意外と見落としがちなのが、ChatGPTの学習モデルは2011年から2022年初頭の情報をベースにしているという前提。この時期以外のことは分からない、と知っているかどうかで使い方が変わってきます。
-
-最後に、業務にどう役立つかをブレストしてみる価値はある、という提案。英訳を頼む、資料の叩き台を作らせる。まずは自分の仕事の中で任せられる作業を書き出してみるところからでも良さそうです。
-
-あなたなら、どの業務を任せてみますか。
-
-#先読みChatGPT #ChatGPT #AI活用 #ビジネス書 #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - cover・summary: 読書メモ「思い通りの答えを引き出すには自分の立場を明確にする」より
-> - recommend1・point4: 読書メモ「業務にどう役に立つか、ブレストしてみる価値はある。英訳/資料の叩き台を作らせる」より
-> - recommend2・question・point2: 読書メモ「連続した質問が重要。一回の質問だけだと意に介した答えにならないかも」より
-> - point1: 読書メモ「私は**年目の**部門の会社員です。マネージャーですetc…」より
-> - point3: 読書メモ「学習モデルは2011年から2022年初頭の情報をベースにしている」より
-> - 著者・出版日・ページ数はデータに記載なし（不明のまま）
-> - キャプション末尾の問いかけは読者への呼びかけ（データに根拠なし・事実主張は含まない）
 
 </details>
 
