@@ -14,7 +14,13 @@ from typing import Any
 import anthropic
 
 from .config import MODEL
-from .newbooks import NewBook, period_label, to_prompt_blocks
+from .config import load_account
+from .newbooks import (
+    NewBook,
+    period_label,
+    period_parts,
+    to_prompt_blocks,
+)
 
 MAX_TOKENS = 16000
 FEATURE_BOOKS = 4
@@ -50,10 +56,6 @@ def _output_schema(candidate_count: int) -> dict[str, Any]:
     return {
         "type": "object",
         "properties": {
-            "cover_lead": {
-                "type": "string",
-                "description": "表紙の上段に置く一言。「楽しみにしている」など6〜12文字。",
-            },
             "selected": {
                 "type": "array",
                 "description": f"必ず{FEATURE_BOOKS}冊。候補の中から選ぶ。",
@@ -93,6 +95,14 @@ def _output_schema(candidate_count: int) -> dict[str, Any]:
                     "ハッシュタグや区切り線は含めない。"
                 ),
             },
+            "story_line": {
+                "type": "string",
+                "description": (
+                    "ストーリーに載せる一言。20〜32文字。"
+                    "この回の特集を一言で表し、思わずフィードを見たくなる文にする。"
+                    "例:「今月の気になる4冊、選びました」"
+                ),
+            },
             "grounding": {
                 "type": "array",
                 "items": {"type": "string"},
@@ -100,10 +110,10 @@ def _output_schema(candidate_count: int) -> dict[str, Any]:
             },
         },
         "required": [
-            "cover_lead",
             "selected",
             "highlight_number",
             "caption",
+            "story_line",
             "grounding",
         ],
         "additionalProperties": False,
@@ -176,7 +186,9 @@ def generate_feature_post(
     return {
         "kind": "feature",
         "period_label": label,
-        "cover_lead": payload["cover_lead"],
+        "period_parts": period_parts(today),
+        "cover_lead": load_account().get("feature_lead", "楽しみにしている"),
+        "story_line": payload["story_line"],
         "books": picked,
         "highlight_index": next(
             (

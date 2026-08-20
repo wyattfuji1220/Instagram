@@ -32,6 +32,9 @@ fixed_hashtags:
   - "#図書館好き"
   - "#図書館"
 
+# 新刊特集の表紙に固定で入れる一言
+feature_lead: "楽しみにしている"
+
 # ストーリー（9:16）に入れる文言
-story_label: "本日の１冊"
+story_label: "New Post！"
 story_cta: "詳しくはフィード投稿から →"

@@ -158,10 +158,20 @@ def fetch_new_business_books(
     return books[:limit]
 
 
+def period_parts(today: date) -> dict[str, str]:
+    """表紙で数字だけ色を変えるため、期間ラベルを分解して返す。"""
+    half = "前半" if today.day <= 15 else "後半"
+    return {
+        "year": f"{today.year % 100}年",
+        "month": str(today.month),
+        "half": f"月{half}",
+    }
+
+
 def period_label(today: date) -> str:
     """「26年8月後半」のような期間ラベルを作る。"""
-    half = "前半" if today.day <= 15 else "後半"
-    return f"{today.year % 100}年{today.month}月{half}"
+    parts = period_parts(today)
+    return f"{parts['year']}{parts['month']}{parts['half']}"
 
 
 def to_prompt_blocks(books: list[NewBook]) -> str:

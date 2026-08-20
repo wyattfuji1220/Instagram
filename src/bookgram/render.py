@@ -57,6 +57,14 @@ def _data_uri(path: Path) -> str:
     return f"data:{mime};base64," + base64.b64encode(path.read_bytes()).decode()
 
 
+def _file_data_uri(path: Path) -> str:
+    """キャッシュせずに読む。カード画像は生成のたびに中身が変わるため。"""
+    if not path.exists():
+        return ""
+    mime = mimetypes.guess_type(path.name)[0] or "image/jpeg"
+    return f"data:{mime};base64," + base64.b64encode(path.read_bytes()).decode()
+
+
 def _remote_data_uri(url: str) -> str:
     if not url:
         return ""
@@ -194,6 +202,7 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
     icon_path = find_profile_icon()
     books = post["books"]
     seed = post["period_label"]
+    parts = post.get("period_parts") or {}
 
     base = {
         "width": CARD_WIDTH,
@@ -201,7 +210,11 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
         "icon": _data_uri(icon_path) if icon_path else "",
         "handle": account["handle"],
         "period_label": post["period_label"],
-        "cover_lead": post["cover_lead"],
+        "period_year": parts.get("year", ""),
+        "period_month": parts.get("month", ""),
+        "period_half": parts.get("half", ""),
+        "cover_lead": post.get("cover_lead")
+        or account.get("feature_lead", "楽しみにしている"),
         "book_count": len(books),
     }
 
@@ -247,28 +260,44 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
     return paths
 
 
-def build_story_context(post: dict[str, Any]) -> dict[str, Any]:
+def story_line_for(post: dict[str, Any]) -> str:
+    """ストーリーに載せる一言。無ければ表紙の文言で代用する。"""
+    line = (post.get("story_line") or "").strip()
+    if line:
+        return line
+    cover = post.get("cover")
+    if isinstance(cover, dict) and cover.get("text"):
+        return cover["text"].replace(chr(10), " ")
+    return post.get("book_title") or post.get("period_label", "")
+
+
+def build_story_context(post: dict[str, Any], feed_image: str = "") -> dict[str, Any]:
     account = load_account()
     icon_path = find_profile_icon()
+    seed = post.get("book_title") or post.get("period_label", "")
     return {
         "width": STORY_WIDTH,
         "height": STORY_HEIGHT,
-        "bg": _pick_background(post.get("book_title") or post.get("period_label", ""), 0),
+        "bg": _pick_background(seed, 0),
+        "feed_image": feed_image,
         "icon": _data_uri(icon_path) if icon_path else "",
-        "cover_image": post.get("cover_data_uri", ""),
-        "book_title": post.get("book_title") or post.get("period_label", ""),
-        "book_author": post.get("book_author", ""),
-        "handle": account["handle"],
-        "label": account.get("story_label", "本日の１冊"),
+        "label": account.get("story_label", "New Post！"),
+        "line": story_line_for(post),
         "cta": account.get("story_cta", "詳しくはフィード投稿から →"),
+        "handle": account["handle"],
     }
 
 
 def render_story(post: dict[str, Any], out_dir: Path) -> Path:
-    """ストーリー用の縦長画像を1枚書き出す。"""
+    """ストーリー用の縦長画像を1枚書き出す。
+
+    中央にはフィードの1枚目をそのまま埋め込む。カード生成のあとに呼ぶこと。
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
     template = _env().get_template("story.html.j2")
     path = out_dir / STORY_FILENAME
+    first_card = out_dir / "01.jpg"
+    feed_image = _file_data_uri(first_card) if first_card.exists() else ""
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
@@ -276,7 +305,9 @@ def render_story(post: dict[str, Any], out_dir: Path) -> Path:
             viewport={"width": STORY_WIDTH, "height": STORY_HEIGHT},
             device_scale_factor=1,
         )
-        page.set_content(template.render(**build_story_context(post)), wait_until="load")
+        page.set_content(
+            template.render(**build_story_context(post, feed_image)), wait_until="load"
+        )
         page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
         browser.close()
 

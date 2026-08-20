@@ -67,22 +67,39 @@
     border: 2px solid rgba(255, 255, 255, 0.5);
     pointer-events: none;
   }
+  /* 表紙だけは見本に合わせて太ゴシック。黄色と白、赤い影で組む。 */
   .cover-center {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center; text-align: center;
+    font-family: "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans",
+                 "Yu Gothic", sans-serif;
+    font-weight: 900;
   }
   .cover-lead {
-    font-size: 52px; letter-spacing: 0.06em;
-    color: var(--hl); margin-bottom: 42px;
+    align-self: flex-start;
+    font-size: 62px;
+    color: var(--hl);
+    transform: rotate(-7deg);
+    margin: 0 0 30px 10px;
+    text-shadow: 4px 4px 0 rgba(224, 62, 45, 0.45);
   }
-  .cover-period { font-size: 76px; font-weight: 700; line-height: 1.5; }
+  .cover-period {
+    font-size: 96px; line-height: 1.25; white-space: nowrap;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+  }
   .cover-main {
-    font-size: 92px; font-weight: 700; line-height: 1.45;
-    margin: 18px 0 8px;
-    text-shadow: 0 4px 26px rgba(0, 0, 0, 0.75);
+    font-size: 128px; line-height: 1.2; color: var(--hl);
+    margin: 6px 0;
+    text-shadow: 6px 6px 0 rgba(224, 62, 45, 0.5);
   }
-  .cover-count { font-size: 76px; font-weight: 700; }
-  .cover-count .num { color: var(--hl); font-size: 104px; }
+  .cover-count {
+    font-size: 96px; line-height: 1.25; white-space: nowrap;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+  }
+  .num {
+    color: var(--hl); font-size: 138px;
+    text-shadow: 6px 6px 0 rgba(224, 62, 45, 0.5);
+  }
 
   /* -------------------------------------------------------------- 各書籍 */
 
@@ -142,7 +159,7 @@
     <div class="layer">
       <div class="cover-center">
         <div class="cover-lead">{{ cover_lead }}</div>
-        <div class="cover-period">{{ period_label }}</div>
+        <div class="cover-period">{{ period_year }}<span class="num">{{ period_month }}</span>{{ period_half }}</div>
         <div class="cover-main">ビジネス書</div>
         <div class="cover-count">新刊<span class="num">{{ book_count }}</span>選</div>
       </div>

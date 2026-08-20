@@ -24,17 +24,18 @@
 
   .story { position: relative; width: {{ width }}px; height: {{ height }}px; }
 
+  /* 背景はフィード1枚目を大きくぼかしたもの。色味が自然につながる。 */
   .bg {
-    position: absolute; inset: -50px;
-    background-image: url("{{ bg }}");
+    position: absolute; inset: -80px;
+    background-image: url("{{ feed_image or bg }}");
     background-size: cover; background-position: center;
-    filter: blur(6px) brightness(0.6) saturate(0.85);
+    filter: blur(40px) brightness(0.5) saturate(1.1);
   }
   .veil {
     position: absolute; inset: 0;
     background: linear-gradient(180deg,
-      rgba(6, 6, 8, 0.74) 0%, rgba(6, 6, 8, 0.46) 40%,
-      rgba(6, 6, 8, 0.62) 72%, rgba(6, 6, 8, 0.88) 100%);
+      rgba(6, 6, 8, 0.70) 0%, rgba(6, 6, 8, 0.38) 38%,
+      rgba(6, 6, 8, 0.55) 70%, rgba(6, 6, 8, 0.86) 100%);
   }
 
   .layer {
@@ -43,71 +44,67 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* 上下はUIに隠れるため、安全域を大きめに取る */
-    padding: 300px 90px 260px;
+    /* 上下はInstagramのUIに隠れるため、安全域を大きく取る */
+    padding: 290px 80px 250px;
     text-align: center;
   }
 
   .label {
-    font-size: 38px;
-    letter-spacing: 0.16em;
+    font-family: "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans",
+                 "Yu Gothic", sans-serif;
+    font-weight: 900;
+    font-size: 58px;
+    letter-spacing: 0.06em;
     color: var(--hl);
-    margin-bottom: 56px;
+    text-shadow: 4px 4px 0 rgba(224, 62, 45, 0.4);
+    margin-bottom: 52px;
   }
 
-  .cover {
-    width: 500px; height: 715px;
-    background-image: url("{{ cover_image }}");
+  /* フィード1枚目(4:5)をそのままはめ込む */
+  .feed {
+    width: 760px; height: 950px;
+    background-image: url("{{ feed_image }}");
     background-size: cover; background-position: center;
     background-color: #16161A;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     flex: 0 0 auto;
   }
-  .cover.placeholder {
-    display: flex; align-items: center; justify-content: center;
-    padding: 46px; border: 1px solid #3A3A40;
-    font-size: 46px; line-height: 1.7; color: var(--ink-dim);
-  }
 
-  .title {
-    margin-top: 62px;
-    font-size: 64px;
-    font-weight: 700;
-    line-height: 1.6;
+  .line {
+    margin-top: 58px;
+    font-size: 50px;
+    font-weight: 600;
+    line-height: 1.7;
     text-wrap: balance;
-    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
-  }
-  .author {
-    margin-top: 26px;
-    font-size: 40px;
-    color: var(--ink-dim);
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.75);
   }
 
   .spacer { flex: 1; }
 
   .cta {
-    font-size: 46px;
+    font-size: 44px;
     line-height: 1.6;
     letter-spacing: 0.04em;
-    padding: 26px 52px;
+    padding: 24px 50px;
     border: 2px solid rgba(255, 255, 255, 0.7);
     border-radius: 999px;
   }
   .foot {
-    margin-top: 44px;
+    margin-top: 40px;
     display: flex; align-items: center; justify-content: center; gap: 22px;
   }
   .icon {
-    width: 76px; height: 76px; border-radius: 50%;
+    width: 74px; height: 74px; border-radius: 50%;
     background-image: url("{{ icon }}");
     background-size: cover; background-position: center;
     background-color: #2A2A2A;
   }
   .icon.letter {
     display: flex; align-items: center; justify-content: center;
-    font-size: 36px; color: var(--ink-dim);
+    font-size: 34px; color: var(--ink-dim);
   }
-  .handle { font-size: 40px; }
+  .handle { font-size: 38px; }
 </style>
 </head>
 <body>
@@ -116,16 +113,9 @@
     <div class="veil"></div>
     <div class="layer">
       <div class="label">{{ label }}</div>
-
-      <div class="cover{{ '' if cover_image else ' placeholder' }}">
-        {{ '' if cover_image else book_title }}
-      </div>
-
-      <div class="title">{{ book_title }}</div>
-      <div class="author">{{ book_author }}</div>
-
+      <div class="feed"></div>
+      <div class="line">{{ line }}</div>
       <div class="spacer"></div>
-
       <div class="cta">{{ cta }}</div>
       <div class="foot">
         <div class="icon{{ ' letter' if not icon }}">{{ '' if icon else 'A' }}</div>
