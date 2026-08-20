@@ -82,7 +82,13 @@ def cmd_generate(args: argparse.Namespace) -> int:
     generated = 0
 
     target_days = args.days or TARGET_COVERAGE_DAYS
-    while bookqueue.coverage_days(start, horizon=max(target_days, 21)) < target_days:
+    slots = bookqueue.open_slots(start, target_days, skip_weekday=FEATURE_WEEKDAY)
+    if not slots:
+        print(f"[skip] {start} から{target_days}日間はすべて埋まっています。")
+        _write_previews(start, secrets.pages_base_url)
+        return 0
+
+    for target in slots:
         if args.max_books and generated >= args.max_books:
             print(f"[stop] --max-books {args.max_books} に達したので終了します。")
             break
@@ -92,11 +98,6 @@ def cmd_generate(args: argparse.Namespace) -> int:
             break
 
         title = book["title"]
-        slots = bookqueue.free_dates(start, 1, skip_weekday=FEATURE_WEEKDAY)
-        if not slots:
-            print("[warn] 割り当て可能な日付がありません。")
-            break
-        target = slots[0]
         print(f"[generate] {target} 『{title}』の根拠データを取得中…")
         material = fetch_material(
             title, book.get("isbn", ""), book.get("notes", ""), strict=False

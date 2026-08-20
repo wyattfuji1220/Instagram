@@ -84,8 +84,8 @@ def free_dates(start: date, count: int, *, skip_weekday: int | None = None) -> l
     """
     found: list[date] = []
     cursor = start
-    # 割り当て済みの日が続いても止まらないよう、探索範囲に余裕を持たせる。
-    for _ in range(count * 10):
+    # 割り当て済みの日や特集日が続いても止まらないよう、1年先まで探す。
+    for _ in range(400):
         if len(found) >= count:
             break
         if skip_weekday is not None and cursor.weekday() == skip_weekday:
@@ -95,6 +95,24 @@ def free_dates(start: date, count: int, *, skip_weekday: int | None = None) -> l
             found.append(cursor)
         cursor += timedelta(days=1)
     return found
+
+
+def open_slots(
+    start: date, days: int, *, skip_weekday: int | None = None
+) -> list[date]:
+    """start から days 日間のうち、下書きがまだ無い日付を返す。
+
+    skip_weekday の曜日は新刊特集の枠なので対象から外す。
+    連続性は見ないので、途中に埋まっている日があっても先の日付まで拾える。
+    """
+    slots: list[date] = []
+    for offset in range(days):
+        day = start + timedelta(days=offset)
+        if skip_weekday is not None and day.weekday() == skip_weekday:
+            continue
+        if not draft_path(day).exists():
+            slots.append(day)
+    return slots
 
 
 def coverage_days(start: date, horizon: int = 21) -> int:

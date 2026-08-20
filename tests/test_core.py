@@ -236,3 +236,44 @@ def test_build_caption_appends_fixed_footer_and_tags():
 def test_publish_rejects_single_image():
     with pytest.raises(PublishError, match="2〜10枚"):
         publish_carousel(None, ["https://example.com/1.jpg"], "caption")
+
+
+def test_open_slots_skips_feature_weekday(tmp_path, monkeypatch):
+    """月曜は新刊特集の枠なので、通常投稿の割り当て対象から外れる。"""
+    from datetime import date
+
+    from bookgram import queue as bookqueue
+
+    monkeypatch.setattr(bookqueue, "DRAFTS_DIR", tmp_path)
+    monday = date(2026, 8, 24)
+    assert monday.weekday() == 0
+
+    slots = bookqueue.open_slots(date(2026, 8, 21), 7, skip_weekday=0)
+    assert monday not in slots
+    assert len(slots) == 6
+
+
+def test_open_slots_skips_dates_that_already_have_drafts(tmp_path, monkeypatch):
+    from datetime import date
+
+    from bookgram import queue as bookqueue
+
+    monkeypatch.setattr(bookqueue, "DRAFTS_DIR", tmp_path)
+    taken = date(2026, 8, 22)
+    (tmp_path / taken.isoformat()).mkdir(parents=True)
+    (tmp_path / taken.isoformat() / "post.json").write_text("{}", encoding="utf-8")
+
+    slots = bookqueue.open_slots(date(2026, 8, 21), 5)
+    assert taken not in slots
+    assert len(slots) == 4
+
+
+def test_open_slots_reaches_far_dates(tmp_path, monkeypatch):
+    """探索窓が狭いと途中で打ち切られるバグの回帰テスト。"""
+    from datetime import date
+
+    from bookgram import queue as bookqueue
+
+    monkeypatch.setattr(bookqueue, "DRAFTS_DIR", tmp_path)
+    slots = bookqueue.open_slots(date(2026, 8, 21), 60, skip_weekday=0)
+    assert len(slots) >= 50
