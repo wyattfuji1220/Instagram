@@ -277,3 +277,17 @@ def test_open_slots_reaches_far_dates(tmp_path, monkeypatch):
     monkeypatch.setattr(bookqueue, "DRAFTS_DIR", tmp_path)
     slots = bookqueue.open_slots(date(2026, 8, 21), 60, skip_weekday=0)
     assert len(slots) >= 50
+
+
+def test_simplify_title_drops_subtitle_and_parenthetical():
+    from bookgram.bookdata import simplify_title
+
+    assert simplify_title("論語と算盤（上 自己修養篇）") == "論語と算盤"
+    assert simplify_title("キーエンス解剖 最強希望のメカニズム") == "キーエンス解剖"
+
+
+def test_simplify_title_keeps_plain_titles():
+    from bookgram.bookdata import simplify_title
+
+    assert simplify_title("すごい左利き") == "すごい左利き"
+    assert simplify_title("2030半導体の地政学") == "2030半導体の地政学"

@@ -384,37 +384,39 @@ def _try(source: str, fetch):
         return None
 
 
-def fetch_material(
-    title: str, isbn: str = "", notes: str = "", *, strict: bool = True
-) -> BookMaterial:
-    """1冊分の根拠データを取得してマージする。
+def simplify_title(title: str) -> str:
+    """検索が当たらない書名を、当たりやすい形に削る。
 
-    strict=False にすると根拠不足でも例外を投げず、そのまま返す。
-    Web検索で補完してから判定したい場合に使う。
+    副題や巻次の括弧書き、全角スペース以降の副題は、書誌DBの表記と
+    食い違うことが多い。落としても別の本になる危険は小さい。
     """
-    material = BookMaterial(
-        title=title, isbn=_normalize_isbn(isbn), personal_notes=notes.strip()
-    )
+    simplified = re.sub(r"[（(\[【][^）)\]】]*[）)\]】]", "", title)
+    simplified = re.split(r"[\s　]{1,}", simplified.strip())[0]
+    return simplified.strip() or title
 
+
+def _collect(material: BookMaterial, search_title: str) -> None:
+    """各ソースから材料を集めて material に反映する。"""
     if not material.isbn:
-        ndl = _try("NDLサーチ", lambda: search_ndl(title))
+        ndl = _try("NDLサーチ", lambda: search_ndl(search_title))
         if ndl:
             material.sources.append("ndl")
             material.isbn = ndl["isbn"]
             material.official_title = ndl["title"]
-            material.authors = ndl["authors"]
-            material.publisher = ndl["publisher"]
-            material.published_date = ndl["published_date"]
+            material.authors = material.authors or ndl["authors"]
+            material.publisher = material.publisher or ndl["publisher"]
+            if _publication_precision(ndl["published_date"]) > _publication_precision(
+                material.published_date
+            ):
+                material.published_date = ndl["published_date"]
         _polite_sleep()
 
-    rakuten = _try("楽天ブックス", lambda: search_rakuten(title, material.isbn))
+    rakuten = _try("楽天ブックス", lambda: search_rakuten(search_title, material.isbn))
     if rakuten:
         _apply_rakuten(material, rakuten)
         _polite_sleep()
 
-    volume = _try(
-        "Google Books", lambda: search_google_books(title, material.isbn)
-    )
+    volume = _try("Google Books", lambda: search_google_books(search_title, material.isbn))
     if volume:
         material.sources.append("google_books")
         google_title = volume.get("title") or ""
@@ -424,13 +426,15 @@ def fetch_material(
         material.authors = volume.get("authors") or material.authors
         material.publisher = volume.get("publisher") or material.publisher
         google_date = volume.get("publishedDate") or ""
-        if _publication_precision(google_date) > _publication_precision(material.published_date):
+        if _publication_precision(google_date) > _publication_precision(
+            material.published_date
+        ):
             material.published_date = google_date
         material.page_count = volume.get("pageCount") or material.page_count
         google_description = (volume.get("description") or "").strip()
         if len(google_description) > len(material.description):
             material.description = google_description
-        material.categories = volume.get("categories") or []
+        material.categories = volume.get("categories") or material.categories
         if not material.isbn:
             for ident in volume.get("industryIdentifiers", []) or []:
                 if ident.get("type") == "ISBN_13":
@@ -459,11 +463,34 @@ def fetch_material(
                 material.published_date = openbd_date
 
             texts = _extract_openbd_texts(record)
-            # openBD の日本語内容紹介は Google Books より詳しいことが多いので優先。
             if len(texts.get("description", "")) > len(material.description):
                 material.description = texts["description"]
-            material.table_of_contents = texts.get("table_of_contents", "")
-            material.author_bio = texts.get("author_bio", "")
+            material.table_of_contents = (
+                texts.get("table_of_contents") or material.table_of_contents
+            )
+            material.author_bio = texts.get("author_bio") or material.author_bio
+
+
+def fetch_material(
+    title: str, isbn: str = "", notes: str = "", *, strict: bool = True
+) -> BookMaterial:
+    """1冊分の根拠データを取得してマージする。
+
+    strict=False にすると根拠不足でも例外を投げず、そのまま返す。
+    Web検索で補完してから判定したい場合に使う。
+    """
+    material = BookMaterial(
+        title=title, isbn=_normalize_isbn(isbn), personal_notes=notes.strip()
+    )
+
+    _collect(material, title)
+
+    # どのソースにも当たらなかった場合だけ、副題を落とした書名で再挑戦する
+    if not material.sources:
+        simplified = simplify_title(title)
+        if simplified != title:
+            print(f"[retry] 書名を『{simplified}』に簡略化して再検索します")
+            _collect(material, simplified)
 
     material.published_date = normalize_published(material.published_date)
 
