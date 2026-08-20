@@ -13,6 +13,78 @@
 
 ---
 
+### 08/20 (Thu) — すごい左利き / 加藤俊徳
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 理解がワンテンポ遅いのは
+脳をたくさん使っている証拠
+> 2 書誌情報: 2021年9月30日 / 加藤俊徳
+> 3 おすすめ1: 自分が左利きで
+生きづらさを感じたことがある方
+> 3 おすすめ2: 直感やひらめきを
+仕事にもっと活かしたい方
+> 3 おすすめ3: 成長が遅いと感じる自分を
+責めるのをやめたい方
+> 4 問いかけ: 人と同じ速さで
+理解できないことは
+本当に欠点でしょうか
+> 5 本文: 左利きは大器晩成。
+言葉を司るのは左脳なので
+子供の時は成長が遅い
+> 6 本文: 右脳の作用で
+膨大なデータベースから
+即時に判断することが得意
+> 7 本文: 右利きなら当たり前にできることが
+うまくいかない経験から
+忍耐力にも優れる
+> 8 本文: 1日の終わりに
+その日を映像で思い出す。
+右脳を整えるトレーニング
+> 9 まとめ: 遅さの正体は
+脳の使い方の違い。
+左利きの特性を知る一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、脳の使い方から自分の特性を知る一冊です。
+
+1万人の脳を見た医師が、左利きの脳の働きを解説した本。読んでいて特に印象に残ったのは、左利きは大器晩成だという話です。言葉を司るのは左脳なので、子供の時はどうしても右利きの方が理解が早い。つまり幼い頃の「遅さ」は能力の差ではなく、脳の配線の違いだという説明でした。
+
+もう一つ面白かったのが、ワンテンポ理解が遅いのは右脳経由で脳の思考回路をたくさん使っているから、という視点。同じ現象が、欠点ではなく手数の多さとして語られます。その代わりに得意なのが、膨大なデータベースから即時に判断すること。だから左利きは直感やひらめきを大切にするといいのだそうです。
+
+さらに、右利きなら当たり前にできることがうまくいかない経験を重ねるから、忍耐力にも優れていると言われるという指摘も。
+
+具体的なトレーニングとして紹介されていたのは、1日の終わりにその日の出来事を映像で思い出すこと。右脳には様々な情報が浮かんでいるだけで、左脳のように理路整然としているわけではないので、映像で整理する習慣が効くという話でした。
+
+自分の遅さを責めてしまう日がある方に、そっと読んでほしい一冊です。
+
+#すごい左利き #加藤俊徳 #左利き #脳科学 #ビジネス書 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - cover・point4段目「ワンテンポ理解が遅いのは右脳経由で脳の思考回路をたくさん使ってるから」＝読書メモ4項目目
+> - point1「左利きは大器晩成。子供の時は成長が遅い（言葉を司るのは左脳）」＝読書メモ1項目目
+> - point2「膨大なデータベースから即時に判断することが得意」＝読書メモ2項目目
+> - point3「右利きなら当たり前にできることがうまくいかない→忍耐力」＝読書メモ3項目目
+> - point4「1日の終わりに映像で思い出すトレーニング」＝読書メモ5項目目
+> - キャプション「1万人の脳を見た医師」＝正式書名の表記に基づく
+> - question・recommend・summaryは読書メモの内容を読者向けに言い換えたもの（メモの範囲内）
+> - 「自分の遅さを責めてしまう」などの読者像はメモから推測した表現（データに直接の根拠なし）
+> - 出版年2021年・著者名・出版社＝書誌データ
+
+</details>
+
+---
+
 ### 08/21 (Fri) — 月の立つ林で / 青山美智子
 
 <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/10.jpg" width="150">
@@ -406,7 +478,7 @@ HMDが非常に重いこと。
 
 ---
 
-### 08/27 (Thu) — 論語と算盤（上 自己修養篇） / 不明
+### 08/27 (Thu) — 論語と算盤（上 自己修養篇） / 渋澤健1961-
 
 <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/10.jpg" width="150">
 
@@ -415,7 +487,7 @@ HMDが非常に重いこと。
 > 1 表紙: 道徳と商売は
 一致すべきもの
 100年前の言葉が今に響く
-> 2 書誌情報:  / 不明
+> 2 書誌情報: 2019年2月 / 渋澤健1961-
 > 3 おすすめ1: 古典を現代語訳で
 読んでみたい方
 > 3 おすすめ2: 仕事の判断軸に
@@ -631,7 +703,7 @@ HMDが非常に重いこと。
 
 ---
 
-### 08/30 (Sun) — キーエンス解剖 最強希望のメカニズム / 不明
+### 08/30 (Sun) — キーエンス解剖 最強希望のメカニズム / 西岡杏1991-
 
 <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/10.jpg" width="150">
 
@@ -639,7 +711,7 @@ HMDが非常に重いこと。
 
 > 1 表紙: 顧客が困る前に
 動く組織の仕組み
-> 2 書誌情報:  / 不明
+> 2 書誌情報: 2022年12月23日 / 西岡杏1991-
 > 3 おすすめ1: 営業の仕事を
 広げる手がかりが欲しい方
 > 3 おすすめ2: 顧客の潜在ニーズを
@@ -844,81 +916,6 @@ HMDが非常に重いこと。
 > - キャプションの8630億円ブルーヨンダー買収には触れず、岡山工場閉鎖の決断は内容紹介に記載あり
 > - 著者の25年ぶり出戻り・42項目・ポートフォリオマネジメントから逃げない＝いずれも出版社の内容紹介
 > - ジャンル・ページ数は不明のため記載せず
-
-</details>
-
----
-
-### 09/03 (Thu) — 武器としての組織心理学 / 山浦一保
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-03/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 厄介だけど
-放置できない
-人間関係の扱い方
-> 2 書誌情報: 2021年9月16日 / 山浦一保
-> 3 おすすめ1: チームの人間関係に
-手を焼いているリーダーの方
-> 3 おすすめ2: 妬みや対立を
-前向きな力に
-変えたい方
-> 3 おすすめ3: 科学的な根拠から
-マネジメントを
-学び直したい方
-> 4 問いかけ: 人が動かないのは
-やる気の問題ではなく
-心理の仕組みでは？
-> 5 本文: 人は保有することに
-こだわる。だから現状維持を
-選んでしまう
-> 6 本文: 妬みには悪性と良性がある。
-負けず嫌いは
-よい方へ向ける
-> 7 本文: 大体の事は面倒くさい。
-でも丁寧にやることが
-大事につながる
-> 8 本文: リスクを取っても大丈夫。
-その心理的安全性が
-職場を支える
-> 9 まとめ: 科学的エビデンスで
-人間の本性を見直す
-リーダーシップの教科書
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、リーダーシップを心理学から捉え直す一冊です。
-
-読んでいて一番おもしろかったのは、人間は生来「保有すること」へのこだわりが強い、という話でした。カーネマンのマグカップ実験が紹介されていて、手放したくない気持ちが強いからこそ、現状維持で安心を得ようとする非合理的な選択をしてしまう。組織が変わらない理由を、性格や意欲ではなく人間の仕組みとして説明されると納得感がありました。
-
-もうひとつは妬みの扱い方です。妬みには排他的な悪性のものと、羨望や協力につながる良性のものがある。同じ負けず嫌いでも、どちらに向くかで職場の空気はまるで変わる。ポジティブなほうへ向けるという視点は、自分自身にも使えると感じました。
-
-そして、世の中の大体の事は面倒くさいけれど、丁寧にやることが大事につながるという一文。派手さはないですが、ここが一番効く気がしています。個人がリスクを取っても大丈夫だと思える心理的安全性、謝ることが自分自身のストレス低減にもつながるという指摘も印象に残りました。
-
-出版社の紹介では、心理学から脳科学、集団力学まで科学的エビデンスに基づく「リーダーシップの新しい教科書」とされています。人を動かす立場にいる方は、手元に置いておくと心強い一冊だと思います。
-
-#武器としての組織心理学 #山浦一保 #ダイヤモンド社 #組織心理学 #リーダーシップ #ビジネス書
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 表紙「厄介だけど放置できない人間関係」＝出版社内容紹介の文言
-> - recommend1・2＝内容紹介「マネジャー・経営者・監督・コーチなど全てのリーダー」＋読書メモの妬みの項
-> - recommend3＝内容紹介「科学的エビデンスに基づく」
-> - question＝内容紹介「人間の本性を暴く」「マネジメントの通念をひっくり返す」を問いに変換
-> - points1＝読書メモ「保有することへのこだわり／カーネマンのマグカップ実験／現状維持して安心」
-> - points2＝読書メモ「妬みは悪性と良性／負けず嫌いをポジティブなほうに」
-> - points3＝読書メモ「大体の事は面倒くさいが丁寧にやることが大事につながる」
-> - points4＝読書メモ「個人がリスクテイクしても大丈夫という心理的安全性の高い職場」
-> - summary＝内容紹介「科学的エビデンス」「リーダーシップの新しい教科書」「人間の本性」
-> - キャプションの謝罪の記述＝読書メモ「謝ることは自分自身のストレス低減にもつながる」
-> - 出版社紹介由来の箇所はキャプション内で「出版社の紹介では」と明示
 
 </details>
 
