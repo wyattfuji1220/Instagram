@@ -36,7 +36,9 @@ jobs:
           cache: pip
 
       - name: 依存関係をインストール
-        run: pip install requests pyyaml python-dotenv
+        # cli は generate / render を読み込むため、投稿だけでも一式が要る。
+        # ブラウザ本体は描画しないので入れない。
+        run: pip install -r requirements.txt
 
       - name: 投稿
         env:
