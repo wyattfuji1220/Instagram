@@ -1,7 +1,15 @@
 # GitHub Actions 上での設定点検
 
-実行: 2026-08-20 21:23 JST
+実行: 2026-08-20 21:24 JST
 
 ```
-[NG] 環境変数が未設定です: ANTHROPIC_API_KEY / .env または GitHub Secrets を確認してください。
+[ok] ANTHROPIC_API_KEY は設定されています。
+[ok] IG_USER_ID は設定されています。
+[ok] IG_ACCESS_TOKEN は設定されています。
+[--] IG_API_HOST: https://graph.instagram.com
+[ok] Instagram アカウント: @anne_books88 (Anne（アン）📚月一冊から始めるビジネス書)
+[ok] 楽天ブックスAPIに接続できました。
+[--] トークンの有効期限を取得できませんでした（無期限トークンの可能性があります）。
+[--] キュー残: 0冊 / 投稿在庫: 11日分
+[NG] キューの残りが少なすぎます（14冊未満）。
 ```
