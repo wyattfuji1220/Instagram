@@ -3,6 +3,7 @@
 読了した本を、毎朝7時に Instagram へカルーセル投稿するシステム。
 運用は「本をキューに追加する」と「週1回レビューする」だけ。
 
+- **いまどうなっているか: [STATUS.md](STATUS.md)**
 - 要件と設計判断: [REQUIREMENTS.md](REQUIREMENTS.md)
 - 初回セットアップ: [SETUP.md](SETUP.md)
 
