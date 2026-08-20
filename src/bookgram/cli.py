@@ -81,7 +81,8 @@ def cmd_generate(args: argparse.Namespace) -> int:
     data = bookqueue.load_queue()
     generated = 0
 
-    while bookqueue.coverage_days(start) < TARGET_COVERAGE_DAYS:
+    target_days = args.days or TARGET_COVERAGE_DAYS
+    while bookqueue.coverage_days(start, horizon=max(target_days, 21)) < target_days:
         if args.max_books and generated >= args.max_books:
             print(f"[stop] --max-books {args.max_books} に達したので終了します。")
             break
@@ -172,6 +173,13 @@ def _write_previews(start: date, pages_base_url: str) -> None:
 # ------------------------------------------------------------------------------- post
 
 
+def draft_label(draft: dict[str, Any]) -> str:
+    """書籍投稿と新刊特集のどちらでも使える表示名。"""
+    if draft.get("kind") == "feature":
+        return f"新刊特集 {draft.get('period_label', '')}"
+    return draft.get("book_title", "(無題)")
+
+
 def cmd_post(args: argparse.Namespace) -> int:
     required = () if args.dry_run else ("IG_USER_ID", "IG_ACCESS_TOKEN")
     secrets = load_secrets(require=required)
@@ -193,7 +201,7 @@ def cmd_post(args: argparse.Namespace) -> int:
     caption = build_caption(draft)
 
     if args.dry_run:
-        print(f"[dry-run] {day} 『{draft['book_title']}』 / {draft['book_author']}")
+        print(f"[dry-run] {day} 『{draft_label(draft)}』")
         for url in image_urls:
             print(f"  image: {url}")
         print(
@@ -209,7 +217,7 @@ def cmd_post(args: argparse.Namespace) -> int:
         secrets.graph_api_version,
         secrets.api_host,
     )
-    print(f"[post] {day} 『{draft['book_title']}』 を投稿中…")
+    print(f"[post] {day} 『{draft_label(draft)}』 を投稿中…")
     try:
         media_id = publish_carousel(client, image_urls, caption)
     except PublishError as error:
@@ -224,7 +232,8 @@ def cmd_post(args: argparse.Namespace) -> int:
         {
             "date": day.isoformat(),
             "media_id": media_id,
-            "book_title": draft["book_title"],
+            "title": draft_label(draft),
+            "kind": draft.get("kind", "book"),
             "posted_at": draft["posted_at"],
         }
     )
@@ -284,7 +293,7 @@ def cmd_rerender(args: argparse.Namespace) -> int:
         else:
             render_post(post, out_dir)
         render_story(post, out_dir)
-        print(f"[render] {day} 『{draft['book_title']}』")
+        print(f"[render] {day} 『{draft_label(draft)}』")
         rendered += 1
 
     if rendered:
@@ -487,6 +496,9 @@ def main(argv: list[str] | None = None) -> int:
     p_gen.add_argument("--start", help="生成開始日 (YYYY-MM-DD)。既定は明日。")
     p_gen.add_argument(
         "--max-books", type=int, default=0, help="生成する冊数の上限。0で無制限。"
+    )
+    p_gen.add_argument(
+        "--days", type=int, default=0, help="確保する在庫日数。既定は7日。"
     )
     p_gen.set_defaults(func=cmd_generate)
 
