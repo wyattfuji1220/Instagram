@@ -67,7 +67,7 @@
     "recommend3項目: 内容紹介の趣旨から構成（一般論を含む）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/3355/9784492503355_1_2.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 6046,
@@ -76,5 +76,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18332787634283555",
+  "posted_at": "2026-08-22T07:57:31.551081+09:00",
+  "story_media_id": "17943436731293946"
 }
