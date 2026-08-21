@@ -50,13 +50,12 @@ jobs:
         id: build
         env:
           PYTHONPATH: src
+        # パイプを挟むと python の終了コードが tee のものに置き換わり、
+        # 途中で落ちても成功扱いになる。パイプは使わない。
+        # 対象日と中断の有無は bookgram 側がステップ出力に書く。
         run: |
           python -m bookgram reel \
-            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
-            | tee "$RUNNER_TEMP/build.log"
-          if grep -q "^\[skip\]" "$RUNNER_TEMP/build.log"; then
-            echo "skipped=true" >> "$GITHUB_OUTPUT"
-          fi
+            ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
 
       - name: 動画を公開（GitHub Pages 経由）
         if: steps.build.outputs.skipped != 'true'
@@ -76,12 +75,10 @@ jobs:
         if: steps.build.outputs.skipped != 'true' && !inputs.dry_run
         env:
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
-          PYTHONPATH: src
         run: |
           set -euo pipefail
-          URL=$(python -m bookgram post-reel --dry-run \
-            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
-            | awk '/video:/ {print $2}')
+          BASE="${PAGES_BASE_URL%/}"
+          URL="$BASE/img/${{ steps.build.outputs.date }}/reel.mp4"
           echo "待機対象: $URL"
           # Pages のデプロイは通常1〜3分。10分待って駄目なら失敗させる。
           for i in $(seq 1 40); do
@@ -104,7 +101,7 @@ jobs:
           PYTHONPATH: src
         run: |
           python -m bookgram post-reel \
-            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
+            --date ${{ steps.build.outputs.date }} \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
       - name: 動画を片付けて記録をコミット

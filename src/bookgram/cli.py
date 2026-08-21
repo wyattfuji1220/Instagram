@@ -456,6 +456,40 @@ def build_feature(
 # ------------------------------------------------------------------------------- reel
 
 
+def _emit_step_output(key: str, value: str) -> None:
+    """GitHub Actions のステップ出力に書く。CI 以外では何もしない。
+
+    ステップ間の受け渡しを下書きファイル経由にすると、片方が書けなかった
+    ときに後続が黙って別の日を指してしまう。対象日は明示的に渡す。
+    """
+    path = os.getenv("GITHUB_OUTPUT")
+    if not path:
+        return
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(f"{key}={value}" + chr(10))
+
+
+def _sweep_orphan_reels() -> None:
+    """投稿されないまま残った動画を消す。
+
+    ここに来るのは「投稿待ちの動画は無い」と判断できたときだけ。
+    それでも mp4 が残っているなら、投稿に至らなかった残骸なので片付ける。
+    残しておくとリポジトリに積み上がる。
+    """
+    if not IMG_DIR.exists():
+        return
+    for path in IMG_DIR.glob(f"*/{REEL_FILENAME}"):
+        try:
+            day = date.fromisoformat(path.parent.name)
+        except ValueError:
+            continue
+        draft = bookqueue.load_draft(day)
+        if draft and (draft.get("reel") or {}).get("media_id"):
+            continue
+        path.unlink()
+        print(f"[cleanup] 投稿されなかった動画を削除しました: {path.parent.name}")
+
+
 def _draft_days() -> list[date]:
     days = []
     for path in DRAFTS_DIR.glob("*/post.json"):
@@ -499,13 +533,17 @@ def cmd_reel(args: argparse.Namespace) -> int:
         waiting = pick_reel_source(built=True)
         if waiting is not None:
             print(f"[skip] {waiting} の動画がまだ投稿待ちです。")
+            _emit_step_output("skipped", "true")
             return 0
+
+        _sweep_orphan_reels()
 
     day = (
         date.fromisoformat(args.date) if args.date else pick_reel_source(built=False)
     )
     if day is None:
         print("[skip] 動画にできる投稿済みの下書きがありません。")
+        _emit_step_output("skipped", "true")
         return 0
 
     draft = bookqueue.load_draft(day)
@@ -534,6 +572,7 @@ def cmd_reel(args: argparse.Namespace) -> int:
         "bytes": out_path.stat().st_size,
     }
     bookqueue.save_draft(day, draft)
+    _emit_step_output("date", day.isoformat())
     print(f"[done] {out_path} ({size_mb:.1f}MB)")
     return 0
 
