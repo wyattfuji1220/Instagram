@@ -49,15 +49,20 @@ def _unix(day: date) -> int:
 def account_summary(
     client: InstagramClient, today: date, days: int = MAX_WINDOW_DAYS
 ) -> dict[str, int]:
-    """直近 days 日のアカウント全体の数字。"""
+    """直近 days 日のアカウント全体の数字。
+
+    until は「その日の 0 時」として解釈されるため、今日を指定すると今日の
+    分がまるごと落ちる。翌日 0 時までを窓にする（ここで一度、30日リーチが
+    3 と出て実際の 58 と食い違った）。
+    """
     days = min(days, MAX_WINDOW_DAYS)
     return client.insights(
         client.ig_user_id,
         ACCOUNT_METRICS,
         period="day",
         metric_type="total_value",
-        since=_unix(today - timedelta(days=days)),
-        until=_unix(today),
+        since=_unix(today - timedelta(days=days - 1)),
+        until=_unix(today + timedelta(days=1)),
     )
 
 
