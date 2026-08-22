@@ -1,4 +1,5 @@
 import sys
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -21,7 +22,13 @@ from bookgram.generate import (
     _output_schema,
     _validate,
 )
-from bookgram.publish import PublishError, build_caption, publish_carousel
+from bookgram.insights import build_report
+from bookgram.publish import (
+    InstagramClient,
+    PublishError,
+    build_caption,
+    publish_carousel,
+)
 from bookgram.render import _highlighted, build_card_contexts
 
 # --------------------------------------------------------------------- 書誌データ
@@ -516,3 +523,75 @@ def test_recent_audio_ids_reads_reel_records():
         {"reel": {"audio": {"audio_id": "old"}}},
     ]
     assert recent_audio_ids(drafts) == ["new", "old"]
+
+
+# ---------------------------------------------------------------- insights
+
+
+class _FakeClient(InstagramClient):
+    """_get だけ差し替える。ネットワークは触らない。"""
+
+    def __init__(self, responses):
+        super().__init__("1", "token")
+        object.__setattr__(self, "responses", responses)
+        object.__setattr__(self, "asked", [])
+
+    def _get(self, path, params):
+        self.asked.append((path, params.get("metric")))
+        rows = []
+        for name in params.get("metric", "").split(","):
+            if name not in self.responses:
+                raise PublishError(f"(#100) invalid metric {name}")
+            rows.append({"name": name, "total_value": {"value": self.responses[name]}})
+        return {"data": rows}
+
+
+def test_insights_drops_unsupported_metrics_instead_of_failing():
+    """指標が1つでも無効だと Graph API は全体を蹴る。取れた分だけ残す。"""
+    client = _FakeClient({"reach": 120, "views": 300})
+    assert client.insights("1", ["reach", "views", "profile_views"]) == {
+        "reach": 120,
+        "views": 300,
+    }
+    # まとめて要求して蹴られた後、1つずつ試し直している
+    assert client.asked[0][1] == "reach,views,profile_views"
+    assert len(client.asked) == 4
+
+
+def test_insights_reads_both_value_shapes():
+    """期間指定は values、合計指定は total_value に入る。"""
+
+    class C(_FakeClient):
+        def _get(self, path, params):
+            return {
+                "data": [
+                    {"name": "reach", "values": [{"value": 1}, {"value": 7}]},
+                    {"name": "views", "total_value": {"value": 42}},
+                ]
+            }
+
+    assert C({}).insights("1", ["reach", "views"]) == {"reach": 7, "views": 42}
+
+
+def _reel_row(stats):
+    return {
+        "timestamp": "2026-08-22T10:00:00+0000",
+        "media_type": "VIDEO",
+        "media_product_type": "REELS",
+        "like_count": 0,
+        "stats": stats,
+    }
+
+
+def test_report_marks_missing_numbers_rather_than_showing_zero():
+    """権限が無くて取れない値を 0 と書くと判断を誤らせる。- で出す。"""
+    report = build_report({"username": "x"}, {}, [_reel_row({})], date(2026, 8, 22))
+    assert "| リール | - | - | 0 | - | - |" in report
+    assert "instagram_manage_insights" in report
+
+
+def test_report_shows_reel_watch_time_in_seconds():
+    row = _reel_row({"views": 300, "reach": 280, "ig_reels_avg_watch_time": 4200})
+    report = build_report({"username": "x"}, {"reach": 280}, [row], date(2026, 8, 22))
+    assert "4.2秒" in report
+    assert "平均再生数: 300" in report

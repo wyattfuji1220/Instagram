@@ -11,6 +11,7 @@
   python -m bookgram whoami      アクセストークンから IG_USER_ID を調べる
   python -m bookgram fb-whoami   音源ライブラリ用のFacebookトークンを点検する
   python -m bookgram fb-refresh-token  音源用の長期トークンを延長する
+  python -m bookgram stats       リーチ・再生数など届き方の数字を読み出す
   python -m bookgram cleanup     古い画像を削除する
   python -m bookgram refresh-token  長期アクセストークンを延長する
 """
@@ -25,6 +26,7 @@ import sys
 from datetime import date, datetime, timedelta
 from typing import Any
 
+from . import insights
 from . import queue as bookqueue
 from .bookdata import fetch_material
 from .config import (
@@ -34,6 +36,7 @@ from .config import (
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
     JST,
+    OUTPUT_DIR,
     POSTED_LOG,
     QUEUE_LOW_THRESHOLD,
     FACEBOOK_API_HOST,
@@ -993,6 +996,48 @@ def cmd_fb_refresh_token(_: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------- stats
+
+
+def cmd_stats(args: argparse.Namespace) -> int:
+    """届き方の数字を読み出して output/stats.md に残す。
+
+    音源と同じく Facebook ログイン方式のトークンを使う。Instagram ログイン
+    方式では insights が引けないため。
+    """
+    secrets = load_secrets()
+    client = audio_client(secrets)
+    if client is None:
+        print(
+            "[NG] FB_ACCESS_TOKEN / FB_IG_USER_ID が要ります。", file=sys.stderr
+        )
+        return 1
+
+    try:
+        profile = client._get(
+            client.ig_user_id, {"fields": "username,followers_count,media_count"}
+        )
+        rows = insights.media_rows(client, limit=args.limit)
+        account = insights.account_summary(client, today_jst())
+    except PublishError as error:
+        print(f"[NG] 読み出せません: {error}", file=sys.stderr)
+        return 1
+
+    report = insights.build_report(profile, account, rows, today_jst())
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = OUTPUT_DIR / "stats.md"
+    path.write_text(report, encoding="utf-8")
+    print(report)
+
+    if not account:
+        print(
+            "[--] アカウント全体の数字が取れていません。"
+            "instagram_manage_insights 権限を付け直してください。"
+        )
+    print(f"[done] {path}")
+    return 0
+
+
 # ---------------------------------------------------------------------------- cleanup
 
 
@@ -1089,6 +1134,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "fb-refresh-token", help="音源ライブラリ用の長期トークンを延長する"
     ).set_defaults(func=cmd_fb_refresh_token)
+    p_stats = sub.add_parser("stats", help="届き方の数字を読み出す")
+    p_stats.add_argument("--limit", type=int, default=12, help="見る投稿数")
+    p_stats.set_defaults(func=cmd_stats)
+
     sub.add_parser("cleanup", help="古い画像を削除").set_defaults(func=cmd_cleanup)
 
     args = parser.parse_args(argv)

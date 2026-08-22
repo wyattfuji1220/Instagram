@@ -27,6 +27,13 @@ STATUS_POLL_MAX = 24  # 最大2分待つ
 REEL_POLL_MAX = 72  # 最大6分待つ
 
 
+# 投稿一覧で取る基本項目。insights と違い、ここは権限なしでも読める。
+MEDIA_FIELDS = (
+    "id,media_type,media_product_type,caption,permalink,"
+    "like_count,comments_count,timestamp"
+)
+
+
 class PublishError(RuntimeError):
     pass
 
@@ -120,6 +127,55 @@ class InstagramClient:
             params["search_query"] = query
         # 他のエッジと違い、一覧は data ではなく audio に入って返る
         return self._get("ig_audio", params).get("audio", [])
+
+    def recent_media(
+        self, limit: int = 25, fields: str = MEDIA_FIELDS
+    ) -> list[dict[str, Any]]:
+        """自分の投稿を新しい順に返す。"""
+        return self._get(
+            f"{self.ig_user_id}/media", {"fields": fields, "limit": limit}
+        ).get("data", [])
+
+    def insights(
+        self, obj_id: str, metrics: list[str], **extra: Any
+    ) -> dict[str, int]:
+        """指標を取る。使えないものは黙って落とす。
+
+        Graph API は指標名が1つでも無効だと呼び出し全体を蹴る。指標の
+        提供状況はアカウント種別やAPIバージョンで変わるので、まとめて
+        要求して駄目なら1つずつ試し、取れた分だけ返す。
+        """
+        try:
+            return self._insight_rows(obj_id, metrics, extra)
+        except PublishError:
+            pass
+        out: dict[str, int] = {}
+        for metric in metrics:
+            try:
+                out.update(self._insight_rows(obj_id, [metric], extra))
+            except PublishError:
+                continue
+        return out
+
+    def _insight_rows(
+        self, obj_id: str, metrics: list[str], extra: dict[str, Any]
+    ) -> dict[str, int]:
+        params = {"metric": ",".join(metrics), **extra}
+        rows = self._get(f"{obj_id}/insights", params).get("data", [])
+        out: dict[str, int] = {}
+        for row in rows:
+            name = row.get("name")
+            if not name:
+                continue
+            # 期間指定の指標は values に、合計指定の指標は total_value に入る
+            if "total_value" in row:
+                value = row["total_value"].get("value")
+            else:
+                values = row.get("values") or [{}]
+                value = values[-1].get("value")
+            if isinstance(value, int):
+                out[name] = value
+        return out
 
     def create_reel(
         self,
