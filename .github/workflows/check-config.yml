@@ -43,6 +43,10 @@ jobs:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          FB_IG_USER_ID: ${{ secrets.FB_IG_USER_ID }}
+          FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
+          FB_APP_SECRET: ${{ secrets.FB_APP_SECRET }}
           RAKUTEN_REFERER: ${{ vars.RAKUTEN_REFERER || format('{0}/{1}', github.server_url, github.repository) }}
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
           IG_API_HOST: ${{ vars.IG_API_HOST || 'https://graph.facebook.com' }}
