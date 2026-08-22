@@ -50,12 +50,29 @@ jobs:
         id: build
         env:
           PYTHONPATH: src
-        # パイプを挟むと python の終了コードが tee のものに置き換わり、
-        # 途中で落ちても成功扱いになる。パイプは使わない。
+        # pipefail が無いとパイプの終了コードが tee のものに置き換わり、
+        # python が落ちても成功扱いになる。ここで一度それに嵌まっている。
         # 対象日と中断の有無は bookgram 側がステップ出力に書く。
         run: |
+          set -o pipefail
+          mkdir -p output
           python -m bookgram reel \
-            ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
+            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
+            2>&1 | tee output/reel-build.log
+
+      - name: 失敗したときは記録を残す
+        if: failure()
+        # Actions のログは管理者しか読めない。原因をリポジトリ側に残す。
+        run: |
+          set -euo pipefail
+          [ -f output/reel-build.log ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f output/reel-build.log
+          git diff --cached --quiet && exit 0
+          git commit -m "リール: 失敗時のログ ($(date -u -d '+9 hours' +%Y-%m-%d))"
+          git pull --rebase origin main
+          git push origin main
 
       - name: 動画を公開（GitHub Pages 経由）
         if: steps.build.outputs.skipped != 'true'

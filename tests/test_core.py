@@ -429,3 +429,20 @@ def test_reel_uses_every_card_for_features(tmp_path):
 
     cards = [p.name for p in reel_cards(tmp_path, "feature")]
     assert cards == [f"{i:02d}.jpg" for i in range(1, 7)]
+
+
+def test_broken_video_is_rejected_before_upload(tmp_path):
+    """途中で切れた動画を公開すると Instagram 側で理由の分からない
+    ERROR になる。手元で弾けることを確かめる。"""
+    from bookgram.reel import _is_playable
+
+    assert not _is_playable(tmp_path / "missing.mp4")
+
+    empty = tmp_path / "empty.mp4"
+    empty.write_bytes(b"")
+    assert not _is_playable(empty)
+
+    truncated = tmp_path / "truncated.mp4"
+    # ftyp だけあって moov atom が無い、書き出し途中のファイルを模す
+    truncated.write_bytes(b"\x00\x00\x00\x20ftypisom" + b"\x00" * 4096)
+    assert not _is_playable(truncated)

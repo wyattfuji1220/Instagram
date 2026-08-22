@@ -15,6 +15,7 @@ ffmpeg の複雑なフィルタ式を書かずに、動きを完全に制御で�
 from __future__ import annotations
 
 import subprocess
+import tempfile
 from pathlib import Path
 
 import imageio_ffmpeg
@@ -103,52 +104,119 @@ def iter_frames(card_paths: list[Path]):
         previous_tail = frames[-fade:] if fade else []
 
 
+def _encode_command(out_path: Path, *, silent_audio: bool) -> list[str]:
+    command = [
+        imageio_ffmpeg.get_ffmpeg_exe(),
+        "-y",
+        # 進捗行を止める。stderr が溢れると ffmpeg が書き込みで止まり、
+        # こちらの書き込みも道連れになる。
+        "-loglevel", "warning",
+        "-nostats",
+        "-f", "rawvideo",
+        "-pix_fmt", "rgb24",
+        "-s", f"{STORY_WIDTH}x{STORY_HEIGHT}",
+        "-r", str(FPS),
+        "-i", "-",
+    ]
+    if silent_audio:
+        # Instagram は無音の動画も受け付けるが、音声トラックがあるほうが
+        # 扱いが素直。lavfi を持たない ffmpeg では失敗するので必須にしない。
+        command += [
+            "-f", "lavfi",
+            "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+            "-shortest",
+        ]
+    command += [
+        "-c:v", "libx264",
+        "-preset", "medium",
+        "-crf", str(CRF),
+        "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart",
+    ]
+    if silent_audio:
+        command += ["-c:a", "aac", "-b:a", "64k"]
+    command.append(str(out_path))
+    return command
+
+
+def _run_encode(card_paths: list[Path], out_path: Path, *, silent_audio: bool) -> None:
+    """ffmpeg に生フレームを流し込む。失敗したら stderr を添えて投げる。
+
+    stderr はパイプではなく一時ファイルに逃がす。パイプのままだと
+    バッファが埋まった時点で ffmpeg が止まり、こちらの書き込みも
+    ブロックして進まなくなる。
+    """
+    with tempfile.TemporaryFile() as errfile:
+        process = subprocess.Popen(
+            _encode_command(out_path, silent_audio=silent_audio),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
+            stderr=errfile,
+        )
+        assert process.stdin is not None
+        broken = False
+        try:
+            for frame in iter_frames(card_paths):
+                process.stdin.write(frame.tobytes())
+        except BrokenPipeError:
+            # ffmpeg が先に死んだ。理由は stderr 側にある。
+            broken = True
+        finally:
+            try:
+                process.stdin.close()
+            except BrokenPipeError:
+                broken = True
+            process.wait()
+
+        if process.returncode != 0 or broken:
+            errfile.seek(0)
+            detail = errfile.read().decode("utf-8", errors="replace").strip()
+            raise RuntimeError(
+                f"ffmpeg が異常終了しました (code={process.returncode}): "
+                + (detail[-800:] or "(出力なし)")
+            )
+
+
+def _is_playable(path: Path) -> bool:
+    """書き出した動画がコンテナとして読めるか確かめる。
+
+    書き出しが途中で切れると moov atom が無い壊れたファイルが残る。
+    Instagram はそれを受け取ってから処理中に ERROR にするだけで、
+    理由を返してくれない。手元で弾く。
+    """
+    if not path.exists() or path.stat().st_size == 0:
+        return False
+    result = subprocess.run(
+        [imageio_ffmpeg.get_ffmpeg_exe(), "-v", "error", "-i", str(path), "-f", "null", "-"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return result.returncode == 0
+
+
 def build_reel(card_paths: list[Path], out_path: Path) -> Path:
     """カード画像から縦動画を書き出す。"""
     if not card_paths:
         raise ValueError("カード画像がありません")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    command = [
-        imageio_ffmpeg.get_ffmpeg_exe(),
-        "-y",
-        "-f", "rawvideo",
-        "-pix_fmt", "rgb24",
-        "-s", f"{STORY_WIDTH}x{STORY_HEIGHT}",
-        "-r", str(FPS),
-        "-i", "-",
-        # Instagram は無音でも受け付けるが、音声トラックが無いと弾かれることがある
-        "-f", "lavfi",
-        "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
-        "-shortest",
-        "-c:v", "libx264",
-        "-preset", "medium",
-        "-crf", str(CRF),
-        "-pix_fmt", "yuv420p",
-        "-movflags", "+faststart",
-        "-c:a", "aac",
-        "-b:a", "64k",
-        str(out_path),
-    ]
+    problems: list[str] = []
 
-    process = subprocess.Popen(
-        command, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
-    )
-    assert process.stdin is not None
-    try:
-        for frame in iter_frames(card_paths):
-            process.stdin.write(frame.tobytes())
-    finally:
-        process.stdin.close()
-        _, stderr = process.communicate()
+    for silent_audio in (True, False):
+        try:
+            _run_encode(card_paths, out_path, silent_audio=silent_audio)
+        except RuntimeError as error:
+            problems.append(str(error))
+        else:
+            if _is_playable(out_path):
+                return out_path
+            problems.append("書き出したファイルが再生できませんでした（moov atom 欠落）")
+        if silent_audio:
+            print("[warn] 無音トラック付きの書き出しに失敗しました。音声なしで作り直します。")
 
-    if process.returncode != 0:
-        raise RuntimeError(
-            "動画の書き出しに失敗しました: "
-            + stderr.decode("utf-8", errors="replace")[-500:]
-        )
-    return out_path
+    # 壊れたファイルを残すと、それが公開されて Instagram 側で ERROR になる。
+    out_path.unlink(missing_ok=True)
+    raise RuntimeError("動画を書き出せませんでした: " + " / ".join(problems))
 
 
 def cards_in(image_dir: Path) -> list[Path]:
