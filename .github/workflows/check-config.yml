@@ -3,6 +3,7 @@ name: 設定の点検
 # Secrets は仕組み上どこからも値を読み出せないため、Actions の中で実際に
 # API を叩いて確かめ、結果だけを output/config-check.md に書き戻します。
 # 資格情報そのものは一切出力しません（doctor は値を印字しません）。
+# 音源ライブラリは設定の有無ではなく、実際に検索して確かめます。
 
 on:
   workflow_dispatch:

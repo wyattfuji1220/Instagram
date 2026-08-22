@@ -754,23 +754,52 @@ def cmd_doctor(_: argparse.Namespace) -> int:
             print(f"[NG] Instagram アカウントに接続できません: {error}")
             problems += 1
 
-    if secrets.fb_access_token and secrets.fb_app_id and secrets.fb_app_secret:
-        fb_days = token_expiry_days(
-            FACEBOOK_API_HOST,
-            secrets.graph_api_version,
-            secrets.fb_app_id,
-            secrets.fb_app_secret,
+    # 音源は「引けるかどうか」を実際に叩いて確かめる。設定の有無だけ見ても、
+    # 権限やアカウント種別で引けないことがあるため当てにならない。
+    if secrets.fb_access_token and secrets.fb_ig_user_id:
+        audio = InstagramClient(
+            secrets.fb_ig_user_id,
             secrets.fb_access_token,
+            secrets.graph_api_version,
+            FACEBOOK_API_HOST,
         )
-        if fb_days is None:
-            print("[--] 音源用トークンの有効期限は取得できませんでした。")
-        elif fb_days <= 14:
-            print(f"[NG] 音源用トークンの残りが{fb_days}日です。fb-refresh-token で延長してください。")
+        try:
+            tracks = audio.search_audio("")
+        except PublishError as error:
+            print(f"[NG] 音源ライブラリを引けません: {error}")
             problems += 1
         else:
-            print(f"[ok] 音源用トークンの残り: {fb_days}日")
+            if tracks:
+                print(f"[ok] 音源ライブラリに接続できました（トレンド{len(tracks)}件）")
+            else:
+                print("[NG] 音源ライブラリが0件を返しました。リールは音源なしになります。")
+                problems += 1
+
+        if secrets.fb_app_id and secrets.fb_app_secret:
+            fb_days = token_expiry_days(
+                FACEBOOK_API_HOST,
+                secrets.graph_api_version,
+                secrets.fb_app_id,
+                secrets.fb_app_secret,
+                secrets.fb_access_token,
+            )
+            if fb_days is None:
+                print("[--] 音源用トークンの有効期限は取得できませんでした。")
+            elif fb_days <= 14:
+                print(f"[NG] 音源用トークンの残りが{fb_days}日です。fb-refresh-token で延長してください。")
+                problems += 1
+            else:
+                print(f"[ok] 音源用トークンの残り: {fb_days}日")
+        else:
+            print(
+                "[--] FB_APP_ID / FB_APP_SECRET が未設定です。"
+                " 音源は使えますが、トークンの残り日数は確認できません。"
+            )
     else:
-        print("[--] 音源用トークン未設定のため、リールは音源なしで投稿されます。")
+        print(
+            "[--] FB_ACCESS_TOKEN / FB_IG_USER_ID が未設定のため、"
+            "リールは音源なしで投稿されます。"
+        )
 
     for level, message in diagnose_rakuten():
         print(f"[{level}] {message}")
