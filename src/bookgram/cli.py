@@ -804,6 +804,42 @@ def cmd_whoami(_: argparse.Namespace) -> int:
 # -------------------------------------------------------------------------- fb-whoami
 
 
+PAGE_FIELDS = "id,name,instagram_business_account{id,username}"
+
+
+def _facebook_pages(client: InstagramClient) -> list[dict[str, Any]]:
+    """このトークンから見える Facebook ページを集める。
+
+    個人に紐づくページは /me/accounts で取れるが、ビジネスポートフォリオ
+    配下のページはそこに出てこない。business_management があれば
+    ビジネス経由でも辿れるので、両方を見る。
+    """
+
+    def fetch(path: str) -> list[dict[str, Any]]:
+        try:
+            return client._get(path, {"fields": PAGE_FIELDS}).get("data", [])
+        except PublishError as error:
+            print(f"[--] {path} は参照できません（{error}）")
+            return []
+
+    pages = {page["id"]: page for page in fetch("me/accounts")}
+    if pages:
+        return list(pages.values())
+
+    try:
+        businesses = client._get("me/businesses", {"fields": "id,name"}).get("data", [])
+    except PublishError as error:
+        print(f"[--] ビジネス一覧は参照できません（{error}）")
+        return []
+
+    for business in businesses:
+        print(f"[--] ビジネス「{business.get('name')}」を確認します")
+        for edge in ("owned_pages", "client_pages"):
+            for page in fetch(f"{business['id']}/{edge}"):
+                pages[page["id"]] = page
+    return list(pages.values())
+
+
 def cmd_fb_whoami(_: argparse.Namespace) -> int:
     """Facebook ログイン方式のトークンから FB_IG_USER_ID を調べる。
 
@@ -831,23 +867,17 @@ def cmd_fb_whoami(_: argparse.Namespace) -> int:
         mark = "ok" if needed in scopes else "NG"
         print(f"[{mark}] {needed}")
 
-    try:
-        pages = client._get(
-            "me/accounts",
-            {"fields": "id,name,instagram_business_account{id,username}"},
-        )
-    except PublishError as error:
-        print(f"[NG] ページ一覧を取得できません: {error}", file=sys.stderr)
-        return 1
-
+    pages = _facebook_pages(client)
     found = False
-    for page in pages.get("data", []):
+    for page in pages:
         account = page.get("instagram_business_account") or {}
         label = f"@{account['username']}" if account.get("username") else "(未連携)"
         print(f"[--] ページ「{page.get('name')}」→ Instagram {label}")
         if account.get("id"):
             found = True
             print(f"FB_IG_USER_ID: {account['id']}")
+    if not pages:
+        print("[NG] このトークンからは Facebook ページが1件も見えません。", file=sys.stderr)
 
     if not found:
         print(

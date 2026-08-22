@@ -117,7 +117,8 @@ class InstagramClient:
         }
         if query:
             params["search_query"] = query
-        return self._get("ig_audio", params).get("data", [])
+        # 他のエッジと違い、一覧は data ではなく audio に入って返る
+        return self._get("ig_audio", params).get("audio", [])
 
     def create_reel(
         self,
