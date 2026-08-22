@@ -4,9 +4,10 @@
 その逆なので、同じ素材を動画として作り直して露出を増やす。
 画像を使い回すため、生成AIの追加費用はかからない。
 
-ただし全10枚をそのまま流しても伸びない。リールは最初の1〜2秒で
-離脱が決まるため、表紙ではなく問いかけのカードから始め、
-書誌情報のような静かな面は落として8枚に絞る。
+ただし全10枚をそのまま流しても伸びない。実測すると平均視聴は2.6秒で、
+12.8秒の動画に対して維持率21%だった。1枚1.6秒に対し文面は25文字前後あり、
+表示時間内に読み終われないのが原因（日本語の黙読は速くて10文字/秒程度）。
+1枚あたりを読み切れる長さにし、そのぶん枚数を絞る。
 
 フレームは Pillow で作り、ffmpeg に生のRGBを流し込んで符号化する。
 ffmpeg の複雑なフィルタ式を書かずに、動きを完全に制御できる。
@@ -19,23 +20,26 @@ import tempfile
 from pathlib import Path
 
 import imageio_ffmpeg
-from PIL import Image, ImageFilter
+from PIL import Image
 
 from .config import STORY_HEIGHT, STORY_WIDTH
 
 FPS = 30
-SECONDS_PER_CARD = 1.6
+SECONDS_PER_CARD = 2.4  # 25文字前後を読み切れる長さ
 FADE_SECONDS = 0.35
 ZOOM_RANGE = 0.07  # 1枚のあいだに何倍まで寄せるか
-BACKGROUND_BLUR = 28
-BACKGROUND_DARKEN = 0.35
+# カードの外側を埋める色。以前は同じ絵のぼかしを敷いていたが、カードの枠線が
+# 見えて「投稿画像を貼っただけ」に見えるため、黒で落ち着かせる。
+BACKDROP = (10, 9, 12)
 # リールの下端はキャプションやボタンのUIに覆われる。カードを少し上げて逃がす。
-VERTICAL_SHIFT = 70
+VERTICAL_SHIFT = 40
 CRF = 30  # リールは何本も溜まるのでファイルを小さく保つ
 REEL_FILENAME = "reel.mp4"
 # 書籍投稿10枚のうち、動画で見せる並び（1始まり）。
-# 4=問いかけ を先頭に置いて掴み、2=書誌情報 と 3=おすすめ は落とす。
-BOOK_REEL_ORDER = (4, 1, 5, 6, 7, 8, 9, 10)
+# 1=結論 を先頭に置く。このカードだけフォントが大きく設計されており（render の
+# COVER_MAX_FONT）、1秒しかない場面では問いかけより情報のほうが速く伝わる。
+# 2=書誌情報 3=おすすめ と要点の後半は落とし、読み切れる枚数まで絞る。
+BOOK_REEL_ORDER = (1, 4, 5, 6, 10)
 
 
 def _frame_count() -> int:
@@ -47,33 +51,21 @@ def _fade_frames() -> int:
 
 
 def _compose(card: Image.Image, scale: float) -> Image.Image:
-    """1枚のカードを 9:16 の画面に配置する。背景は同じ絵をぼかして敷く。"""
-    background = card.resize(
-        (STORY_WIDTH, int(STORY_WIDTH * card.height / card.width)), Image.LANCZOS
-    )
-    # 画面を覆うまで拡大してから中央を切り出す
-    if background.height < STORY_HEIGHT:
-        ratio = STORY_HEIGHT / background.height
-        background = background.resize(
-            (int(background.width * ratio), STORY_HEIGHT), Image.LANCZOS
-        )
-    left = (background.width - STORY_WIDTH) // 2
-    top = (background.height - STORY_HEIGHT) // 2
-    background = background.crop(
-        (left, top, left + STORY_WIDTH, top + STORY_HEIGHT)
-    ).filter(ImageFilter.GaussianBlur(BACKGROUND_BLUR))
-    background = Image.blend(
-        background, Image.new("RGB", background.size, (8, 8, 10)), BACKGROUND_DARKEN
-    )
+    """1枚のカードを 9:16 の画面に配置する。余白は黒で埋める。
 
-    width = int(STORY_WIDTH * 0.92 * scale)
+    横幅は最大でも画面いっぱいまでにする。カードは端近くまで文字を置いて
+    いるので、これ以上寄せると文字が切れる（1.24倍で試したら「理解」の理と
+    「脳」が欠けた）。寄りの動きは 1/(1+ZOOM_RANGE) から 1.0 の範囲で作る。
+    """
+    frame = Image.new("RGB", (STORY_WIDTH, STORY_HEIGHT), BACKDROP)
+    width = int(STORY_WIDTH * scale / (1 + ZOOM_RANGE))
     height = int(width * card.height / card.width)
     foreground = card.resize((width, height), Image.LANCZOS)
-    background.paste(
+    frame.paste(
         foreground,
         ((STORY_WIDTH - width) // 2, (STORY_HEIGHT - height) // 2 - VERTICAL_SHIFT),
     )
-    return background
+    return frame
 
 
 def _card_frames(card: Image.Image) -> list[Image.Image]:

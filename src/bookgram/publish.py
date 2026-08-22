@@ -27,6 +27,9 @@ STATUS_POLL_MAX = 24  # 最大2分待つ
 REEL_POLL_MAX = 72  # 最大6分待つ
 
 
+# リールのサムネイルに使う位置（ミリ秒）。2枚目の表示中に当たる値。
+REEL_THUMB_MS = 3000
+
 # 投稿一覧で取る基本項目。insights と違い、ここは権限なしでも読める。
 MEDIA_FIELDS = (
     "id,media_type,media_product_type,caption,permalink,"
@@ -190,8 +193,10 @@ class InstagramClient:
             # フィードにも出す。リーチを取りに行くのがリールの目的なので、
             # プロフィールグリッドに並ぶことより露出を優先する。
             "share_to_feed": "true",
-            # 先頭フレーム（＝問いかけのカード）をサムネイルにする
-            "thumb_offset": "0",
+            # 動画は結論のカードから始めるが、それはカルーセルの1枚目と同じ絵
+            # なので、先頭をサムネイルにするとプロフィールに同じ絵が2つ並ぶ。
+            # 2枚目（問いかけ）の途中を選び、グリッド上で重複させない。
+            "thumb_offset": str(REEL_THUMB_MS),
         }
         if audio_configuration:
             payload["audio_configuration"] = json.dumps(audio_configuration)

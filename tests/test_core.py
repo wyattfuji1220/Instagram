@@ -411,20 +411,21 @@ def test_review_label_formats_count_and_average():
 # ------------------------------------------------------------------------- リール
 
 
-def test_reel_order_starts_with_the_question_card(tmp_path):
-    """リールは表紙ではなく問いかけから始め、書誌情報は落とす。"""
-    from bookgram.reel import reel_cards
+def test_reel_starts_with_the_conclusion_and_stays_readable(tmp_path):
+    """1枚目は文字の大きい結論のカード。枚数は読み切れる範囲に絞る。"""
+    from bookgram.reel import SECONDS_PER_CARD, reel_cards
 
     for i in range(1, 11):
         (tmp_path / f"{i:02d}.jpg").write_bytes(b"")
     (tmp_path / "story.jpg").write_bytes(b"")
 
     cards = [p.name for p in reel_cards(tmp_path, "book")]
-    assert cards[0] == "04.jpg"
-    assert cards[1] == "01.jpg"
-    assert "02.jpg" not in cards
+    assert cards[0] == "01.jpg"
+    assert cards[1] == "04.jpg"
+    assert "02.jpg" not in cards  # 書誌情報は動画では読ませない
     assert "story.jpg" not in cards
-    assert len(cards) == 8
+    # 総尺が伸びすぎないこと。長いほど維持率は落ちる。
+    assert len(cards) * SECONDS_PER_CARD <= 13
 
 
 def test_reel_uses_every_card_for_features(tmp_path):
@@ -598,11 +599,25 @@ def test_report_shows_reel_watch_time_in_seconds():
     assert "平均再生数: 300" in report
 
 
+def test_reel_opening_card_differs_from_the_thumbnail():
+    """動画の1枚目はカルーセルの表紙と同じ絵。サムネイルは別のカードにする。
+
+    同じにするとプロフィールのグリッドに同じ絵が2つ並ぶ。
+    """
+    from bookgram.publish import REEL_THUMB_MS
+    from bookgram.reel import BOOK_REEL_ORDER, SECONDS_PER_CARD
+
+    assert BOOK_REEL_ORDER[0] == 1  # 結論のカードから始める
+    shown_at = REEL_THUMB_MS / 1000
+    index = int(shown_at // SECONDS_PER_CARD)
+    assert BOOK_REEL_ORDER[index] != BOOK_REEL_ORDER[0]
+
+
 def test_retention_turns_watch_time_into_a_share_of_the_video():
     """12.8秒の3秒と30秒の3秒は意味が違う。必ず割合に直す。"""
     from bookgram.insights import retention, reel_seconds
 
-    assert reel_seconds(8) == pytest.approx(12.8)
+    assert reel_seconds(5) == pytest.approx(12.0)
     assert retention(2654, 12.8) == "21%"
     assert retention(2654, None) == "-"
     assert retention(None, 12.8) == "-"
