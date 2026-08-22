@@ -67,6 +67,9 @@ class Secrets:
     # 音源ライブラリ用。Facebook ログイン方式の資格情報で、通常投稿とは別枠。
     fb_ig_user_id: str
     fb_access_token: str
+    # 長期トークンの更新に使う。GitHub Secrets にも入れておくと自動更新できる。
+    fb_app_id: str
+    fb_app_secret: str
 
 
 def load_secrets(
@@ -91,6 +94,8 @@ def load_secrets(
         api_host=os.getenv("IG_API_HOST", "https://graph.facebook.com").rstrip("/"),
         fb_ig_user_id=os.getenv("FB_IG_USER_ID", ""),
         fb_access_token=os.getenv("FB_ACCESS_TOKEN", ""),
+        fb_app_id=os.getenv("FB_APP_ID", ""),
+        fb_app_secret=os.getenv("FB_APP_SECRET", ""),
     )
 
 

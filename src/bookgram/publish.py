@@ -200,6 +200,49 @@ class InstagramClient:
         return max(0, int((expires_at - time.time()) // 86400))
 
 
+def exchange_long_lived(
+    host: str, version: str, app_id: str, app_secret: str, token: str
+) -> tuple[str, int]:
+    """短期・長期どちらのユーザートークンでも、新しい長期トークンに引き換える。
+
+    返り値は (トークン, 残り日数)。Facebook ログイン方式の長期トークンは
+    60日で切れるので、切れる前に呼び直して延命する。
+    """
+    response = requests.get(
+        f"{host}/{version}/oauth/access_token",
+        params={
+            "grant_type": "fb_exchange_token",
+            "client_id": app_id,
+            "client_secret": app_secret,
+            "fb_exchange_token": token,
+        },
+        timeout=TIMEOUT,
+    )
+    data = InstagramClient._unwrap(response)
+    if "access_token" not in data:
+        raise PublishError("長期トークンへの交換に失敗しました。")
+    return data["access_token"], int(data.get("expires_in", 0)) // 86400
+
+
+def token_expiry_days(
+    host: str, version: str, app_id: str, app_secret: str, token: str
+) -> int | None:
+    """トークンの残り日数。取得できなければ None。"""
+    response = requests.get(
+        f"{host}/{version}/debug_token",
+        params={"input_token": token, "access_token": f"{app_id}|{app_secret}"},
+        timeout=TIMEOUT,
+    )
+    try:
+        data = InstagramClient._unwrap(response).get("data", {})
+    except PublishError:
+        return None
+    expires_at = data.get("expires_at")
+    if not expires_at:
+        return None
+    return max(0, int((expires_at - time.time()) // 86400))
+
+
 def verify_images_public(image_urls: list[str]) -> None:
     """画像が公開URLとして到達可能か確認する。
 

@@ -10,6 +10,7 @@
   python -m bookgram doctor      認証・トークン・キューの状態を点検する
   python -m bookgram whoami      アクセストークンから IG_USER_ID を調べる
   python -m bookgram fb-whoami   音源ライブラリ用のFacebookトークンを点検する
+  python -m bookgram fb-refresh-token  音源用の長期トークンを延長する
   python -m bookgram cleanup     古い画像を削除する
   python -m bookgram refresh-token  長期アクセストークンを延長する
 """
@@ -59,6 +60,8 @@ from .publish import (
     InstagramClient,
     PublishError,
     build_caption,
+    exchange_long_lived,
+    token_expiry_days,
     publish_carousel,
     publish_reel,
     publish_story,
@@ -751,6 +754,24 @@ def cmd_doctor(_: argparse.Namespace) -> int:
             print(f"[NG] Instagram アカウントに接続できません: {error}")
             problems += 1
 
+    if secrets.fb_access_token and secrets.fb_app_id and secrets.fb_app_secret:
+        fb_days = token_expiry_days(
+            FACEBOOK_API_HOST,
+            secrets.graph_api_version,
+            secrets.fb_app_id,
+            secrets.fb_app_secret,
+            secrets.fb_access_token,
+        )
+        if fb_days is None:
+            print("[--] 音源用トークンの有効期限は取得できませんでした。")
+        elif fb_days <= 14:
+            print(f"[NG] 音源用トークンの残りが{fb_days}日です。fb-refresh-token で延長してください。")
+            problems += 1
+        else:
+            print(f"[ok] 音源用トークンの残り: {fb_days}日")
+    else:
+        print("[--] 音源用トークン未設定のため、リールは音源なしで投稿されます。")
+
     for level, message in diagnose_rakuten():
         print(f"[{level}] {message}")
         if level == "NG":
@@ -913,6 +934,36 @@ def cmd_refresh_token(_: argparse.Namespace) -> int:
     return 0
 
 
+# ------------------------------------------------------------------ fb-refresh-token
+
+
+def cmd_fb_refresh_token(_: argparse.Namespace) -> int:
+    """音源ライブラリ用の長期トークンを延長する（60日ごと）。"""
+    secrets = load_secrets(
+        require=("FB_APP_ID", "FB_APP_SECRET", "FB_ACCESS_TOKEN")
+    )
+    try:
+        token, days = exchange_long_lived(
+            FACEBOOK_API_HOST,
+            secrets.graph_api_version,
+            secrets.fb_app_id,
+            secrets.fb_app_secret,
+            secrets.fb_access_token,
+        )
+    except PublishError as error:
+        print(f"[NG] {error}", file=sys.stderr)
+        print(
+            "トークンが失効している場合は、認証URLからの取り直しが必要です。"
+            " SETUP.md を参照してください。",
+            file=sys.stderr,
+        )
+        return 1
+    print("新しい長期トークン（GitHub Secrets の FB_ACCESS_TOKEN を差し替えてください）:")
+    print(token)
+    print(f"有効期間: 約{days}日")
+    return 0
+
+
 # ---------------------------------------------------------------------------- cleanup
 
 
@@ -1006,6 +1057,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "fb-whoami", help="Facebookログイン方式のトークンを点検する"
     ).set_defaults(func=cmd_fb_whoami)
+    sub.add_parser(
+        "fb-refresh-token", help="音源ライブラリ用の長期トークンを延長する"
+    ).set_defaults(func=cmd_fb_refresh_token)
     sub.add_parser("cleanup", help="古い画像を削除").set_defaults(func=cmd_cleanup)
 
     args = parser.parse_args(argv)
