@@ -1005,13 +1005,15 @@ def cmd_stats(args: argparse.Namespace) -> int:
     音源と同じく Facebook ログイン方式のトークンを使う。Instagram ログイン
     方式では insights が引けないため。
     """
-    secrets = load_secrets()
-    client = audio_client(secrets)
-    if client is None:
-        print(
-            "[NG] FB_ACCESS_TOKEN / FB_IG_USER_ID が要ります。", file=sys.stderr
-        )
-        return 1
+    secrets = load_secrets(require=("IG_USER_ID", "IG_ACCESS_TOKEN"))
+    # 音源と違い、insights は投稿用トークン（Instagram ログイン方式）で引ける。
+    # Facebook ログイン方式だと instagram_manage_insights の追加申請が要る。
+    client = InstagramClient(
+        secrets.ig_user_id,
+        secrets.ig_access_token,
+        secrets.graph_api_version,
+        secrets.api_host,
+    )
 
     try:
         profile = client._get(
@@ -1023,7 +1025,15 @@ def cmd_stats(args: argparse.Namespace) -> int:
         print(f"[NG] 読み出せません: {error}", file=sys.stderr)
         return 1
 
-    report = insights.build_report(profile, account, rows, today_jst())
+    # 下書きに残したカード枚数から動画の長さを逆算し、維持率を出せるようにする。
+    # リールを出した日と素材になった投稿の日はずれるので、media_id で結ぶ。
+    durations: dict[str, float] = {}
+    for path in sorted(DRAFTS_DIR.glob("*/post.json")):
+        reel = (json.loads(path.read_text(encoding="utf-8")).get("reel")) or {}
+        if reel.get("media_id") and reel.get("cards"):
+            durations[str(reel["media_id"])] = insights.reel_seconds(reel["cards"])
+
+    report = insights.build_report(profile, account, rows, today_jst(), durations)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     path = OUTPUT_DIR / "stats.md"
     path.write_text(report, encoding="utf-8")
@@ -1031,8 +1041,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
 
     if not account:
         print(
-            "[--] アカウント全体の数字が取れていません。"
-            "instagram_manage_insights 権限を付け直してください。"
+            "[--] アカウント全体の数字が取れませんでした。"
         )
     print(f"[done] {path}")
     return 0

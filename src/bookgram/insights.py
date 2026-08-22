@@ -6,8 +6,9 @@
   再生が多くて反応が薄い → 届いてはいる。中身か締めの問題。
   そもそも再生が少ない   → 配信されていない。掴みか形式の問題。
 
-この切り分けに要る数字だけを取る。取得には instagram_manage_insights が要り、
-権限が無いと Graph API は 400 を返す。その場合は取れた分だけ出す。
+この切り分けに要る数字だけを取る。音源と違い投稿用トークン（Instagram
+ログイン方式）でそのまま引ける。Facebook ログイン方式で引こうとすると
+instagram_manage_insights の追加申請が要るので、そちらは使わない。
 
 結果は output/stats.md にも書く。GitHub Actions のジョブログは管理者しか
 読めないため、リポジトリに残さないと後から確認できない。
@@ -19,6 +20,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from .publish import InstagramClient, PublishError
+from .reel import SECONDS_PER_CARD
 
 # アカウント全体。期間で集計する指標。
 ACCOUNT_METRICS = [
@@ -82,6 +84,22 @@ def _seconds(milliseconds: int | None) -> str:
     return f"{milliseconds / 1000:.1f}秒"
 
 
+def reel_seconds(cards: int) -> float:
+    """カード枚数から動画の長さ。下書きに残した枚数から逆算する。"""
+    return cards * SECONDS_PER_CARD
+
+
+def retention(milliseconds: int | None, seconds: float | None) -> str:
+    """平均視聴時間を、動画の長さに対する割合にする。
+
+    リールの配信量はこの割合でほぼ決まる。秒数だけ見ても、12秒の動画の
+    3秒と30秒の動画の3秒では意味が違うので、必ず割合に直して見る。
+    """
+    if not milliseconds or not seconds:
+        return "-"
+    return f"{milliseconds / 1000 / seconds * 100:.0f}%"
+
+
 def _kind(media: dict[str, Any]) -> str:
     if is_reel(media):
         return "リール"
@@ -93,8 +111,14 @@ def build_report(
     account: dict[str, int],
     rows: list[dict[str, Any]],
     today: date,
+    durations: dict[str, float] | None = None,
 ) -> str:
-    """人が読む形にまとめる。数字が取れていない欄は - にする。"""
+    """人が読む形にまとめる。数字が取れていない欄は - にする。
+
+    durations は media_id から動画の秒数への対応。リールを出した日と、
+    動画の素材になった投稿の日はずれるので、日付では結べない。
+    """
+    durations = durations or {}
     out: list[str] = []
     add = out.append
 
@@ -125,13 +149,13 @@ def build_report(
             if key in account:
                 add(f"| {label} | {account[key]:,} |")
     else:
-        add("取得できませんでした（instagram_manage_insights 権限が要ります）。")
+        add("取得できませんでした。")
     add("")
 
     add("## 投稿ごと")
     add("")
-    add("| 日付 | 種別 | 再生/表示 | リーチ | いいね | 保存 | 平均視聴 |")
-    add("|---|---|---|---|---|---|---|")
+    add("| 日付 | 種別 | 再生/表示 | リーチ | いいね | 保存 | 平均視聴 | 維持率 |")
+    add("|---|---|---|---|---|---|---|---|")
     for media in rows:
         stats = media["stats"]
         views = stats.get("views")
@@ -145,8 +169,14 @@ def build_report(
             f"| {reach if reach is not None else '-'} "
             f"| {media.get('like_count', 0)} "
             f"| {saved if saved is not None else '-'} "
-            f"| {_seconds(watch)} |"
+            f"| {_seconds(watch)} "
+            f"| {retention(watch, durations.get(media.get('id', '')))} |"
         )
+    add("")
+    add(
+        "※ 再生/表示は後から作られた指標のため、古い投稿では 0 と返る。"
+        "「見られていない」ではなく「計測されていない」。"
+    )
     add("")
 
     reels = [m for m in rows if is_reel(m)]
@@ -168,6 +198,21 @@ def build_report(
             add(f"- 平均再生数: {sum(seen) / len(seen):.0f}")
         if watched:
             add(f"- 平均視聴時間: {_seconds(int(sum(watched) / len(watched)))}")
+        held = [
+            retention(
+                m["stats"].get("ig_reels_avg_watch_time"),
+                durations.get(m.get("id", "")),
+            )
+            for m in reels
+        ]
+        held = [h for h in held if h != "-"]
+        if held:
+            add(f"- 視聴維持率: {' / '.join(held)}")
+            add("")
+            add(
+                "目安として、維持率が5割を超えると配信が伸び始める。"
+                "2割台なら、離脱しているのは冒頭の数秒。"
+            )
         if not (seen or watched):
             add("- まだ数字が取れていません。")
         add("")

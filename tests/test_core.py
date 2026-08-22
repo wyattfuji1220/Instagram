@@ -575,6 +575,7 @@ def test_insights_reads_both_value_shapes():
 
 def _reel_row(stats):
     return {
+        "id": "m1",
         "timestamp": "2026-08-22T10:00:00+0000",
         "media_type": "VIDEO",
         "media_product_type": "REELS",
@@ -586,8 +587,8 @@ def _reel_row(stats):
 def test_report_marks_missing_numbers_rather_than_showing_zero():
     """権限が無くて取れない値を 0 と書くと判断を誤らせる。- で出す。"""
     report = build_report({"username": "x"}, {}, [_reel_row({})], date(2026, 8, 22))
-    assert "| リール | - | - | 0 | - | - |" in report
-    assert "instagram_manage_insights" in report
+    assert "| リール | - | - | 0 | - | - | - |" in report
+    assert "取得できませんでした。" in report
 
 
 def test_report_shows_reel_watch_time_in_seconds():
@@ -595,3 +596,31 @@ def test_report_shows_reel_watch_time_in_seconds():
     report = build_report({"username": "x"}, {"reach": 280}, [row], date(2026, 8, 22))
     assert "4.2秒" in report
     assert "平均再生数: 300" in report
+
+
+def test_retention_turns_watch_time_into_a_share_of_the_video():
+    """12.8秒の3秒と30秒の3秒は意味が違う。必ず割合に直す。"""
+    from bookgram.insights import retention, reel_seconds
+
+    assert reel_seconds(8) == pytest.approx(12.8)
+    assert retention(2654, 12.8) == "21%"
+    assert retention(2654, None) == "-"
+    assert retention(None, 12.8) == "-"
+
+
+def test_retention_is_keyed_by_media_id_not_date():
+    """リールを出した日と、素材になった投稿の日はずれる。日付では結べない。"""
+    row = _reel_row({"ig_reels_avg_watch_time": 2654})
+    report = build_report(
+        {"username": "x"}, {}, [row], date(2026, 8, 22), {"2026-08-22": 12.8}
+    )
+    assert "| 2.7秒 | - |" in report
+
+
+def test_report_shows_retention_when_the_reel_length_is_known():
+    row = _reel_row({"views": 57, "reach": 53, "ig_reels_avg_watch_time": 2654})
+    report = build_report(
+        {"username": "x"}, {}, [row], date(2026, 8, 22), {"m1": 12.8}
+    )
+    assert "| 2.7秒 | 21% |" in report
+    assert "視聴維持率: 21%" in report

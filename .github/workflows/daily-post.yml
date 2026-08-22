@@ -52,6 +52,17 @@ jobs:
             ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
+      - name: 届き方の数字を記録
+        if: ${{ !inputs.dry_run }}
+        # 投稿の成否とは切り離す。数字が取れなくても投稿は成功扱いにする。
+        continue-on-error: true
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_API_HOST: ${{ vars.IG_API_HOST || 'https://graph.facebook.com' }}
+          PYTHONPATH: src
+        run: python -m bookgram stats --limit 20
+
       - name: 投稿記録をコミット
         if: ${{ !inputs.dry_run }}
         run: |
@@ -63,7 +74,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "投稿記録: $(date -u -d '+9 hours' +%Y-%m-%d)"
+          git commit -m "投稿記録と反応の数字: $(date -u -d '+9 hours' +%Y-%m-%d)"
           git push origin main
 
       - name: 失敗を通知
