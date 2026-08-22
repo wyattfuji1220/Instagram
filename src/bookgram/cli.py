@@ -9,6 +9,7 @@
   python -m bookgram preview     プレビューページだけ作り直す
   python -m bookgram doctor      認証・トークン・キューの状態を点検する
   python -m bookgram whoami      アクセストークンから IG_USER_ID を調べる
+  python -m bookgram fb-whoami   音源ライブラリ用のFacebookトークンを点検する
   python -m bookgram cleanup     古い画像を削除する
   python -m bookgram refresh-token  長期アクセストークンを延長する
 """
@@ -34,6 +35,7 @@ from .config import (
     JST,
     POSTED_LOG,
     QUEUE_LOW_THRESHOLD,
+    FACEBOOK_API_HOST,
     feature_kind_for,
     load_secrets,
 )
@@ -61,6 +63,7 @@ from .publish import (
     publish_reel,
     publish_story,
 )
+from .music import pick_audio, recent_audio_ids
 from .reel import REEL_FILENAME, build_reel, reel_cards
 from .render import (
     STORY_FILENAME,
@@ -577,6 +580,44 @@ def cmd_reel(args: argparse.Namespace) -> int:
     return 0
 
 
+def audio_client(secrets: Any) -> InstagramClient | None:
+    """音源ライブラリを引ける（Facebook ログイン方式の）クライアント。
+
+    資格情報が無ければ None。呼び出し側は音源なしで進める。
+    """
+    if not (secrets.fb_access_token and secrets.fb_ig_user_id):
+        return None
+    return InstagramClient(
+        secrets.fb_ig_user_id,
+        secrets.fb_access_token,
+        secrets.graph_api_version,
+        FACEBOOK_API_HOST,
+    )
+
+
+def select_audio(
+    client: InstagramClient, draft: dict[str, Any], secrets: Any
+) -> dict[str, Any] | None:
+    """本の雰囲気に合う音源を1つ選ぶ。引けなければ None。"""
+    if not (secrets.fb_access_token and secrets.fb_ig_user_id):
+        print("[reel] FB_ACCESS_TOKEN が未設定のため音源なしで投稿します。")
+        return None
+
+    recent = recent_audio_ids(
+        [d for d in (bookqueue.load_draft(x) for x in _draft_days()) if d]
+    )
+
+    def search(query: str) -> list[dict[str, Any]]:
+        try:
+            return client.search_audio(query)
+        except PublishError as error:
+            # 音源が引けなくてもリール自体は出したい
+            print(f"[warn] 音源の検索に失敗しました: {error}", file=sys.stderr)
+            return []
+
+    return pick_audio(search, draft, recent)
+
+
 def cmd_post_reel(args: argparse.Namespace) -> int:
     """組み立て済みの動画をリールとして投稿する。"""
     required = () if args.dry_run else ("IG_USER_ID", "IG_ACCESS_TOKEN")
@@ -595,22 +636,37 @@ def cmd_post_reel(args: argparse.Namespace) -> int:
     video_url = f"{secrets.pages_base_url}/img/{day.isoformat()}/{REEL_FILENAME}"
     caption = build_caption(draft)
 
-    if args.dry_run:
-        print(f"[dry-run] リール {day} 『{draft_label(draft)}』")
-        print(f"  video: {video_url}")
-        print("--- caption ---")
-        print(caption)
-        return 0
-
-    client = InstagramClient(
+    # 音源ライブラリは Facebook ログイン方式でしか使えない。資格情報が
+    # あればそちらで投稿し、無ければ従来どおり無音で出す。
+    client = audio_client(secrets) or InstagramClient(
         secrets.ig_user_id,
         secrets.ig_access_token,
         secrets.graph_api_version,
         secrets.api_host,
     )
+    track = select_audio(client, draft, secrets)
+    configuration = None
+    if track:
+        print(f"[reel] 音源: {track['title']}／{track.get('display_artist', '')}"
+              f"（{track['mood']} / 検索語「{track['query'] or 'トレンド'}」）")
+        configuration = {
+            "audio_id": track["audio_id"],
+            "audio_volume": 100,
+            # 動画側は無音なので明示的に切っておく
+            "video_volume": 0,
+        }
+
+    if args.dry_run:
+        print(f"[dry-run] リール {day} 『{draft_label(draft)}』")
+        print(f"  video: {video_url}")
+        print(f"  audio: {configuration or '（音源なし）'}")
+        print("--- caption ---")
+        print(caption)
+        return 0
+
     print(f"[reel] {day} 『{draft_label(draft)}』 をリール投稿中…")
     try:
-        media_id = publish_reel(client, video_url, caption)
+        media_id = publish_reel(client, video_url, caption, configuration)
     except PublishError as error:
         print(f"::error::リールの投稿に失敗しました: {error}", file=sys.stderr)
         return 1
@@ -618,6 +674,11 @@ def cmd_post_reel(args: argparse.Namespace) -> int:
     reel = draft.setdefault("reel", {})
     reel["media_id"] = media_id
     reel["posted_at"] = datetime.now(JST).isoformat()
+    if track:
+        reel["audio"] = {
+            key: track.get(key)
+            for key in ("audio_id", "title", "display_artist", "mood", "query")
+        }
     bookqueue.save_draft(day, draft)
     _append_log(
         {
@@ -740,6 +801,65 @@ def cmd_whoami(_: argparse.Namespace) -> int:
     return 0
 
 
+# -------------------------------------------------------------------------- fb-whoami
+
+
+def cmd_fb_whoami(_: argparse.Namespace) -> int:
+    """Facebook ログイン方式のトークンから FB_IG_USER_ID を調べる。
+
+    音源ライブラリ(Audio API)を使うための下ごしらえ。付与された権限も
+    出すので、足りないものがあればここで分かる。
+    """
+    secrets = load_secrets(require=("FB_ACCESS_TOKEN",))
+    client = InstagramClient(
+        "me", secrets.fb_access_token, secrets.graph_api_version, FACEBOOK_API_HOST
+    )
+
+    try:
+        granted = client._get("me/permissions", {})
+    except PublishError as error:
+        print(f"[NG] トークンを確認できません: {error}", file=sys.stderr)
+        return 1
+
+    scopes = {
+        row["permission"]
+        for row in granted.get("data", [])
+        if row.get("status") == "granted"
+    }
+    print("付与されている権限: " + (", ".join(sorted(scopes)) or "(なし)"))
+    for needed in ("instagram_basic", "instagram_content_publish", "pages_show_list"):
+        mark = "ok" if needed in scopes else "NG"
+        print(f"[{mark}] {needed}")
+
+    try:
+        pages = client._get(
+            "me/accounts",
+            {"fields": "id,name,instagram_business_account{id,username}"},
+        )
+    except PublishError as error:
+        print(f"[NG] ページ一覧を取得できません: {error}", file=sys.stderr)
+        return 1
+
+    found = False
+    for page in pages.get("data", []):
+        account = page.get("instagram_business_account") or {}
+        label = f"@{account['username']}" if account.get("username") else "(未連携)"
+        print(f"[--] ページ「{page.get('name')}」→ Instagram {label}")
+        if account.get("id"):
+            found = True
+            print(f"FB_IG_USER_ID: {account['id']}")
+
+    if not found:
+        print(
+            "[NG] Instagram と連携済みの Facebook ページが見つかりません。"
+            " ページを作成し、Instagram のプロアカウントと連携してください。",
+            file=sys.stderr,
+        )
+        return 1
+    print("この FB_IG_USER_ID を GitHub Secrets と .env に設定してください。")
+    return 0
+
+
 # ----------------------------------------------------------------------- refresh-token
 
 
@@ -853,6 +973,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("refresh-token", help="長期トークンを延長する").set_defaults(
         func=cmd_refresh_token
     )
+    sub.add_parser(
+        "fb-whoami", help="Facebookログイン方式のトークンを点検する"
+    ).set_defaults(func=cmd_fb_whoami)
     sub.add_parser("cleanup", help="古い画像を削除").set_defaults(func=cmd_cleanup)
 
     args = parser.parse_args(argv)

@@ -113,6 +113,9 @@ jobs:
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          # 音源ライブラリ用。未設定なら音源なしで投稿される。
+          FB_IG_USER_ID: ${{ secrets.FB_IG_USER_ID }}
+          FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
           IG_API_HOST: ${{ vars.IG_API_HOST || 'https://graph.facebook.com' }}
           PYTHONPATH: src

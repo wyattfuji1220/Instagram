@@ -446,3 +446,73 @@ def test_broken_video_is_rejected_before_upload(tmp_path):
     # ftyp だけあって moov atom が無い、書き出し途中のファイルを模す
     truncated.write_bytes(b"\x00\x00\x00\x20ftypisom" + b"\x00" * 4096)
     assert not _is_playable(truncated)
+
+
+# ------------------------------------------------------------------------- 音源
+
+
+def test_mood_follows_the_book_theme():
+    from bookgram.music import mood_for
+
+    business = {
+        "book_title": "経営戦略の要諦",
+        "hashtags": ["#経営", "#戦略"],
+        "summary": {"text": "組織をどう動かすかという経営の話です。"},
+    }
+    assert mood_for(business) == "力強い"
+
+    novel = {
+        "book_title": "月の立つ林で",
+        "hashtags": ["#小説"],
+        "summary": {"text": "人生と家族をめぐる物語です。"},
+    }
+    assert mood_for(novel) == "静か"
+
+    # 手掛かりが無ければ既定値に落ちる
+    assert mood_for({"book_title": "無題"}) == "静か"
+
+
+def test_audio_search_falls_back_to_trending():
+    """雰囲気に合う曲が無ければ、検索語なし（＝トレンド）まで落ちる。"""
+    from bookgram.music import pick_audio
+
+    asked = []
+
+    def search(query):
+        asked.append(query)
+        return [{"audio_id": "111", "title": "Trending"}] if query == "" else []
+
+    draft = {"book_title": "経営戦略の要諦", "hashtags": ["#経営"]}
+    chosen = pick_audio(search, draft, [])
+
+    assert chosen["audio_id"] == "111"
+    assert asked[-1] == ""  # 最後にトレンドを引いている
+    assert len(asked) > 1  # その前に雰囲気つきの検索も試している
+
+
+def test_audio_avoids_recently_used_tracks():
+    from bookgram.music import pick_audio
+
+    tracks = [
+        {"audio_id": "a", "title": "A"},
+        {"audio_id": "b", "title": "B"},
+    ]
+    draft = {"book_title": "月の立つ林で"}
+
+    first = pick_audio(lambda q: tracks, draft, [])
+    second = pick_audio(lambda q: tracks, draft, [first["audio_id"]])
+    assert second["audio_id"] != first["audio_id"]
+
+    # 同じ本・同じ条件なら毎回同じ曲になる（作り直しても揺れない）
+    assert pick_audio(lambda q: tracks, draft, [])["audio_id"] == first["audio_id"]
+
+
+def test_recent_audio_ids_reads_reel_records():
+    from bookgram.music import recent_audio_ids
+
+    drafts = [
+        {"reel": {"audio": {"audio_id": "new"}}},
+        {"reel": {}},
+        {"reel": {"audio": {"audio_id": "old"}}},
+    ]
+    assert recent_audio_ids(drafts) == ["new", "old"]

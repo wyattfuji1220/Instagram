@@ -49,6 +49,9 @@ FEATURE_WEEKDAYS = tuple(FEATURE_SCHEDULE)
 REEL_WEEKDAYS = (0, 2, 4)
 IMAGE_RETENTION_DAYS = 45
 PAGES_PREVIEW_DIRNAME = "preview"
+# 音源ライブラリ(Audio API)は Facebook ログイン方式専用。通常投稿は
+# Instagram ログイン方式のまま動かせるよう、ホストを分けて持つ。
+FACEBOOK_API_HOST = "https://graph.facebook.com"
 
 
 @dataclass(frozen=True)
@@ -59,6 +62,9 @@ class Secrets:
     pages_base_url: str
     graph_api_version: str
     api_host: str
+    # 音源ライブラリ用。Facebook ログイン方式の資格情報で、通常投稿とは別枠。
+    fb_ig_user_id: str
+    fb_access_token: str
 
 
 def load_secrets(
@@ -81,6 +87,8 @@ def load_secrets(
         ).rstrip("/"),
         graph_api_version=os.getenv("GRAPH_API_VERSION", "v23.0"),
         api_host=os.getenv("IG_API_HOST", "https://graph.facebook.com").rstrip("/"),
+        fb_ig_user_id=os.getenv("FB_IG_USER_ID", ""),
+        fb_access_token=os.getenv("FB_ACCESS_TOKEN", ""),
     )
 
 

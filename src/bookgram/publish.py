@@ -10,6 +10,7 @@
 
 from __future__ import annotations
 
+import json
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -101,20 +102,42 @@ class InstagramClient:
         )
         return result["id"]
 
-    def create_reel(self, video_url: str, caption: str) -> str:
-        result = self._post(
-            f"{self.ig_user_id}/media",
-            {
-                "media_type": "REELS",
-                "video_url": video_url,
-                "caption": caption,
-                # フィードにも出す。リーチを取りに行くのがリールの目的なので、
-                # プロフィールグリッドに並ぶことより露出を優先する。
-                "share_to_feed": "true",
-                # 先頭フレーム（＝問いかけのカード）をサムネイルにする
-                "thumb_offset": "0",
-            },
-        )
+    def search_audio(
+        self, query: str = "", *, audio_type: str = "music", limit: int = 25
+    ) -> list[dict[str, Any]]:
+        """Instagram の音源ライブラリを検索する。
+
+        検索語を省くとトレンドが返る。Facebook ログイン方式でしか使えない。
+        返るのは第三者利用が許諾された曲だけで、アプリ内の全曲ではない。
+        """
+        params: dict[str, Any] = {
+            "audio_type": audio_type,
+            "user_id": self.ig_user_id,
+            "limit": limit,
+        }
+        if query:
+            params["search_query"] = query
+        return self._get("ig_audio", params).get("data", [])
+
+    def create_reel(
+        self,
+        video_url: str,
+        caption: str,
+        audio_configuration: dict[str, Any] | None = None,
+    ) -> str:
+        payload: dict[str, Any] = {
+            "media_type": "REELS",
+            "video_url": video_url,
+            "caption": caption,
+            # フィードにも出す。リーチを取りに行くのがリールの目的なので、
+            # プロフィールグリッドに並ぶことより露出を優先する。
+            "share_to_feed": "true",
+            # 先頭フレーム（＝問いかけのカード）をサムネイルにする
+            "thumb_offset": "0",
+        }
+        if audio_configuration:
+            payload["audio_configuration"] = json.dumps(audio_configuration)
+        result = self._post(f"{self.ig_user_id}/media", payload)
         return result["id"]
 
     def create_story(self, image_url: str) -> str:
@@ -207,10 +230,15 @@ def publish_carousel(
     return client.publish(creation_id)
 
 
-def publish_reel(client: InstagramClient, video_url: str, caption: str) -> str:
+def publish_reel(
+    client: InstagramClient,
+    video_url: str,
+    caption: str,
+    audio_configuration: dict[str, Any] | None = None,
+) -> str:
     """リールを投稿して media_id を返す。"""
     verify_images_public([video_url])
-    creation_id = client.create_reel(video_url, caption)
+    creation_id = client.create_reel(video_url, caption, audio_configuration)
     client.wait_until_ready(creation_id, REEL_POLL_MAX)
     return client.publish(creation_id)
 
