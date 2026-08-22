@@ -52,8 +52,17 @@ jobs:
           PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
           IG_API_HOST: ${{ vars.IG_API_HOST || 'https://graph.facebook.com' }}
           PYTHONPATH: src
+          # Secrets と Variables のどちらに入っているかを切り分けるための確認用。
+          # 値は出力せず、入っているかどうかだけを見る。
+          PROBE_SECRET_FB_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+          PROBE_SECRET_FB_USER: ${{ secrets.FB_IG_USER_ID }}
+          PROBE_VAR_FB_TOKEN: ${{ vars.FB_ACCESS_TOKEN }}
+          PROBE_VAR_FB_USER: ${{ vars.FB_IG_USER_ID }}
         run: |
           mkdir -p output
+          probe() {
+            if [ -n "$2" ]; then echo "  $1: 入っています"; else echo "  $1: 空です"; fi
+          }
           {
             echo "# GitHub Actions 上での設定点検"
             echo
@@ -61,6 +70,17 @@ jobs:
             echo
             echo '```'
             python -m bookgram doctor 2>&1 || true
+            echo '```'
+            echo
+            echo "## 音源用の設定はどこに入っているか"
+            echo
+            echo '```'
+            echo "Secrets 側"
+            probe FB_ACCESS_TOKEN "$PROBE_SECRET_FB_TOKEN"
+            probe FB_IG_USER_ID "$PROBE_SECRET_FB_USER"
+            echo "Variables 側"
+            probe FB_ACCESS_TOKEN "$PROBE_VAR_FB_TOKEN"
+            probe FB_IG_USER_ID "$PROBE_VAR_FB_USER"
             echo '```'
           } > output/config-check.md
           cat output/config-check.md
