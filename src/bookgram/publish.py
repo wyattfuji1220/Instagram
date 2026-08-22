@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import time
+from datetime import date
 from dataclasses import dataclass
 from typing import Any
 
@@ -257,8 +258,41 @@ def caption_for(draft: dict[str, Any]) -> str:
     return build_caption(draft)
 
 
+# 生成側が書いていた定型の締め。問いかけはシステム側で付け直すので落とす。
+BOILERPLATE_CLOSINGS = (
+    "おすすめな本があれば",
+    "おすすめの本があれば",
+)
+
+
+def strip_boilerplate_closing(body: str) -> str:
+    """本文末尾の定型のコメント誘導を取り除く。"""
+    trimmed = body.strip()
+    for phrase in BOILERPLATE_CLOSINGS:
+        index = trimmed.find(phrase)
+        if index != -1:
+            trimmed = trimmed[:index].rstrip()
+    return trimmed
+
+
+def closing_question(draft: dict[str, Any], account: dict[str, Any]) -> str:
+    """締めに入れる問いかけ。日付で順に回すので連日同じにはならない。
+
+    コメントはいいねよりアルゴリズムに効くが、答えるのに手間がかかる問いは
+    返ってこない。1秒で答えが決まるものだけを account.yaml に並べてある。
+    """
+    questions = account.get("closing_questions") or []
+    if not questions:
+        return ""
+    try:
+        ordinal = date.fromisoformat(draft.get("date", "")).toordinal()
+    except ValueError:
+        ordinal = 0
+    return questions[ordinal % len(questions)]
+
+
 def build_caption(draft: dict[str, Any]) -> str:
-    """本文・アカウント紹介・ハッシュタグを Instagram のキャプション形式に組み立てる。
+    """本文・問いかけ・アカウント紹介・ハッシュタグを組み立てる。
 
     定型部分は account.yaml から読む。
     """
@@ -271,9 +305,13 @@ def build_caption(draft: dict[str, Any]) -> str:
         if tag not in tags:
             tags.append(tag)
 
+    body = strip_boilerplate_closing(draft["caption"])
+    question = closing_question(draft, account)
+
     return NEWLINE.join(
         [
-            draft["caption"].strip(),
+            body,
+            *(["", question] if question else []),
             "",
             "-------------------------------",
             "",

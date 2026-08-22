@@ -8,8 +8,8 @@ name: 週3 リール投稿
 
 on:
   schedule:
-    # 月・水・金 19:00 JST = 同日 10:00 UTC
-    - cron: "0 10 * * 1,3,5"
+    # 月〜金 19:00 JST = 同日 10:00 UTC
+    - cron: "0 10 * * 1-5"
   workflow_dispatch:
     inputs:
       date:

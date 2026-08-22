@@ -45,8 +45,10 @@ FEATURE_SCHEDULE: dict[int, tuple[str, ...]] = {
     3: ("classic", "novel"),
 }
 FEATURE_WEEKDAYS = tuple(FEATURE_SCHEDULE)
-# リールを出す曜日（月・水・金）。フィードとは別枠で、過去の投稿を動画化する。
-REEL_WEEKDAYS = (0, 2, 4)
+# リールを出す曜日（月〜金）。フィードとは別枠で、過去の投稿を動画化する。
+# カルーセルはフォロワーにしか届かないが、リールは外部にも配信される。
+# 素材は既存カードの使い回しなので、本数を増やしても費用は増えない。
+REEL_WEEKDAYS = (0, 1, 2, 3, 4)
 IMAGE_RETENTION_DAYS = 45
 PAGES_PREVIEW_DIRNAME = "preview"
 # 音源ライブラリ(Audio API)は Facebook ログイン方式専用。通常投稿は
