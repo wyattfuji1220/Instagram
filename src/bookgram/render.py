@@ -312,16 +312,21 @@ def build_story_context(post: dict[str, Any], feed_image: str = "") -> dict[str,
     }
 
 
-def render_cover(post: dict[str, Any], out_dir: Path) -> Path:
-    """表紙カード（01.jpg）だけを描き直す。
+# account.yaml の固定文言が載るカード（0始まりの位置）。
+# 0=表紙 に cover_tag、9=最終面 に account_name と outro_text が入る。
+FIXED_TEXT_SLIDES = (0, 9)
 
-    account.yaml の cover_tag のように表紙にしか出ない文言を変えたとき、
-    10枚すべてを作り直すと1投稿あたり1.5MB がリポジトリに積み上がる。
-    変わる1枚だけを差し替える。
+
+def render_fixed_text_cards(post: dict[str, Any], out_dir: Path) -> list[Path]:
+    """アカウントの固定文言が載るカードだけを描き直す。
+
+    cover_tag やアカウント名を変えたときに使う。10枚すべてを作り直すと
+    1投稿あたり1.5MB がリポジトリに積み上がるので、変わる面だけ差し替える。
+    top_note は全カードに出るため、あれを変えたときは全部作り直すこと。
     """
     template = _env().get_template("card.html.j2")
-    context = build_card_contexts(post)[0]
-    path = out_dir / "01.jpg"
+    contexts = build_card_contexts(post)
+    paths: list[Path] = []
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
@@ -329,11 +334,14 @@ def render_cover(post: dict[str, Any], out_dir: Path) -> Path:
             viewport={"width": CARD_WIDTH, "height": CARD_HEIGHT},
             device_scale_factor=1,
         )
-        page.set_content(template.render(**context), wait_until="load")
-        page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
+        for index in FIXED_TEXT_SLIDES:
+            page.set_content(template.render(**contexts[index]), wait_until="load")
+            path = out_dir / f"{index + 1:02d}.jpg"
+            page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
+            paths.append(path)
         browser.close()
 
-    return path
+    return paths
 
 
 def render_story(post: dict[str, Any], out_dir: Path) -> Path:

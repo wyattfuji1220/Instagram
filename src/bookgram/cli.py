@@ -75,7 +75,7 @@ from .render import (
     STORY_FILENAME,
     fetch_cover_data_uri,
     render_feature,
-    render_cover,
+    render_fixed_text_cards,
     render_post,
     render_story,
 )
@@ -323,13 +323,13 @@ def cmd_rerender(args: argparse.Namespace) -> int:
         post = dict(draft)
         post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
         out_dir = IMG_DIR / day.isoformat()
-        if args.cover_only:
-            # 特集の表紙には cover_tag が無いので対象外
+        if args.fixed_only:
+            # 特集は別テンプレートで、固定文言を載せていないので対象外
             if draft.get("kind") == "feature":
                 continue
-            render_cover(post, out_dir)
-            render_story(post, out_dir)
-            print(f"[cover] {day} 『{draft_label(draft)}』")
+            render_fixed_text_cards(post, out_dir)
+            render_story(post, out_dir)  # 表紙を埋め込んでいるので連動する
+            print(f"[fixed] {day} 『{draft_label(draft)}』")
             rendered += 1
             continue
         if draft.get("kind") == "feature":
@@ -1139,9 +1139,9 @@ def main(argv: list[str] | None = None) -> int:
     p_re.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は全下書き。")
     p_re.add_argument("--force", action="store_true", help="投稿済みも作り直す")
     p_re.add_argument(
-        "--cover-only",
+        "--fixed-only",
         action="store_true",
-        help="表紙カードだけ描き直す（cover_tag など表紙にしか出ない文言を変えたとき）",
+        help="固定文言のカードだけ描き直す（cover_tag・アカウント名を変えたとき）",
     )
     p_re.set_defaults(func=cmd_rerender)
 
