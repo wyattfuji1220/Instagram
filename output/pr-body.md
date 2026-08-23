@@ -1,6 +1,6 @@
-## 2026-W34 の投稿下書き
+## 2026-W37 の投稿下書き
 
-13 投稿分（1投稿 = 1冊）。
+11 投稿分（1投稿 = 1冊）。
 
 **このPRをマージした日付だけが、毎朝7時に自動投稿されます。**
 修正する場合は `drafts/` 以下の JSON をこのブランチ上で直接編集してください。
@@ -13,489 +13,21 @@
 
 ---
 
-### 08/20 (Thu) — すごい左利き / 加藤俊徳
+### 09/10 (Thu) — 26年9月前半 / 新刊特集
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-20/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 理解がワンテンポ遅いのは
-脳をたくさん使っている証拠
-> 2 書誌情報: 2021年9月30日 / 加藤俊徳
-> 3 おすすめ1: 自分が左利きで
-生きづらさを感じたことがある方
-> 3 おすすめ2: 直感やひらめきを
-仕事にもっと活かしたい方
-> 3 おすすめ3: 成長が遅いと感じる自分を
-責めるのをやめたい方
-> 4 問いかけ: 人と同じ速さで
-理解できないことは
-本当に欠点でしょうか
-> 5 本文: 左利きは大器晩成。
-言葉を司るのは左脳なので
-子供の時は成長が遅い
-> 6 本文: 右脳の作用で
-膨大なデータベースから
-即時に判断することが得意
-> 7 本文: 右利きなら当たり前にできることが
-うまくいかない経験から
-忍耐力にも優れる
-> 8 本文: 1日の終わりに
-その日を映像で思い出す。
-右脳を整えるトレーニング
-> 9 まとめ: 遅さの正体は
-脳の使い方の違い。
-左利きの特性を知る一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、脳の使い方から自分の特性を知る一冊です。
-
-1万人の脳を見た医師が、左利きの脳の働きを解説した本。読んでいて特に印象に残ったのは、左利きは大器晩成だという話です。言葉を司るのは左脳なので、子供の時はどうしても右利きの方が理解が早い。つまり幼い頃の「遅さ」は能力の差ではなく、脳の配線の違いだという説明でした。
-
-もう一つ面白かったのが、ワンテンポ理解が遅いのは右脳経由で脳の思考回路をたくさん使っているから、という視点。同じ現象が、欠点ではなく手数の多さとして語られます。その代わりに得意なのが、膨大なデータベースから即時に判断すること。だから左利きは直感やひらめきを大切にするといいのだそうです。
-
-さらに、右利きなら当たり前にできることがうまくいかない経験を重ねるから、忍耐力にも優れていると言われるという指摘も。
-
-具体的なトレーニングとして紹介されていたのは、1日の終わりにその日の出来事を映像で思い出すこと。右脳には様々な情報が浮かんでいるだけで、左脳のように理路整然としているわけではないので、映像で整理する習慣が効くという話でした。
-
-自分の遅さを責めてしまう日がある方に、そっと読んでほしい一冊です。
-
-#すごい左利き #加藤俊徳 #左利き #脳科学 #ビジネス書 #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - cover・point4段目「ワンテンポ理解が遅いのは右脳経由で脳の思考回路をたくさん使ってるから」＝読書メモ4項目目
-> - point1「左利きは大器晩成。子供の時は成長が遅い（言葉を司るのは左脳）」＝読書メモ1項目目
-> - point2「膨大なデータベースから即時に判断することが得意」＝読書メモ2項目目
-> - point3「右利きなら当たり前にできることがうまくいかない→忍耐力」＝読書メモ3項目目
-> - point4「1日の終わりに映像で思い出すトレーニング」＝読書メモ5項目目
-> - キャプション「1万人の脳を見た医師」＝正式書名の表記に基づく
-> - question・recommend・summaryは読書メモの内容を読者向けに言い換えたもの（メモの範囲内）
-> - 「自分の遅さを責めてしまう」などの読者像はメモから推測した表現（データに直接の根拠なし）
-> - 出版年2021年・著者名・出版社＝書誌データ
-
-</details>
-
----
-
-### 08/21 (Fri) — 月の立つ林で / 青山美智子
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-21/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 満ち欠けを繰り返しながら
-今日を生きる
-五人の物語
-> 2 書誌情報: 2022年11月9日 / 青山美智子
-> 3 おすすめ1: つまずいてばかりの毎日に
-少し疲れている方
-> 3 おすすめ2: 短編がゆるやかにつながる
-オムニバスを味わいたい方
-> 3 おすすめ3: 何かを新しく
-始めたい気持ちのある方
-> 4 問いかけ: 似ているようで違う一日を、
-あなたはどう始めますか
-> 5 本文: 元看護師、芸人、整備士、
-女子高生、アクセサリー作家。
-五人それぞれの日常が描かれる
-> 6 本文: 彼らをつなぐのは
-タケトリ・オキナの
-ポッドキャスト『ツキない話』
-> 7 本文: 各章の主人公が微妙に
-つながりあうオムニバス形式
-> 8 本文: 朔（つきたち）は旧暦の新月。
-何かを始めるのに
-ちょうどいい日
-> 9 まとめ: 月の満ち欠けに重ねて
-新しい一日を思い出させる一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、久しぶりに小説を。2023年本屋大賞にノミネートされた青山美智子さんの『月の立つ林で』です。
-
-登場するのは、長年勤めた病院を辞めた元看護師、夢を諦めきれない芸人、家族との関係の変化に寂しさを抱える二輪自動車整備士、早く自立したい女子高生、仕事と家族のバランスに悩むアクセサリー作家。それぞれが日常でつまずきながら、タケトリ・オキナという男性のポッドキャスト『ツキない話』に耳を傾けます。
-
-面白かったのは、各章の主人公たちが微妙につながりあうオムニバス形式であること。読み進めるうちに、さっきの話の隅にいた人が次の章の主役になっている、そんな感覚がありました。
-
-もうひとつ、私にとっての発見は「朔（つきたち）」という言葉です。一日（ついたち）は旧暦で新月のこと。月がまた満ちていく起点だから、何かを始めるのにちょうどいい日なのだと理解しました。人も同じで、満ち欠けを繰り返しながら新しい毎日を紡いでいく。そう思うと、うまくいかない日にも意味がある気がします。
-
-出版社の紹介によると、最後に仕掛けられた事実と読後に気づく繋がりが胸を打つ一冊とのこと。そこはぜひご自身で確かめてみてください。
-
-#月の立つ林で #青山美智子 #本屋大賞ノミネート #ポプラ社 #連作短編 #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 書名・著者・出版社・出版日：書誌データ
-> - 表紙「満ち欠けを繰り返しながら」：内容紹介『満ち欠けを繰り返し、新しくてかけがえのない毎日を紡いでいく』
-> - recommend「つまずいてばかりの毎日」：内容紹介『つまずいてばかりの日常』
-> - recommend「新しく始めたい」：読書メモ『何かを始めるのにちょうどいい日』
-> - question「似ているようで違う一日」：内容紹介『似ているようでまったく違う、新しい一日を懸命に生きるあなたへ』
-> - point1 五人の職業：内容紹介の登場人物の記述
-> - point2 タケトリ・オキナ／『ツキない話』：内容紹介
-> - point3 オムニバス形式：読書メモ
-> - point4 朔＝旧暦の新月：読書メモ
-> - キャプションの本屋大賞ノミネート・最後の仕掛け：出版社の内容紹介（キャプション内で出典を明示）
-> - ジャンル「小説」：内容紹介の記述からの判断
-
-</details>
-
----
-
-### 08/22 (Sat) — GAFA nest stage / スコット・ギャロウェイ, 渡会 圭子
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-22/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: コロナで肥え太った
-巨大帝国が
-再び世界を変える
-> 2 書誌情報: 2021年12月3日 / スコット・ギャロウェイ, 渡会 圭子
-> 3 おすすめ1: GAFAの次の一手を
-知っておきたい方
-> 3 おすすめ2: コロナが経済に何を
-残したのか整理したい方
-> 3 おすすめ3: 自分の業界の未来を
-考えておきたい方
-> 4 問いかけ: 彼らは何を壊し、何を創るのか。
-私たちはその世界で
-どう生きるのか
-> 5 本文: 米国のeコマースは
-コロナ後のたった8週間で
-10年分の成長が起きた
-> 6 本文: 極小のウイルスが
-特大の加速装置となり
-GAFAの成長を促した
-> 7 本文: 痛みは弱者に
-アウトソーシングされ
-貧富の差はさらに広がる
-> 8 本文: GAFAは今後5年で
-収益を1兆ドル増やす必要がある。
-次の獲物はどの業界か
-> 9 まとめ: 四騎士＋Xが塗り分ける
-赤と青の世界を
-先に見ておく一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、GAFAのその後を扱ったビジネス書です。『the four GAFA』の著者スコット・ギャロウェイによる最新刊で、コロナ以降に巨大帝国がどう膨らんだのかを追いかけた一冊でした。
-
-読んでいて一番手が止まったのは、米国のeコマースがコロナ以降のたった8週間で10年分の成長を遂げたという話です。極小のウイルスが特大の加速装置になり、GAFAの成長をさらに促してしまった。時間の流れそのものが変わったのだと実感しました。
-
-もうひとつ印象に残ったのが、痛みが弱者にアウトソーシングされ、貧富の差がさらに拡大していく構図です。強者はもっと強くなり、弱者はもっと弱くなる。加速の裏側で何が起きているのかを、目を逸らさずに書いているところが誠実だと感じました。
-
-そして本書は「＋X」として、マイクロソフト、エアビーアンドビー、ネットフリックス、テスラ、ショッピファイなど多くの企業を取り上げています。GAFAは今後5年で収益を1兆ドル増やす必要があり、そのために新しい市場へ入り込んでいく。次の獲物はあなたの業界かもしれない、という指摘は他人事ではありません。
-
-自分の仕事がどの側に置かれているのか、一度考えてみたくなる本でした。
-
-#GAFAnextstage #スコットギャロウェイ #東洋経済新報社 #ビジネス書 #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 表紙・summary: 内容紹介「コロナで肥え太った巨大帝国が『再び』世界を変える」「四騎士＋Xが世界を『絶望の赤』と『希望の青』に塗り分ける」
-> - question: 内容紹介「彼らは何を壊し、何を創るのか？ 私たちは彼らの世界でどう生きるのか？」
-> - points1・2: 読者本人の読書メモ「コロナ以降のたった8週間で10年分の成長」「極小のウイルスが特大の加速装置」
-> - points3: 内容紹介「痛みは『弱者にアウトソーシング』された」「強者はもっと強くなり、弱者はもっと弱くなる」＋読書メモ「貧富の差がさらに拡大する構図」
-> - points4: 内容紹介「GAFAは今後5年で収益を1兆ドル増やす必要がある」「次なる獲物は、あなたの業界かもしれない」
-> - キャプションの企業名: 内容紹介の『＋X』企業リストより
-> - recommend3項目: 内容紹介の趣旨から構成（一般論を含む）
-
-</details>
-
----
-
-### 08/23 (Sun) — 行動経済学が最強の学問である / 相良 奈美香
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-23/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 人はなぜ
-合理的に選べないのか
-意思決定のしくみ
-> 2 書誌情報: 2023年6月5日 / 相良 奈美香
-> 3 おすすめ1: 人の意思決定のクセを
-仕事に活かしたい方
-> 3 おすすめ2: 行動経済学の主要理論を
-体系立てて学びたい方
-> 3 おすすめ3: 身近な事例から
-経済と心理の関係を
-つかみたい方
-> 4 問いかけ: あなたの選択は
-本当に自分で
-決めたものですか
-> 5 本文: 行動経済学は経済学と心理学の融合
-非合理な意思決定を解明する学問
-> 6 本文: 本書は主要理論を
-認知のクセ・状況・感情の
-3つに大別して整理する
-> 7 本文: 選択肢が多すぎると人は選べない
-情報オーバーロードと
-リコメンド機能
-> 8 本文: 人は自分を誘惑に強いと思いがち
-自制バイアスを前提に置く
-> 9 まとめ: 日常の選択を
-読み解く視点をくれる
-行動経済学の入門書
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、いま世界のビジネス界で注目が集まっているという「行動経済学」の一冊です。行動経済学とは、人間の非合理な意思決定のメカニズムを解明する学問。従来の経済学は人が経済的かつ合理的に動くことを前提にしていますが、実際の私たちはさまざまな要因で合理的に判断できません。そのズレを扱うのが行動経済学だと理解しました。
-
-面白かったのは、主要理論を「認知のクセ」「状況」「感情」の3つに大別して整理している点です。新しい学問ゆえに体系化されてこず、理論を一つずつ丸暗記するしかなかった、という出版社の説明にも納得しました。
-
-個別の理論も身近でした。選択肢が多すぎると選べなくなる情報オーバーロードは、ネットフリックスやアマゾンプライムのリコメンド機能につながる話。自制バイアスは、人間は自分が誘惑に強いと思いがちなので、むしろ自分はある程度誘惑に弱いと想定しておいたほうがいい、という指摘。デュレーションヒューリスティックは、時間をかけたほうが相手の満足度が上がるというもの。メニューにドルマークがないだけでお金と結びつく気持ちが弱まり散財する、という話も印象に残りました。
-
-私は面白そうだったので電子書籍で購入しましたが、身近に感じられて理解しやすく、言われるとそうだなと思うことがよくありました。自分の選択を少し疑ってみたい方に。
-
-#行動経済学が最強の学問である #相良奈美香 #行動経済学 #ビジネス書 #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 書名・著者・出版社・出版日=書誌データ
-> - cover/question の「合理的に選べない」=読書メモ「人間の非合理な意思決定のメカニズムを解明する学問」
-> - points1=読書メモ「経済学と心理学の融合」
-> - points2=目次の第1〜3章および読書メモ「認知のクセ/状況/感情に大きく大別」
-> - points3=読書メモ「情報オーバーロード：選択肢が多過ぎると選択できない→ネットフリックスやアマプラのリコメンド機能」
-> - points4=読書メモ「自制バイアス」
-> - recommend2「体系立てて学びたい」=内容紹介「主要理論を初めて体系化する」
-> - キャプションの丸暗記の記述=出版社の内容紹介が根拠
-> - キャプションのデュレーションヒューリスティック・ドルマーク=読書メモ
-> - キャプション末尾の購入経緯と所感=読書メモ本人の記録
-> - summary「入門書」という位置づけ=一般論（データに明記なし、序章の記述からの解釈）
-
-</details>
-
----
-
-### 08/24 (Mon) — 26年8月後半 / 新刊特集
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-24/06.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 何度も読み返したい / 今も読み継がれるビジネス書殿堂入り4選
-> 2 もし高校野球の女子マネージャーがドラッカーの『マネジメント』を読んだら（レビュー5,317件　★4.0 / 岩崎　夏海） 読み継がれている理由: ドラッカーの『マネジメント』を、高校野球部の変革という物語で読み解く一冊。
-「顧客は誰か」「真摯さとは何か」を実践として考えられます。
-> 3 エッセンシャル思考　最少の時間で成果を最大にする（レビュー1,271件　★4.2 / グレッグ・マキューン、高橋　瑠子） 読み継がれている理由: 「より少なく、しかしより良く」を掲げ、99%を捨てて1%に集中する考え方の本。
-時間術ではなく、重要なことを見極める方法論として書かれています。
-> 4 さおだけ屋はなぜ潰れないのか？（レビュー1,063件　★4.0 / 山田真哉） 読み継がれている理由: 身近な疑問から会計のエッセンスに近づく読み物。
-財務諸表も専門用語もほとんど出てこないので、数字が苦手でも読み進められます。
-> 5 改訂版　金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学（レビュー651件　★4.2 / ロバート・キヨサキ、白根 美保子） 読み継がれている理由: 刊行から20年以上、51ヶ国語に翻訳されてきたお金の基本図書。
-「金持ちはお金のためには働かない」など、六つの教えが軸になっています。
-> 6 まとめ: チェックリスト
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今も読み継がれているビジネス書を4冊まとめました。1冊目の『もし高校野球の女子マネージャーがドラッカーの「マネジメント」を読んだら』は、経営学の理論を高校野球部の物語に置き換えた一冊。2冊目の『エッセンシャル思考』は、99%の無駄を捨てて1%に集中するための方法論が書かれています。3冊目の『さおだけ屋はなぜ潰れないのか？』は、日々の生活の身近な疑問から会計のエッセンスを学んでいく読み物。4冊目の『金持ち父さん 貧乏父さん』は、刊行から20年以上読み継がれてきたお金の基本図書です。特に3冊目の『さおだけ屋はなぜ潰れないのか？』は、細かい財務諸表がひとつも出てこないと明記されているところが気になります。会計の入門書ではなく読み物として書かれた、という立ち位置が長く支持されてきた理由なのかもしれません。おすすめな本があればぜひコメントいただけると幸いです！
-
-#名著 #ビジネス書おすすめ
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 1冊目:内容紹介の『マネジメント』の理論を頼りに野球部を変革、真摯さ・顧客は誰かに基づく
-> - 2冊目:『より少なく、しかしより良く』『99%の無駄を捨て1%に集中』『単なるタイムマネジメントではない方法論』に基づく
-> - 6冊目:『身近な疑問から会計の重要なエッセンス』『細かい財務諸表はひとつも出てきません』『ひとつの読み物として』に基づく
-> - 15冊目:『刊行から20年経った今でも』『51ヶ国語に翻訳』『金持ちはお金のためには働かない』『金持ち父さんの六つの教え』に基づく
-> - テーマ分散:経営/思考法/会計/お金の4方向
-
-</details>
-
----
-
-### 08/25 (Tue) — 武器としての組織心理学 / 山浦一保
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-25/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 厄介だけど
-放置できない
-人間関係の扱い方
-> 2 書誌情報: 2021年9月16日 / 山浦一保
-> 3 おすすめ1: チームの人間関係に
-手を焼いているリーダーの方
-> 3 おすすめ2: 妬みや対立を
-前向きな力に
-変えたい方
-> 3 おすすめ3: 科学的な根拠から
-マネジメントを
-学び直したい方
-> 4 問いかけ: 人が動かないのは
-やる気の問題ではなく
-心理の仕組みでは？
-> 5 本文: 人は保有することに
-こだわる。だから現状維持を
-選んでしまう
-> 6 本文: 妬みには悪性と良性がある。
-負けず嫌いは
-よい方へ向ける
-> 7 本文: 大体の事は面倒くさい。
-でも丁寧にやることが
-大事につながる
-> 8 本文: リスクを取っても大丈夫。
-その心理的安全性が
-職場を支える
-> 9 まとめ: 科学的エビデンスで
-人間の本性を見直す
-リーダーシップの教科書
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、リーダーシップを心理学から捉え直す一冊です。
-
-読んでいて一番おもしろかったのは、人間は生来「保有すること」へのこだわりが強い、という話でした。カーネマンのマグカップ実験が紹介されていて、手放したくない気持ちが強いからこそ、現状維持で安心を得ようとする非合理的な選択をしてしまう。組織が変わらない理由を、性格や意欲ではなく人間の仕組みとして説明されると納得感がありました。
-
-もうひとつは妬みの扱い方です。妬みには排他的な悪性のものと、羨望や協力につながる良性のものがある。同じ負けず嫌いでも、どちらに向くかで職場の空気はまるで変わる。ポジティブなほうへ向けるという視点は、自分自身にも使えると感じました。
-
-そして、世の中の大体の事は面倒くさいけれど、丁寧にやることが大事につながるという一文。派手さはないですが、ここが一番効く気がしています。個人がリスクを取っても大丈夫だと思える心理的安全性、謝ることが自分自身のストレス低減にもつながるという指摘も印象に残りました。
-
-出版社の紹介では、心理学から脳科学、集団力学まで科学的エビデンスに基づく「リーダーシップの新しい教科書」とされています。人を動かす立場にいる方は、手元に置いておくと心強い一冊だと思います。
-
-#武器としての組織心理学 #山浦一保 #ダイヤモンド社 #組織心理学 #リーダーシップ #ビジネス書
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 表紙「厄介だけど放置できない人間関係」＝出版社内容紹介の文言
-> - recommend1・2＝内容紹介「マネジャー・経営者・監督・コーチなど全てのリーダー」＋読書メモの妬みの項
-> - recommend3＝内容紹介「科学的エビデンスに基づく」
-> - question＝内容紹介「人間の本性を暴く」「マネジメントの通念をひっくり返す」を問いに変換
-> - points1＝読書メモ「保有することへのこだわり／カーネマンのマグカップ実験／現状維持して安心」
-> - points2＝読書メモ「妬みは悪性と良性／負けず嫌いをポジティブなほうに」
-> - points3＝読書メモ「大体の事は面倒くさいが丁寧にやることが大事につながる」
-> - points4＝読書メモ「個人がリスクテイクしても大丈夫という心理的安全性の高い職場」
-> - summary＝内容紹介「科学的エビデンス」「リーダーシップの新しい教科書」「人間の本性」
-> - キャプションの謝罪の記述＝読書メモ「謝ることは自分自身のストレス低減にもつながる」
-> - 出版社紹介由来の箇所はキャプション内で「出版社の紹介では」と明示
-
-</details>
-
----
-
-### 08/26 (Wed) — スタンフォード式 最高の睡眠 / 西野精治
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-26/10.jpg" width="150">
-
-<details><summary>カードの文言</summary>
-
-> 1 表紙: 睡眠は「時間」ではなく
-「質」で決まる
-最初の90分の話
-> 2 書誌情報: 2017年3月1日 / 西野精治
-> 3 おすすめ1: 寝つきが悪くて
-朝もすっきり起きられない方
-> 3 おすすめ2: 日中の眠気に
-悩まされている方
-> 3 おすすめ3: 土日の寝だめで
-疲れを取ろうとしている方
-> 4 問いかけ: 眠った時間の長さだけで
-疲れは本当に
-取れているのでしょうか
-> 5 本文: 睡眠は「時間」ではなく「質」。
-著者が30年近く研究して
-たどり着いた結論
-> 6 本文: 眠り始めの
-「黄金の90分」に
-最高の睡眠の鍵がある
-> 7 本文: 寝だめは基本できない。
-平日の不足を土日で
-取り戻すのは無理
-> 8 本文: 1時間早く寝るのは難しい。
-潔く1時間早く起きると
-心積もりする方がいい
-> 9 まとめ: 長く寝るより、
-最初の90分を整える。
-眠りの常識を見直す一冊
-
-</details>
-
-<details><summary>キャプション</summary>
-
-```
-今回は、睡眠をテーマにしたビジネス書です。スタンフォード大学の睡眠研究機関で所長を務める西野精治先生が、30年近くの研究からたどり着いた「最高の睡眠」の考え方をまとめた一冊。出版社の紹介によると、スタンフォードは「睡眠研究のメッカ」と呼ばれる場所だそうです。
-
-本書の軸は「睡眠は『時間』ではなく『質』で決まる」という一文。章立てにも「夜に秘められた『黄金の90分』の法則」とあり、眠り始めの90分がいかに大事かが繰り返し語られます。長く寝られない日があっても、最初の90分の質を上げれば手は打てる。そう考えられるだけで、少し気持ちが軽くなりました。
-
-私が読んでいて特に納得したのは、寝だめは基本的にできないという話。平均7.2時間の睡眠でも足りていないぶんを、土日でまとめて取り戻すのは無理なのだと知りました。
-
-もうひとつは、明日に備えて1時間早く寝るのは難しい、という指摘。それなら潔く1時間早く起きるつもりでいた方が、結果としてよい睡眠が得られる。早寝を頑張って布団の中で目が冴えるより、ずっと現実的です。
-
-寝つきが悪い、朝起きられない、日中眠い。心当たりがある方は、まず今夜の最初の90分から見直してみませんか。
-
-#スタンフォード式最高の睡眠 #西野精治 #睡眠 #サンマーク出版 #ビジネス書 #読書記録
-```
-
-</details>
-
-<details><summary>根拠メモ (grounding)</summary>
-
-> - 書名・著者・出版社・出版日は書誌情報より
-> - cover・points1「時間ではなく質」は内容紹介の引用文より
-> - points2「黄金の90分」は目次2章より
-> - points3「寝だめは基本出来ない／平均7.2時間」は読書メモより
-> - points4「1時間早く寝るのは難しい／1時間早く起きる」は読書メモより
-> - recommend「寝つきが悪い・朝起きれない・日中眠たい」は内容紹介より
-> - キャプションの「睡眠研究のメッカ」「30年近く研究」は出版社の内容紹介より（その旨を明記）
-> - summary「最初の90分を整える」は目次2章と内容紹介からの要約
-> - キャプション中の『気持ちが軽くなりました』『納得した』等の所感は読書メモの内容に沿った感想表現（メモ外の実体験は記載していない）
-
-</details>
-
----
-
-### 08/27 (Thu) — 26年8月後半 / 新刊特集
-
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-27/06.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-10/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-10/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-10/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-10/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-10/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-10/06.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
 > 1 表紙: 読んでみたい / 26年小説新刊4選
-> 2 永遠の記憶（2026年8月5日 / 東野 圭吾） 私が気になった理由: 内海薫が刺され、老人は黙秘のまま。
-湯川と草薙が追う「忘れてはいけない謎」が気になります。
-> 3 夜明けのはざま（2026年9月2日 / 町田　そのこ） 私が気になった理由: 家族葬専門の葬儀社が舞台。
-間に合わなかった後悔とどう向き合うのか、読んでみたいです。
-> 4 誰何（2026年8月19日 / 伏尾美紀） 私が気になった理由: 二年前に亡くなったはずの女性が、都内で孤独死。
-道警と警視庁、二つの現場に残された同じ名刺が気になります。
-> 5 トレヴァー短編選集1（2026年8月7日 / ウィリアム・トレヴァー、栩木 伸明） 私が気になった理由: 20分で世界の見え方が反転する短編集という一節に惹かれました。
-新訳4編を含む全8編、少しずつ読み進めたいです。
+> 2 シャーロック・ホームズの凱旋（2026年8月21日 / 森見登美彦） 私が気になった理由: 名探偵ホームズが大スランプという設定に惹かれます。
+ヴィクトリア朝京都という舞台でどんな冒険が起きるのか読んでみたいです。
+> 3 あなたが誰かを殺した（2026年8月12日 / 東野 圭吾） 私が気になった理由: 犯人は出頭済み、なのに遺族が自ら「検証会」を開く。
+その場に刑事・加賀が現れるという構図が気になります。
+> 4 とりどりみどり（2026年9月9日 / 西條奈加） 私が気になった理由: 毒舌の三姉妹に振り回される十一歳の末弟という視点が楽しそうです。
+廻船問屋の家族をめぐる謎解き人情物語、読んでみたいです。
+> 5 誰何（2026年8月19日 / 伏尾美紀） 私が気になった理由: 二年前に亡くなったはずの女性が孤独死した、という始まりに引き込まれます。
+知らない相手の部屋に自分の名刺が残されていた謎が気になります。
 > 6 まとめ: チェックリスト
 
 </details>
@@ -503,7 +35,7 @@ GAFAの成長を促した
 <details><summary>キャプション</summary>
 
 ```
-8月後半に出た小説から、気になる4冊をまとめました。特に1冊目の『永遠の記憶』は、内海薫が刺されるという出だしからして落ち着いていられません。犯人の老人は黙秘を貫き、内海に恨みを持つ娘との関係も不明。しかも本当の復讐はこれからだと書かれていて、湯川と草薙が「忘れてはいけない謎」にどう向き合うのかを追いかけたいです。2冊目の『夜明けのはざま』は家族葬専門の葬儀社が舞台で、間に合ったことと間に合わなかったこと、どちらが多いだろうという問いかけが胸に残りました。3冊目の『誰何』は、二年前に亡くなったはずの女性が孤独死したという知らせから始まる設定に引き込まれます。4冊目の『トレヴァー短編選集1』は、20分の読書で世界観が静かに反転するという紹介に惹かれ、寝る前に一編ずつ読みたいと思いました。おすすめの本があればぜひコメントいただけると幸いです！
+9月前半に出た小説から、気になる4冊をまとめました。特に1冊目の『シャーロック・ホームズの凱旋』は、洛中洛外に名を轟かせた名探偵がまさかの大スランプという出だしに、思わず手が伸びました。舞台はヴィクトリア朝京都。ワトソンの手記という形で「非探偵小説的な冒険」が語られるそうで、探偵が謎を解けないところから始まる物語がどう転がるのか読んでみたいです。2冊目の『あなたが誰かを殺した』は、犯人がすでに出頭しているのに遺族が自ら検証会を開くという設定が引っかかります。3冊目の『とりどりみどり』は、遠慮なし気遣いなし毒舌ありの三姉妹と、そのそばで身がすり減る思いをしている十一歳の弟という距離感が楽しそうです。4冊目の『誰何』は、二年前に亡くなったはずの女性が孤独死したという一文だけで気になってしまいました。切り口の違う4冊、秋の読書のはじめに。
 
 #小説 #新刊小説 #小説好きな人と繋がりたい
 ```
@@ -512,367 +44,752 @@ GAFAの成長を促した
 
 <details><summary>根拠メモ (grounding)</summary>
 
-> - 20: 内海薫が刺された/犯人は70歳ほどの老人/黙秘/恨みを抱く若い娘/本当の復讐はこれから/湯川と草薙、忘れてはいけない謎
-> - 7: 家族葬専門の葬儀社「芥子実庵」/間に合ったことと間に合わなかったこと、どちらが多いだろう
-> - 14: 松川美和が孤独死、二年前に亡くなったはず/新内の名刺が部屋に/道警の砂本も被害者宅で名刺を発見
-> - 18: 20分の読書が読者の世界観を静かに反転させる/新訳4編を含む全8編
+> - 9番: 内容紹介の「洛中洛外に名を轟かせた名探偵ホームズが……まさかの大スランプ!?」「舞台はヴィクトリア朝京都」「非探偵小説的な冒険」「ワトソンの手記」に基づく
+> - 11番: 「間もなく犯人は大胆に出頭する」「納得できない遺族は自ら真相を解き明かすべく『検証会』を開く」「そこへ現れたのは、刑事・加賀だった」に基づく
+> - 3番: 「廻船問屋の末弟・鷺之介、齢十一」「遠慮なし、気遣いなし、毒舌大いにあり」「謎解き人情物語」に基づく
+> - 10番: 「松川美和という女性が孤独死」「松川は二年前に亡くなったというのだ」「松川の部屋に警官時代の新内の名刺が残されていた」「彼女のことなど皆目知らないのに」に基づく
+> - 結末・仕掛けには触れず、すべて期待の形で記述
 
 </details>
 
 ---
 
-### 08/28 (Fri) — 科学者たちが語る食欲 / David Raubenheimer、Stephen J. Simpson、櫻井祐子 訳
+### 09/11 (Fri) — ワーケーションのはじめかた / 頼定誠, 新谷雅徳
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-28/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-11/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
-> 1 表紙: 食べすぎるのは
-意志の弱さではなく
-タンパク質のせい
-> 2 書誌情報: 2021年1月 / David Raubenheimer、Stephen J. Simpson、櫻井祐子 訳
-> 3 おすすめ1: カロリー計算だけの
-ダイエットに
-疲れている方
-> 3 おすすめ2: 食欲が止まらない
-理由を科学から
+> 1 表紙: 仕事と休暇を
+あわせて取る
+新しい働き方
+> 2 書誌情報: 2023年2月6日 / 頼定誠, 新谷雅徳
+> 3 おすすめ1: 働く場所を
+変えてみたい方
+> 3 おすすめ2: 会社にワーケーションを
+提案してみたい方
+> 3 おすすめ3: 自治体や施設として
+誘致に関わる方
+> 4 問いかけ: 休暇先で働く。
+それは会社にとって
+何の得になるのか。
+> 5 本文: ワーケーションは
+WorkとVacationの造語。
+仕事と休暇をあわせて取る
+> 6 本文: 出張に休暇を足すのは
+ブリージャー。
+休暇先で働くのとは違う
+> 7 本文: ユニリーバでは
+生産性が上がったとの
+肯定回答が75%
+> 8 本文: 三菱地所はモチベーション
+イノベーション
+コミュニケーションの向上と
+> 9 まとめ: 検討から検証まで
+導入実務を時系列で追える
+実務の教科書
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は働き方の本です。ワーケーションは「Work」と「Vacation」を組み合わせた言葉で、仕事と休暇をあわせて取る働き方。社員の福利厚生だけでなく、生産性や創造性の向上、企業の人事戦略にもつながると期待されていて、働き方改革と地方創生の両面から政府や自治体の支援もあるそうです。
+
+面白かったのは「ブリージャー」という言葉。BusinessとLeisureの造語で、出張先で観光や休息を楽しむ働き方のこと。休暇で訪れた場所で働くワーケーションとは、出発点が逆なんですね。海外出張で土日を挟むのも、ある意味ブリージャーなのかなと考えてしまいました。
+
+企業の事例も具体的でした。ロサンゼルスの法律事務所Quinn Emanuelは、24時間のネットワーク接続を条件に、指定の場所で一週間働く際に2000ドルを支給。ユニリーバは「Work from anytime anywhere」として福利厚生に位置づけ、生産性が上がったという肯定回答は75%。三菱地所はモチベーション・イノベーション・コミュニケーションの向上につながるとしています。
+
+本書は検討・準備・実施・リスクマネジメント・検証まで導入実務を時系列で紹介していて、最終章は誘致する自治体や施設側の話も。基本的に出社しがちな私も、たまにロケーションを変えたくなる時があるので、思い切って提案してみようかなと思いました。
+
+#ワーケーションのはじめかた #頼定誠 #新谷雅徳 #ワーケーション #働き方改革 #ビジネス書
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 表紙「仕事と休暇をあわせて取る新しい働き方」＝出版社紹介の冒頭定義
+> - recommend3項目＝出版社紹介の「企業が導入する際の実務」「最終章は自治体・施設・アクティビティ関係者向け」より
+> - question＝出版社紹介の「福利厚生、生産性や創造性のUP、人事戦略」を問いの形にしたもの
+> - points1＝出版社紹介「WorkとVacationを組み合わせた新しい働き方」
+> - points2＝読書メモのブリージャー（Business＋leisure、出張に休暇をくっつける）の記述
+> - points3＝読書メモのユニリーバ「生産性が上がった肯定回答率75%」
+> - points4＝読書メモの三菱地所「モチベーション/イノベーション/コミュニケーションの向上」
+> - summary＝出版社紹介「検討・準備・実施・リスクマネジメント・検証まで導入実務全般を時系列で紹介」
+> - キャプションのQuinn Emanuel（24時間接続を条件に一週間2000ドル支給）＝読書メモ
+> - キャプション末尾の「出社しがちだが提案してみようか」＝読書メモの所感をそのまま使用
+> - 「実務の教科書」という表現は出版社紹介の内容をまとめた言い換え（一般論寄り）
+
+</details>
+
+---
+
+### 09/12 (Sat) — SHOE DOG / フィル・ナイト、大田黒奉之 訳
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-12/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 父から借りた50ドルが
+売上300億ドルになるまで
+ナイキ創業者の告白
+> 2 書誌情報: 2017年10月27日 / フィル・ナイト、大田黒奉之 訳
+> 3 おすすめ1: 起業や新規事業に
+挑む人の生の記録を
+読んでみたい方
+> 3 おすすめ2: うまくいかない時期を
+どう耐えたのかを
 知りたい方
-> 3 おすすめ3: 家族の食事を
-長い目で
-見直したい方
-> 4 問いかけ: なぜ私たちは
-お腹いっぱいのはずなのに
-食べすぎてしまうのか
-> 5 本文: タンパク質の比率が高いと
-炭水化物と脂肪の摂取が減り
-結果としてカロリーも減る
-> 6 本文: 乳児にはタンパク質比率が
-最も低い食事がよい
-高すぎると将来の必要量が増える
-> 7 本文: 健康のために避けたいのは
-超加工食品
-食べたいのは高タンパク質と繊維
-> 8 本文: カロリー信奉をやめて
-空腹のときに食べる
-習慣をつける
-> 9 まとめ: 食欲を敵ではなく
-仕組みとして理解し直す
-食事の科学の本
+> 3 おすすめ3: 日本企業と海外企業の
+関係の歴史に
+興味がある方
+> 4 問いかけ: 馬鹿げていると言われる
+アイディアを
+人はどこまで信じられるか
+> 5 本文: 24歳で神戸のオニツカを訪ね
+「アメリカで売らせてほしい」
+と売り込んだところから始まる
+> 6 本文: 親日だった代理店関係は
+次第に険悪になり販売停止へ
+苦肉の策がナイキ創業だった
+> 7 本文: 倒産寸前で銀行が手を引いても
+日商岩井は融資を止めなかった
+商品の良さを見極めたから
+> 8 本文: 失敗も未完成もバイヤーに
+正直に伝えたこと
+それが成功の一因だったと思う
+> 9 まとめ: 誤りと闘いと犠牲がつきまとう
+混沌とした旅路を
+創業者自身が赤裸々に語る一冊
 
 </details>
 
 <details><summary>キャプション</summary>
 
 ```
-今回は、食欲を科学の視点から解き明かす一冊です。
+今回は、起業家の自伝です。ナイキ創業者フィル・ナイトが自ら書いた『SHOE DOG』。BOOK OFFで200円だったので買いました。550ページあるので、読むのに2週間くらいかかりました。
 
-この本の中心にあるのは、人間はタンパク質の摂取比率が高い場合、過剰摂取を防ぐために炭水化物と脂肪の摂取を減らす、という話。結果として摂取カロリーが自然に減り、体重の抑制につながるという流れが面白かったです。食べすぎを意志の問題にしないところに納得感がありました。
+シュードッグとは、靴の製造、販売、輸入、デザインなど、そのすべてに身を捧げる人のこと。
 
-もう一つ印象に残ったのが、乳児には最もタンパク質比率が低い食事がよいという指摘。大人の話と一見矛盾して見えますが、タンパク質比率が不自然に高い食事を与えるとタンパク質ターゲット自体が上がってしまい、将来的に必要なタンパク質が増える可能性があるからだそうです。食事は今日一日の話ではなく、身体の基準そのものを作っていくのだと感じました。
+面白かったのは、日本との関わりの深さです。フィル・ナイトはもともとオレゴン州でオニツカタイガー（現アシックス）の北米販売代理店をしていました。当初はとても親日だったのに、徐々にアシックスとは険悪になり、ついには販売停止を通達される。苦肉の策として立ち上げたのがナイキでした。アシックス側の意見は書かれていないので分かりませんが、読んでいると不義理に見えてしまうし、商才がないなとも感じました。
 
-健康のために必要なこととして挙げられていたのは、自分のタンパク質ターゲットを理解する、超加工食品を避ける、高タンパク質品を食べる、繊維を食べる、カロリー信奉をやめる、空腹のときに食べる習慣をつける、の6つ。どれも極端ではなく、続けられそうな内容です。
+もうひとつは日商岩井（現 双日）の存在。倒産寸前で銀行でさえ融資を止めたときに、双日は止めなかった。本当に商品がいいものだと見極めたからです。
 
-お腹が減っていないときの間食、思い当たる方はぜひ。
+そしてナイキが成功した一因として、失敗したものや未完成なものをバイヤー側に正直に伝えていたことが挙げられます。ビジネスをする上で、正直であることは何より大切なのだと思いました。
 
-#科学者たちが語る食欲 #サンマーク出版 #食欲 #タンパク質 #読書記録 #ビジネス書
+分厚いですが、読み終えたときに残るものがある一冊です。
+
+#SHOEDOG #シュードッグ #フィルナイト #ナイキ #起業家の自伝 #ビジネス書記録
 ```
 
 </details>
 
 <details><summary>根拠メモ (grounding)</summary>
 
-> - 表紙・4枚目：読書メモ「人間はタンパク質の摂取比率が高い場合、過剰摂取を防ぐため炭水化物と脂肪の摂取を減らす」に基づく
-> - 5枚目：同上（必然的に取得カロリー量が減り、体重抑制に効く）
-> - 6枚目：読書メモ「乳児は最もタンパク質比率が低い食事がベスト」「タンパク質ターゲットが上がり将来的に必要なたんぱく質が増える可能性」
-> - 7枚目：読書メモ「②超加工食品を避ける ③高タンパク質品を食べる ④繊維を食べる」
-> - 8枚目：読書メモ「⑤カロリー信奉をやめる ⑥空腹の時に食べる習慣をつける」
-> - おすすめ3項目：読書メモの6項目から想定読者を推定（データを踏まえた解釈）
-> - まとめ：読書メモ全体および正式書名『食べすぎてしまう人類に贈る食事の話』からの要約
-> - 書誌情報：サンマーク出版・2021年1月・ISBN9784763137920に基づく
-> - 「意志の弱さではなく」という表現は本文にある言葉ではなく、メモ内容からの言い換え
+> - 書名・著者・出版社・出版日：書誌情報より
+> - 『父親から借りた50ドルを元手に…売上げ300億ドルの会社』：出版社内容紹介
+> - 『24歳のあるアメリカ人が日本に降り立った』『神戸にあるオニツカのオフィスを訪れ』『自分に、タイガーをアメリカで売らせてほしいと』：出版社内容紹介
+> - 『馬鹿げたアイディアにとりつかれた男』：出版社内容紹介
+> - 親日→険悪→販売停止→苦肉の策でナイキ創業、アシックスが不義理に見える・商才がないという所感：読書メモ
+> - 日商岩井（現双日）の融資、銀行が止めても止めなかった理由：読書メモ
+> - 失敗・未完成を正直に伝えたことが成功要因、正直さが何より大切：読書メモ
+> - BOOK OFFで200円、550ページ、2週間かかった：読書メモ
+> - シュードッグの定義：読書メモ
+> - 『誤りと闘いと犠牲が常につきまとう』『混沌と混乱に満ちた危険な旅』『ここまで赤裸々に自身の歩んだ道を語るCEOなど、ほとんどいない』：出版社内容紹介に掲載のビル・ゲイツ推薦文
+> - recommend3項目・questionカードの表現：本書の内容から導いた編集上の言い換え（直接の文言はデータになし）
 
 </details>
 
 ---
 
-### 08/29 (Sat) — 世界のエリートはなぜ「美意識」を鍛えるのか / 山口周
+### 09/13 (Sun) — 心配すんな。全部上手くいく。 / ヒカル1991-
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-29/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-13/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
-> 1 表紙: 論理だけでは
-決められない時代の
-意思決定
-> 2 書誌情報: 2017年7月19日 / 山口周
-> 3 おすすめ1: 数字と分析だけの判断に
-限界を感じている方
-> 3 おすすめ2: 感性や直感を
-仕事に活かしたい方
-> 3 おすすめ3: 複雑な状況で
-判断の軸を持ちたい方
-> 4 問いかけ: 分析と論理に頼った経営で
-今の世界を
-舵取りできますか
-> 5 本文: マネジメントは3種類
-サイエンス・クラフト・アート
-> 6 本文: アートだけでは盲目的
-3つをバランスよく磨く
-> 7 本文: 何をしないか決めるのは
-何をするか決めるのと同じくらい大事
-> 8 本文: 誠実さとは組織のルールでなく
-自分の中の規範に従うこと
-> 9 まとめ: 感性を鍛える必要はある
-でもそれだけでもダメ
-その両方を教えてくれる一冊
+> 1 表紙: 一番の失敗は
+やりたい事を
+やらない事
+> 2 書誌情報: 2022年9月30日 / ヒカル1991-
+> 3 おすすめ1: やりたい事を
+先送りにしている方
+> 3 おすすめ2: 言葉や思考の使い方を
+鍛え直したい方
+> 3 おすすめ3: 逆境や批判との
+付き合い方を知りたい方
+> 4 問いかけ: ゼロのままの自分から
+最初の「1」を
+どうつかむか。
+> 5 本文: 夢は公言しろ。
+なりたいものになれるのは
+なろうとしたものだけ。
+> 6 本文: 会話では常に答えを持つ。
+自分の番でなくても
+答えを探す訓練をやめない。
+> 7 本文: 新しい事、
+人がやっていない事を
+探してやってみる。
+> 8 本文: 落ち度や過ちは素直に認める。
+不利は、有利である。
+> 9 まとめ: 普段YouTubeは見なくても
+考え方はしっかりしている。
+最初の1をつかむための一冊。
 
 </details>
 
 <details><summary>キャプション</summary>
 
 ```
-今回は、経営における「アート」と「サイエンス」を扱った一冊です。先月読んだ『ニュータイプの時代』に続いて2冊目の山口周さん。面白くて、こちらも購入しました。2時間くらいでさっと読める分量です。
+今回は、カリスマYouTuberヒカルさんの初書籍を読みました。新刊図書に入っていたので手に取った一冊です。普段彼のYouTubeを見ることはないのですが、読んでみると考え方はしっかりしていて、素直に頷ける部分が多くありました。
 
-印象に残ったのは、マネジメントのスタイルが3種類あるという話。数値や事実に基づくサイエンス型、知識や経験に基づくクラフト型、感性や直感に基づくアート型。アートだけだと盲目的なナルシストになり、クラフト型は経験に根ざしたものしか評価できず、サイエンスは数値で証明できないことをやらない。だから3つをバランスよく磨いていく必要がある、という整理がすっきりしていました。感性を鍛えろ、という話だけで終わらないところが好きです。
+面白いと感じたのは三つ。ひとつ目は「一番の失敗はやりたい事をやらない事」。目次にも「夢は公言しろ」「なりたいものになれるのは、なろうとしたものだけ」と並んでいて、動き出すことそのものを繰り返し押してくる本です。
 
-もうひとつ、誠実さの定義も刺さりました。自分が所属する組織やルールに従うことではなく、社会的規範や自分の中の規範に従うこと。判断に迷ったとき、どこを見るのかという話だと受け取りました。
+ふたつ目は、相手と会話する時に常に答えを持っておくこと。自分が答えるタイミングでなくても、自分だったら何と言うかを探す訓練をやめない。部や室のミーティングでいきなり振られることもあるので、これは仕事でも私生活でも効きそうだと感じました。
 
-ジョブズの「何をしないのかを決めるのは、何をするのか決めるのと同じくらい大事だ」という言葉も引かれています。会社についても製品についても、というところまで含めて。
+三つ目は、新しい事・人がやっていない事を探してやってみるという姿勢。そして落ち度や過ちは素直に認めること。「逆境のマニュアル」という章があり、批判や炎上との向き合い方にも触れられています。
 
-数字だけでは決めきれない場面が増えていると感じる方に。あなたはいま、何をしないと決めていますか。
+著者は「ゼロからはなにも生まれない、まずは1をつかむことが肝心」と書いています。その1を探している方に。
 
-#世界のエリートはなぜ美意識を鍛えるのか #山口周 #ビジネス書 #読書記録 #美意識
+#心配すんな全部上手くいく #ヒカル #徳間書店 #ビジネス書 #読書記録
 ```
 
 </details>
 
 <details><summary>根拠メモ (grounding)</summary>
 
-> - cover・question：出版社紹介の「分析」「論理」「理性」に軸足をおいた経営では複雑で不安定な世界の舵取りはできない、という記述
-> - recommend：出版社紹介のサイエンス重視の意思決定の限界、および読書メモの3つのスタイルをバランスよく磨く記述からの推測を含む
-> - points1・2：読書メモ「マネジメントのスタイルは3種類」およびアート/クラフト/サイエンスの短所とバランスの記述
-> - points3：読書メモに記載のジョブズの言葉
-> - points4：読書メモ「誠実さの定義」
-> - summary：読書メモ「感性を鍛える必要はあるが、それだけではもちろんダメ」
-> - caption：読書メモ（2冊目の山口周、購入、2時間くらいでさっと読める）、3種類のマネジメント、誠実さの定義、ジョブズの言葉
-> - published：出版日2017年7月19日
-> - 著者名：書誌データの「山口周1970-」より姓名部分のみ使用
+> - 表紙・points1『一番の失敗はやりたい事をやらない事』は読書メモ
+> - points1『夢は公言しろ』『なりたいものになれるのは、なろうとしたものだけ』はchapter1目次
+> - points2は読書メモ『相手と会話する時に常に答えを持つ』『部/室MTGでいきなり振られることもある』
+> - points3は読書メモ『新しい事、人がやっていない事を探してやってみる事』
+> - points4前半は読書メモ『落ち度や過ちは素直に認める』、後半『不利は、有利である』はchapter5目次
+> - questionの『1をつかむ』は出版社紹介のヒカル本人コメント
+> - summaryは読書メモ『普段彼のyoutubeを見ることはないが、考え方はしっかりしている』
+> - recommend2の『言葉と思考』はchapter2、recommend3の『逆境』『批判』はchapter5目次
+> - recommend1は読書メモ『やりたい事をやらない事』からの言い換え（表現は一般化）
+> - キャプションの『新刊図書で入っていたので読了』は読書メモ
+> - ジャンル・ページ数は不明のため記載なし
 
 </details>
 
 ---
 
-### 08/30 (Sun) — 決断の本質 / Tiha von Ghyczy、Bolko von Oetinger、Christopher Bassford、ボストンコンサルティンググループ
+### 09/15 (Tue) — ハイパフォーマー思考 / 渡邉光太郎
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-08-30/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-15/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
-> 1 表紙: 反論できない場は
-決断を誤る
-意思決定の質を問う
-> 2 書誌情報: 2002年4月 / Tiha von Ghyczy、Bolko von Oetinger、Christopher Bassford、ボストンコンサルティンググループ
-> 3 おすすめ1: チームの意思決定の質を
-上げたい方
-> 3 おすすめ2: 反対意見が出ない会議に
-もやもやしている方
-> 3 おすすめ3: リーダーとして判断の
-進め方を見直したい方
-> 4 問いかけ: 「判断は自分に任せろ」
-と言った瞬間、
-何が失われるのか。
-> 5 本文: エベレスト登頂前、
-論争を歓迎しないと
-釘を刺したリーダー
-> 6 本文: 引き返すべきと
-分かっていた人がいても
-誰も提案できなかった
-> 7 本文: 代替案を用意し均等に評価。
-一つのグループの案に
-依存しない
-> 8 本文: 事前に一部の人だけに
-情報を渡すやり方は
-プロセスとして適切でない
-> 9 まとめ: 決断そのものより、
-決断に至る場のつくり方を
-問い直す一冊
+> 1 表紙: 職種を問わない
+思考と行動が
+結果を分ける
+> 2 書誌情報: 2019年2月 / 渡邉光太郎
+> 3 おすすめ1: スキルだけでは
+伸び悩みを感じている方
+> 3 おすすめ2: 方向転換すべきか
+迷っている方
+> 3 おすすめ3: チームの空気を
+入れ替えたい方
+> 4 問いかけ: あなたの成果は
+スキルの差ですか
+思考の差ですか
+> 5 本文: 仕事には職種を問わない思考と
+職種特有のスキル
+二つのレイヤーがある
+> 6 本文: 二つで悩んだ相手に
+買わなかった方を贈る
+期待を上回るという発想
+> 7 本文: 意固地にならず方向転換する
+ジャンボ尾崎は投手から打者へ
+そしてプロゴルファーへ
+> 8 本文: 異なる価値観を受け入れ
+チームに新鮮なメンバーを入れる
+異見こそ力になる
+> 9 まとめ: 武器ができたら試してみる
+北斎は70歳を超えて
+飛躍的に進化した
 
 </details>
 
 <details><summary>キャプション</summary>
 
 ```
-今回はリーダーシップと意思決定の本です。『戦争論』を手がかりに、決断の本質を考える一冊でした。
+今回は、仕事の成果の出し方を扱ったビジネス書です。
 
-印象に残ったのは、エベレストのエピソードです。ロブ・ホールは登頂前、登山客に対して「登山の間は意見の相違や論争を歓迎しない、判断は自分に任せるべきだ」と釘を刺しました。その結果、2時までに登頂できないと分かっていたはずなのに、誰も引き返すことを提案できなかった。反論を封じることが、リーダー自身の判断を守るどころか、誰も止められない状況をつくってしまう。ここは読んでいて息をのみました。
+面白かったのは、仕事の能力を二つのレイヤーで捉える視点でした。部門や職種を問わない思考・行動と、部門や職種に特有のスキル。この二つを有効活用することが重要だと書かれています。日本の生産性がOECD38カ国中23位であることや、新卒一括採用とジョブローテーションの話とあわせて読むと、スキルだけを磨いても足りない理由が見えてきます。
 
-もう一つ、キューバ危機とピッグス湾事件のプロセスの比較も面白かったです。大統領がどう振る舞うか、代替案を設けて均等に評価すること、一つのグループのアイディアに依存しないこと。参加者を選ぶときも、専門知識の有無、実行する際にその人物が必要かどうか、腹心としての役割、そして多様性を意識する。決断は個人の才覚ではなく、設計されたプロセスなのだと思わされました。
+もう一つ印象に残ったのが、期待を上回るパフォーマンスの例です。二つで悩んで買わなかった方をプレゼントする。相手の期待の少し外側に踏み出す行動が、記憶に残る仕事をつくるのだと思いました。
 
-6色ハット法の話も出てきます。人間は肯定するより否定するほうが知的に思われると考えがちだという指摘、耳が痛いです。類似性、他社の模倣、経験則。どれも判断の材料になり得るけれど、過大評価は禁物。事前に一部の人だけに情報提供すると、残された人は疎外感や既成事実を押し付けられる感覚を持つ、というくだりも実感がありました。
+そして、柔軟に方向転換すること。ジャンボ尾崎は甲子園優勝投手としてライオンズに入団し、投手から打者に転向、3年目に引退してプロゴルファーへ。意固地にならないことの強さが伝わってきます。
 
-会議で反対意見が出ないとき、それは合意なのか沈黙なのか。一度立ち止まって考えてみたい方に。
+葛飾北斎は70歳を超えてから絵画表現が飛躍的に進化した、という一節も心に残りました。世で戦える武器ができたら惜しまず試してみる。いつからでも遅くない、と背中を押される一冊です。
 
-#決断の本質 #クラウゼヴィッツの戦略思考 #戦争論 #意思決定 #リーダーシップ #ビジネス書
+#ハイパフォーマー思考 #渡邉光太郎 #PHP研究所 #ビジネス書 #読書記録
 ```
 
 </details>
 
 <details><summary>根拠メモ (grounding)</summary>
 
-> - 表紙・問いかけ・point1,2：読書メモ「ロブホールはエベレスト登頂前に…論争を歓迎しない/判断は自分に任せるべき/2時までに登頂できないと分かっていたはずも誰も引き返す事の提案ができなかった」
-> - point3：読書メモ「キューバ危機とビッグス湾事件のプロセスの特徴／代替案を設け均等に評価、一つのグループアイディアに依存しない」
-> - point4：読書メモ「事前に一部の人だけに情報提供する…意思決定のプロセスとしては適切ではない」
-> - キャプションの参加者選定・6色ハット法・類似性・模倣・経験則の記述：読書メモ該当箇所
-> - recommend3項目・まとめ：上記メモ内容からの要約（メモに直接の文言なし）
-> - 著者名・出版社・出版日・正式書名：書誌データ
-> - ピッグス湾の表記はメモの「ビッグス湾」を一般的表記に改めたもの（判断による調整）
+> - 書名・著者・出版社・出版日は書誌情報より
+> - cover「職種を問わない思考と行動」は読書メモの二つのレイヤーの記述より
+> - points1はメモ『部門、職種を問わない思考、行動と部門、職種特有のスキルという二つのレイヤー』より
+> - points2はメモ『二つで悩んだ方の買わなかった方をプレゼントする、期待を上回るパフォーマンス』より
+> - points3はメモのジャンボ尾崎の経歴記述より
+> - points4はメモ『自分とは異なる価値観や文化を認め、受けいれる』『チームに新鮮なメンバーを入れる、異見を受け入れる』より
+> - summaryはメモ『世で戦える武器ができたら惜しまず試してみる』『葛飾北斎は70歳を超えてから絵画表現が飛躍的に進化』より
+> - キャプションのOECD38カ国中23位・新卒一括採用とジョブローテーションはメモ記載どおり
+> - recommendの3項目はメモの各テーマから読者像を言い換えたもの（表現は一般化）
+> - question「スキルの差か思考の差か」は二つのレイヤーの記述に基づく問いの言い換え
 
 </details>
 
 ---
 
-### 09/01 (Tue) — 脱日本的思考のすゝめ / 永田 公彦
+### 09/16 (Wed) — フランス人は10着しか服を持たない / ジェニファー・スコット, 神崎朗子
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-01/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-16/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
-> 1 表紙: 日本の当たり前を
-一度脇に置く
-グローバル思考
-> 2 書誌情報: 2023年3月1日 / 永田 公彦
-> 3 おすすめ1: 外国人の同僚や取引先と
-働く機会が増えた方
-> 3 おすすめ2: 英語力より先に
-何を鍛えるべきか
-知りたい方
-> 3 おすすめ3: 意思決定の遅さを
-組織の課題だと
+> 1 表紙: 服を減らすより
+自分に合うものだけを
+長く大切に使う
+> 2 書誌情報: 2020年9月12日 / ジェニファー・スコット, 神崎朗子
+> 3 おすすめ1: クローゼットを
+開けるたびに
+もやっとする方
+> 3 おすすめ2: 高かったから捨てられない
+という理由で
+服を持ち続けている方
+> 3 おすすめ3: 暮らしの質を
+少しずつ上げていきたい方
+> 4 問いかけ: その服は本当に必要で
+今の自分に
+合っていますか
+> 5 本文: パリの人は同じ服を
+着まわすことを厭わない
+大事なのは自分らしさ
+> 6 本文: 同じ服はありえないという
+カリフォルニアとの対比が
+価値観の違いを映す
+> 7 本文: お金を出したから捨てられない
+その理由で
+持ち続けていないか
+> 8 本文: いつも一番いいものを使えば
+日常が特別になる
+> 9 まとめ: 部屋を整え良いものを長く使う
+その積み重ねが
+生活の質を上げていく
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、暮らし方と身の回りのものとの付き合い方を考える一冊です。100万部のベストセラーシリーズの最終巻で、2020年に文庫化されたものだそうです。
+
+おそらくキラキラ系女子が読む本なのだと思いますが、ローランドさんがおすすめしていたので手に取りました。
+
+面白かったのは、パリの人とカリフォルニアの人の対比です。パリの人は同じ服を着まわすことを厭わない。大事なのは自分らしさを表現できているかどうか。一方でカリフォルニアの人にとって、同じ服の着まわしはありえない。この違いが繰り返し書かれていて、自分がどちらに近いかを考えさせられました。
+
+もうひとつ刺さったのが、お金を出して買ったからその服は捨てられない、となっていないかという問いかけ。その服は本当に必要で今の自分に合っているのか、自信を持って外を歩けるのか。読みながら思わずワードローブを開けて、自分が何をどれだけ大切にしているのかを確かめたくなりました。
+
+出版社の紹介によれば、したくないことは感じよくきっぱりと断る、誰にでも礼儀をもって接する、といった生き方の話も含まれているようです。
+
+常に部屋をきれいに保つことが自分の気持ちを上げることにつながる。良いものを長く使うことが生活の質を上げるコツ。いつも一番いいものを使えば、日常が特別になる。
+
+クローゼットを開けるのが少し憂うつな方は、ぜひ。
+
+#フランス人は10着しか服を持たない #ジェニファースコット #大和書房 #暮らしの本 #ワードローブ整理
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 表紙・まとめ「良いものを長く使う」「生活の質を上げる」＝読書メモの最終項目
+> - recommend 1・2＝読書メモ「お金を出して買ったからその服は捨てられないとなってないか」
+> - recommend 3＝読書メモ「良いものを長く使うことが生活の質を上げるコツ」
+> - question＝読書メモ「その服は本当に必要で今の自分に合っているか」
+> - points1・2＝読書メモのパリ人とカリフォルニア人の対比
+> - points4＝読書メモ「いつも1番いいものを使えば日常が特別になり、人生が楽しくなる」
+> - キャプションの「100万部」「文庫化」「断る・礼儀」＝出版社の内容紹介（そう明記）
+> - キャプションの「ローランドがおすすめ」「キラキラ系女子が読む本」＝読書メモの所感
+> - published 2020年9月＝出版日2020年9月12日
+> - ジャンル表記は避けた（データ上不明のため）
+
+</details>
+
+---
+
+### 09/18 (Fri) — パナソニック覚醒 / 樋口泰行
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-18/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 変われなかった会社が
+変われた理由
+> 2 書誌情報: 2022年4月15日 / 樋口泰行
+> 3 おすすめ1: 組織の変革を
+任されている方
+> 3 おすすめ2: 人の意識から
+変えたい方
+> 3 おすすめ3: 事業の見直しを
+先送りしたくない方
+> 4 問いかけ: 制度を作っただけで
+組織は変わりましたか
+> 5 本文: 1階はカルチャーマインド改革。
+人の意識が変わらないと
+組織は変わらない
+> 6 本文: 2階はソリューションシフト、
+3階は事業立地改革。
+順番に積み上げる
+> 7 本文: 創業の工場だからと
+聖域を作らない。
+シビアに見極める
+> 8 本文: 画一的な服装は
+発想を画一的にする。
+完全私服化という選択
+> 9 まとめ: ビッグピクチャーを描き
+聖域なく見極める。
+変革の順序が見える一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、組織変革の実践記録です。25年ぶりに古巣へ戻った樋口泰行さんが、パナソニック コネクトの社長として取り組んだ変革を42項目にわたって語っています。
+
+面白いと感じたのは、変革を「1階・2階・3階」と building のように積み上げて考えている点。1階はカルチャーマインド改革で、まずは人の意識が変わらないと絶対に会社や組織は変わらないという考え方。その上に2階のソリューションシフト、ビジネスモデル改革、そして3階の事業立地改革が乗る。順番が明確なのが印象的でした。
+
+もうひとつは、聖域を作らないこと。創業の品目だから、創業の工場だから、という理由で判断を甘くしない。松下電器の聖地とされた岡山工場の閉鎖という決断についても語られています。ポートフォリオマネジメントから逃げない、という項目がまさにそれだと思いました。
+
+そして個人的にいちばん腑に落ちたのが、画一的な服装は発想を画一的にする、という指摘。会社を完全私服化して、自由なアイディアが生まれやすい状態をつくる。小さく見えて、意識に効く打ち手だと感じます。
+
+変革推進室を作っただけでは足りない。何から手をつけるか迷っている方に。
+
+#パナソニック覚醒 #樋口泰行 #組織変革 #ビジネス書 #経営 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 表紙「変われなかった会社が変われた理由」＝内容紹介の『変われなかった会社が変われた』という社内外評価
+> - recommend3項目＝読書メモの意識改革・PPM見極め、内容紹介の変革推進室の記述からの読者想定（対象読者はデータに明記なし、一般的推定）
+> - 問いかけ「制度を作っただけで組織は変わったか」＝内容紹介『変革推進室や改革本部を作っただけではダメ』
+> - points1・2＝読書メモの1階カルチャーマインド改革/2階ソリューションシフト・ビジネスモデル改革/3階事業立地改革
+> - points3＝読書メモ『創業の品目だから…創業の工場（岡山工場）だから…といった聖域を作ってはダメ、シビアに見ていく』
+> - points4＝内容紹介『画一的な「服装」は、発想を画一的にする』および読書メモの完全私服化
+> - summary＝読書メモ『ビッグピクチャーを描くことの必要性。PPMの見極めの必要性』
+> - キャプションの8630億円ブルーヨンダー買収には触れず、岡山工場閉鎖の決断は内容紹介に記載あり
+> - 著者の25年ぶり出戻り・42項目・ポートフォリオマネジメントから逃げない＝いずれも出版社の内容紹介
+> - ジャンル・ページ数は不明のため記載せず
+
+</details>
+
+---
+
+### 09/19 (Sat) — 胸アツ 戦略図鑑 / 齊藤颯人, 本郷和人, 本村凌二
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-19/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 逆転の戦いから
+学ぶ、覚悟と戦略の
+30の智慧
+> 2 書誌情報: 2023年2月8日 / 齊藤颯人, 本郷和人, 本村凌二
+> 3 おすすめ1: 歴史をほとんど
+勉強してこなかった方
+> 3 おすすめ2: 戦いの逆転劇から
+仕事の教訓を
+持ち帰りたい方
+> 3 おすすめ3: 不安を勇気に
+変えるヒントを
+探している方
+> 4 問いかけ: 戦略と熱意、
+勝敗を分けるのは
+どちらだと思いますか
+> 5 本文: 桶狭間は無策だった説も。
+結果を出すのは
+最後は熱意と直感
+> 6 本文: 吉宗は補欠の補欠。
+人当たりの良さで
+将軍まで上りつめた
+> 7 本文: 長州征伐が示すのは、
+統率なき大群より
+統率された精鋭の強さ
+> 8 本文: アルマダの海戦。
+安全の追求が
+スピード勝負では枷になる
+> 9 まとめ: 30の戦いを通して
+戦略と覚悟を学び直す、
+歴史が苦手でも読める一冊
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、歴史上の戦いからビジネス教養を学ぶ図鑑タイプの一冊です。本屋をぶらぶらしていて立ち読みしたのがきっかけでした。世界史も日本史も大学受験の科目になかったので、正直ほとんど真面目に勉強しておらず、初見の話ばかりでした。
+
+面白かったのは桶狭間の戦い。雨にまぎれて今川義元を叩いたというのが定説ですが、最近は無策だったことが明らかになっているそうです。それでも結果につながったのは信長の熱意と直感。最後にものを言うのは熱意なのかもしれません。
+
+徳川吉宗の話も印象的でした。御三家では格下の紀州徳川、その藩主の補欠という「補欠の補欠」だったのに、人間関係と人当たりの良さで将軍にまで上りつめた。実力だけが道をひらくわけではない、という読み方もできます。
+
+そしてアルマダの海戦。安全を追求することは、スピードが重要な戦いでは余計な時間や手間になる。ちなみに「無敵艦隊」は当時の呼び名ではなく、後にイギリス人が呼び始めた、賞賛と皮肉の混じった言い方だそうです。
+
+出版社の紹介文によれば、覚悟と戦略で道をひらく30の智慧が収められているとのこと。歴史が得意でなくても、拾える教訓がたくさんありました。あなたはどの戦いから何を持ち帰りますか。
+
+#胸アツ戦略図鑑 #サンクチュアリ出版 #ビジネス教養 #歴史から学ぶ #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 書名・著者・出版社・出版日は書誌データより
+> - cover「覚悟と戦略」「30の智慧」「逆転の戦い」は出版社内容紹介より
+> - recommend1「歴史をほとんど勉強してこなかった」は読書メモの受験科目でなかった記述より
+> - recommend2・3は内容紹介の「ビジネス教養」「不安を勇気に変える」より
+> - question「戦略と熱意」は読書メモの桶狭間の所感と内容紹介の「戦略」より構成（問いかけ自体は編集）
+> - points1 桶狭間・無策・熱意と直感は読書メモそのまま
+> - points2 吉宗・補欠の補欠・人当たりの良さは読書メモそのまま
+> - points3 長州征伐・統率された精鋭は読書メモそのまま
+> - points4 アルマダの海戦・安全とスピードは読書メモそのまま
+> - summary「30」は内容紹介、「歴史が苦手でも読める」は読書メモの本人所感に基づく解釈
+> - キャプションの立ち読み経緯・無敵艦隊の由来は読書メモより
+> - ページ数・ジャンルは不明のため記載せず
+
+</details>
+
+---
+
+### 09/20 (Sun) — 共感と商い / 八木隆裕
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-20/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 売上を追わない
+150年続く茶筒屋の
+ゆっくり栄える商売論
+> 2 書誌情報: 2023年3月1日 / 八木隆裕
+> 3 おすすめ1: 数字に追われず
+長く続く仕事のかたちを
+考えたい方
+> 3 おすすめ2: 自分の仕事の価値を
+もう一度
+見極めたい方
+> 3 おすすめ3: 応援してくれる人と
+長く関係を築きたい方
+> 4 問いかけ: 売上を追わずに、
+商いを長く続けることは
+可能でしょうか。
+> 5 本文: 創業明治8年の開化堂。
+機械化せず手づくりの茶筒を
+今もつくり続ける。
+> 6 本文: 売上を追わず、
+1日につくる量の上限を決める。
+クオリティを守るために。
+> 7 本文: 自分の任期の無事ではなく、
+本気で後世を考える。
+家族経営の長期的な目線。
+> 8 本文: 人の好意は遠慮せず
+精いっぱい受け取り、
+恩を精いっぱい返す。
+> 9 まとめ: 小さく、急がず、人間らしく。
+時代に振り回されない
+商いの考え方が学べる一冊。
+
+</details>
+
+<details><summary>キャプション</summary>
+
+```
+今回は、商いの続け方をテーマにした一冊です。京都で創業明治8年、150年ものあいだ手づくりの茶筒をつくり続ける「開化堂」。機械化せず、つくるモノは当時のまま。それなのに近年話題になり、海外でも売れるようになった理由が書かれています。
+
+私が面白いと思ったのは、売上を志向せず、1日につくる量の上限を決めているところ。クオリティを維持するために、あえて上限を引く。アウトプットの質を高めたいなら、手当たり次第に仕事を受けてはいけない、と読みながら考えさせられました。
+
+もうひとつは、家族経営の時間感覚です。自分の任期をミスなく終える、という発想ではなく、本気で後世のことを考える。ロンドンへの販路拡大も、付き合いを重ねていくやり方でした。長期的な目線があると、判断の基準そのものが変わるのだと思います。
+
+そして、人の好意は遠慮せず精いっぱい受け取り、恩を精いっぱい返すこと。目次にも「互いの間で、貸し借りを持ち合う」とあり、関係のつくり方が一貫していました。
+
+「小さく、急がず、人間らしく」。数字に追われがちな時こそ、読んでみてほしい一冊です。
+
+#共感と商い #八木隆裕 #開化堂 #ビジネス書 #老舗 #読書記録
+```
+
+</details>
+
+<details><summary>根拠メモ (grounding)</summary>
+
+> - 書名・著者・出版日・出版社：根拠データの書誌情報
+> - 「創業明治8年」「手づくり茶筒の老舗 開化堂」：出版社内容紹介
+> - 「機械化せず、手作りにこだわる」「創業150年の茶筒製造メーカー」：読書メモ
+> - 「売上を追わずに、つくる上限を決める」：第1章目次／読書メモ「1日に作る量を決めクオリティを維持」
+> - 「手当たり次第に仕事を受けてはだめ」：読書メモの所感
+> - 「本気で後世の事を考える」「長期的な目線」「ロンドンへの販路拡大、付き合いを重ねる」：読書メモ
+> - 「人の好意は精いっぱい受け取る、恩を返す」：読書メモ
+> - 「互いの間で、貸し借りを持ち合う」：第3章目次
+> - 「小さく、急がず、人間らしく」：はじめにの目次
+> - 「海外でも売れるようになった」「近年話題に」：出版社内容紹介の問いかけ部分
+> - 「応援してくれる人」「推してくれる人」：出版社内容紹介・第4章目次
+> - 「時代やお金に振り回されずに長くゆっくり繁栄」：出版社内容紹介
+
+</details>
+
+---
+
+### 09/22 (Tue) — なぜミーティングで決めたことが実行できないか / 矢本 治
+
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-22/10.jpg" width="150">
+
+<details><summary>カードの文言</summary>
+
+> 1 表紙: 決めたのに
+動き出せない会議を
+終わらせる
+> 2 書誌情報: 2023年3月 / 矢本 治
+> 3 おすすめ1: 会議で決めたことが
+いつも進まないと
 感じている方
-> 4 問いかけ: あなたが当たり前だと
-思っている働き方は
-海外でも通じますか
-> 5 本文: 肩書きではなく
-相手本人に目を向ける。
-個人の考えが優先される文化
-> 6 本文: 戦略と文化がぶつかれば
-必ず文化が勝つ。
-人の習慣は変えられない
-> 7 本文: 名前を呼ぶ、あいさつする、
-お礼を言う。
-日本人が苦手な基本動作
-> 8 本文: Yesと言う割にレスが遅い。
-意思決定と初動の遅さを
-見直す
-> 9 まとめ: 7つの当たり前から抜け出し
-異文化の中で働く
-実践の手引き
+> 3 おすすめ2: 「後ほど検討」で
+終わる打ち合わせを
+変えたい方
+> 3 おすすめ3: 目標を立てても
+行動に移せずに
+悩んでいる方
+> 4 問いかけ: 決めたはずのことが、
+なぜ実行されないまま
+消えていくのか。
+> 5 本文: 小さく始める。
+短い時間で始める。
+完成度を下げる。
+> 6 本文: 「後ほど検討」を避け、
+いま色々決めてから
+解散する。
+> 7 本文: やりたくない業務も
+自分のメリットを踏まえ
+前向きな参加に変える。
+> 8 本文: 計画を人に宣言すると
+達成率が上がる。
+パブリックコミットメント。
+> 9 まとめ: 決める会議から
+動き出す会議へ。
+実行のコツを集めた一冊。
 
 </details>
 
 <details><summary>キャプション</summary>
 
 ```
-今回はグローバルビジネスの現場で使う「異文化マネジメント」の本です。パリを拠点に20年以上、欧州・日本・アジアでコンサルティングとグローバルリーダーシップ教育を行ってきた著者が、日本文化や日本企業の特質を踏まえて実践方法を解説しています（ここは出版社の内容紹介より）。
+今回はミーティングと実行についての一冊です。決めたはずなのに動かない、という状態に心当たりがある方は多いのではないでしょうか。
 
-読んでいて特に残ったのは三つでした。ひとつめは、肩書きにこだわらず相手本人に目をやること。日本人はどうしても肩書に目がいきますが、まず何より個人の考えが優先される文化がある、という指摘です。
+私が読んでいて特に響いたのは三つです。
 
-ふたつめは、戦略と文化がぶつかったときは必ず文化がまさるということ。人の習慣は変えられない、という前提に立つのは大事だと感じました。
+ひとつめは、行動に移すコツとして挙げられていた「小さく始める」「短い時間で始める」「完成度を下げる」という考え方。どれもハードルを下げる方向に揃っているのが印象的でした。
 
-三つめは、日本人が苦手だけれど意識してやるべきこととして挙げられていた、名前を呼ぶ・あいさつをする・お礼を言う、そして早く本音に入ること。Yesと言う割にレスが遅い、という点は耳が痛いところで、意思決定と初動の遅さは意識して見直していきたいと思いました。
+ふたつめは、苦しくても「後ほど検討」で逃げないこと。いま、色々決めてから解散する。この一手間があるかどうかで、その後がまったく変わるのだろうと思います。
 
-目次には「外から目線で日本を伝える能力」「英語や戦略よりも大事な異文化マネジメント力」などが並びます。英語より先に鍛えるものがある、という視点が知りたい方はぜひ。
+みっつめは、パブリックコミットメント。人に目標を宣言すると達成率が高くなるという有名な話ですが、否が応でもやらざるを得なくなるのが効くのだと思います。私がこのライブラリで読書の記録を公開しているのも、実はこれです。剛史の婚活もきっとこれ。
 
-#脱日本的思考のすゝめ #永田公彦 #異文化マネジメント #グローバルリーダー #ビジネス書記録
+もうひとつ、業務が自分のやりたいことでない場合に、しぶしぶではなく自分のメリットを踏まえて前向きに参加する形へ変えてしまう、という視点も残りました。
+
+次のミーティング、解散する前にどこまで決められるか試してみませんか。
+
+#なぜミーティングで決めたことが実行できないか #ミーティング #会議術 #パブリックコミットメント #ビジネス書
 ```
 
 </details>
 
 <details><summary>根拠メモ (grounding)</summary>
 
-> - 書名・著者・出版社・出版日はすべて書誌データより
-> - cover「日本の当たり前」は序章『7つの「当たり前」から抜け出し人生の可能性を拡げる』より
-> - recommend1は内容紹介『外国人の社員、クライアント、事業パートナーなどと接する機会が国内外で増えています』より
-> - recommend2は第2章『英語や戦略よりも大事な異文化マネジメント力』より
-> - recommend3は読書メモ『意思決定と初動の遅さを意識して見直していく』より
-> - question は序章タイトルの「当たり前から抜け出し」を問いに変換したもの
-> - points1は読書メモ『肩書きにこだわらず相手本人に目をやる／まず何より個人の考えが優先される文化』より
-> - points2は読書メモ『戦略と文化は必ず文化がまさる（人の習慣は変えられない）』より
-> - points3は読書メモ『名前を呼ぶこと/あいさつをすること/お礼（ありがとう）をいうこと』より
-> - points4は読書メモ『日本人はYesという割にレスが遅い／意思決定と初動の遅さ』より
-> - summaryは序章タイトルと内容紹介『実践方法について解説します』より
-> - キャプションの著者経歴（パリ拠点・20年以上・欧州/日本/アジア）は出版社の内容紹介より、その旨を明記
-> - キャプションの目次言及は第1章・第2章のタイトルより
-> - ジャンル・ページ数は不明のため触れていない
+> - cover・question・summary：読書メモ「苦しくても後ほど検討‥と言うことを避け、いま、色々きめてから解散する」と書名から構成
+> - recommend 1・2：書名および読書メモ「後ほど検討を避ける」に基づく
+> - recommend 3：読書メモ「行動に移すコツ」に基づく
+> - points 1：読書メモ「小さく始める/短い時間で始める/完成度を下げる…行動に移すコツ」
+> - points 2：読書メモ「いま、色々きめてから解散する」
+> - points 3：読書メモ「業務自体が自分のやりたい事ではない場合…自分のメリットを踏まえて前向きに参加」
+> - points 4：読書メモ「パブリックコミットメント≒公開宣伝効果」「人に目標を宣言する事で達成率が高くなる」
+> - キャプション内の読書記録公開・剛史の婚活の言及：読書メモ本人の所感をそのまま使用
+> - 著者・出版社・出版日：データに記載なしのため不明・空欄
 
 </details>
 
 ---
 
-### 09/02 (Wed) — 苦しかったときの話をしようか / 森岡毅
+### 09/23 (Wed) — デザインフルネス / Sjövall Isabelle、久山葉子
 
-<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W34/docs/img/2026-09-02/10.jpg" width="150">
+<img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/01.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/02.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/03.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/04.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/05.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/06.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/07.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/08.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/09.jpg" width="150"> <img src="https://raw.githubusercontent.com/wyattfuji1220/Instagram/drafts/2026-W37/docs/img/2026-09-23/10.jpg" width="150">
 
 <details><summary>カードの文言</summary>
 
-> 1 表紙: 会社と結婚するな、
-職能と結婚せよ
-> 2 書誌情報: 2019年4月12日 / 森岡毅
-> 3 おすすめ1: やりたいことが
-わからなくて悩んでいる方
-> 3 おすすめ2: 今の会社で何が伸ばせるかを
-考え直したい方
-> 3 おすすめ3: 自分の強みを
-言葉にしてみたい方
-> 4 問いかけ: あなたが結婚しているのは
-会社ですか、
-それとも自分の職能ですか。
-> 5 本文: 会社と結婚するな、職能と結婚せよ。
-その会社で自分の何が伸ばせるか。
-> 6 本文: AIで合理化できるのは
-創造的に頭を使っていない仕事。
-> 7 本文: 資本主義とは、無知と愚かさに
-罰金を課す仕組み。
-> 8 本文: 好きなことを書き出して
-T・C・Lのどれかを見つける。
-> 9 まとめ: 父から我が子への手紙の形で
-働くことの本質を語る一冊。
+> 1 表紙: 心地よさは
+脳科学で
+デザインできる
+> 2 書誌情報: 2023年6月24日 / Sjövall Isabelle、久山葉子
+> 3 おすすめ1: 部屋づくりを
+感覚だけで決めたくない方
+> 3 おすすめ2: 働く環境を
+見直して整えたい方
+> 3 おすすめ3: 北欧の暮らし方に
+興味がある方
+> 4 問いかけ: あなたの家や職場は
+脳にとって
+心地よい場所ですか
+> 5 本文: 窓の外が木々だった患者は
+レンガの景色より
+回復が早かった
+> 6 本文: 家庭で音楽をかけると
+家族の物理的な距離が
+平均12%近づく
+> 7 本文: 座りっぱなしは新しい喫煙。
+歩道や自転車レーンが
+健康リスクを下げる
+> 8 本文: 緑・丸み・フラクタル。
+ストレスを軽減する
+形が環境にはある
+> 9 まとめ: 環境は気分の飾りではなく
+脳への入力。
+整える理由が見つかる一冊
 
 </details>
 
 <details><summary>キャプション</summary>
 
 ```
-今回はキャリアと働き方について考える一冊です。図書館で予約していたことさえ忘れるくらい前に予約した本の順番が回ってきて、ようやく読了しました。
+今回は、暮らしと働く場所を「脳科学」から考える一冊です。著者はニューロデザイン——脳が環境にどう反応し、どんな生理的・心理的影響を受けるかを研究する分野の専門家。北欧発の「デザイン×脳科学」という切り口が新鮮でした。
 
-私が一番刺さったのは「会社と結婚するな、職能と結婚せよ」という言葉。その会社に居続けることではなく、その会社で自分の能力の何が伸ばせるかを考えることが重要だという視点です。会社選びの基準そのものが変わる考え方だと思いました。
+面白かったのは、胆嚢手術後の患者を二つに分け、片方はレンガの景色、片方は木々の景色の部屋にしたところ、後者のほうが回復が早かったという話。景色は気分の問題だと思っていましたが、体の回復速度にまで及ぶのかと驚きました。
 
-もうひとつ印象的だったのが、AIで合理化できるのは創造的に頭を使っていない仕事だという指摘。そして「資本主義とは無知であることと愚かであることに罰金を課すこと」という一文。厳しい言い方ですが、目をそらさずに読みたい部分でした。
+もうひとつ、家庭で音楽をかけると家族の間の物理的な距離が平均12%近づく、という一文も印象に残っています。距離感は性格や関係性の問題だと思いがちですが、環境側から動かせる部分があるのだと気づかされます。
 
-本書には自分の好きなことを書き出して強みを探すワークもあります。T（thinking／問題を解く・分析・知ること）、C（communication／友達が増える・人が集まる場所）、L（leadership／達成すること・自分で決めること）。どれが自分に近いか、考えてみると面白いです。
+ほかにも、オフィスに緑を置いてストレスを減らす、丸みのある形で交流を促す、ヒュッゲな要素を採り入れる、フラクタルのパターンが脳の回復を助ける、など具体的なアイデアが並びます。「座りっぱなしは新しい喫煙」という言葉もメモしました。
 
-勤勉さが日本人の取り柄なのに猛烈に働かなくてどうする、という一節にも背筋が伸びました。自分自身のブランドイクイティは何か。人間関係以上に、自分の結果とパースペクティブにフォーカスし続けること。読み終えて、そこに立ち返りたいと思いました。
+私は図書館で読了しました。日光を最大限に取り入れる、そもそもオフィスワークに拘らない。働きやすい環境とは何かを、あらためて自分に問い直したくなります。まずは机まわりの一角から、変えてみませんか。
 
-あなたなら、T・C・Lのどれを選びますか。
-
-#苦しかったときの話をしようか #森岡毅 #キャリアの本 #ビジネス書記録 #月一冊から始めるビジネス書
+#デザインフルネス #ニューロデザイン #脳科学 #北欧デザイン #ヒュッゲ #読書記録
 ```
 
 </details>
 
 <details><summary>根拠メモ (grounding)</summary>
 
-> - 表紙・point1「会社と結婚するな、職能と結婚せよ」＝第1章の目次および読書メモ（その会社で自分の能力の何が伸ばせるか）
-> - point2「AIで合理化できるのは創造的に頭を使っていない仕事」＝読書メモそのまま
-> - point3「資本主義とは無知であることと愚かであることに罰金を課すこと」＝読書メモそのまま
-> - point4 T・C・L＝読書メモの好きなこと書き出し（thinking/communication/leadership）
-> - recommend1「やりたいことがわからなくて悩む」＝第1章タイトル
-> - recommend2＝読書メモ「その会社で自分の能力の何が伸ばせるか」
-> - recommend3「自分の強み」＝第3章「君の強みをどう知るか？」
-> - question＝第1章目次と読書メモをもとにした問いかけ（一般論として言い換え）
-> - summary「父が我が子のために書きためた働くことの本質」＝正式書名の副題
-> - キャプションの図書館予約・勤勉さ・ブランドイクイティ・結果とパースペクティブ＝読書メモそのまま
-> - 出版日2019年4月12日＝書誌データ
+> - 表紙・まとめ:『デザイン×脳科学』『ニューロデザイン（脳が環境にどう反応し生理的・心理的影響を与えるか）』という内容紹介の記述に基づく
+> - point1:読書メモ『胆嚢手術後の患者を二つに分けて…木々の景色、後者が早く回復した』および内容紹介『窓から見える景色が美しい病院では、患者の回復が早まる』
+> - point2:読書メモ『家庭で音楽をかけると家族の間の物理的な距離が平均12%近づく』
+> - point3:読書メモ『座りっぱなしは新しい喫煙』＋内容紹介『広い歩道や自転車専用レーン…健康リスクが低減』
+> - point4:内容紹介『オフィスに緑を置いてストレス軽減』『丸みのある形を採り入れて人の交流を促進』『フラクタルのパターンは…ストレスを軽減する』
+> - おすすめ3項目:内容紹介の『家・学校・職場・病院・都市』『北欧発』および読書メモ『働き易い環境とは何か心掛ける』
+> - 問いかけ:内容紹介全体（環境が感情や行動を左右するという主旨）からの言い換え
+> - キャプション『図書館で読了』『日光を最大限取り入れる／オフィスワークに拘らず』:読書メモそのまま
+> - ジャンル・ページ数は不明のため記載せず
 
 </details>
 
