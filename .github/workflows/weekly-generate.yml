@@ -66,6 +66,8 @@ jobs:
       - name: Pull Request を作成
         env:
           GH_TOKEN: ${{ github.token }}
+          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
+          PYTHONPATH: src
         run: |
           set -euo pipefail
           if [ -z "$(git status --porcelain)" ]; then
@@ -75,6 +77,11 @@ jobs:
 
           WEEK=$(date -u -d "+1 day" +%G-W%V)
           BRANCH="drafts/${WEEK}"
+
+          # feature --ahead は3週間先の週でプレビューを書くため、pr-body.md が
+          # 先の週の内容で上書きされている。PR を作る直前に、この週で書き直す。
+          # （一度これで、W35 の PR に W37 の説明文が付いた）
+          python -m bookgram preview --start "$(date -u -d '+1 day' +%F)"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

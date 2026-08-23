@@ -5,5 +5,8 @@ __pycache__/
 venv/
 .pytest_cache/
 output/*.mp4
+# PR の説明文は作るたびに中身が変わる作業ファイル。ワークフローが
+# その場で作り直すので、リポジトリには残さない。
+output/pr-body.md
 secrets-to-copy.txt
 fb.txt
