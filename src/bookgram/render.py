@@ -312,6 +312,30 @@ def build_story_context(post: dict[str, Any], feed_image: str = "") -> dict[str,
     }
 
 
+def render_cover(post: dict[str, Any], out_dir: Path) -> Path:
+    """表紙カード（01.jpg）だけを描き直す。
+
+    account.yaml の cover_tag のように表紙にしか出ない文言を変えたとき、
+    10枚すべてを作り直すと1投稿あたり1.5MB がリポジトリに積み上がる。
+    変わる1枚だけを差し替える。
+    """
+    template = _env().get_template("card.html.j2")
+    context = build_card_contexts(post)[0]
+    path = out_dir / "01.jpg"
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": CARD_WIDTH, "height": CARD_HEIGHT},
+            device_scale_factor=1,
+        )
+        page.set_content(template.render(**context), wait_until="load")
+        page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
+        browser.close()
+
+    return path
+
+
 def render_story(post: dict[str, Any], out_dir: Path) -> Path:
     """ストーリー用の縦長画像を1枚書き出す。
 

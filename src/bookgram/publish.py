@@ -395,6 +395,15 @@ def closing_question(draft: dict[str, Any], account: dict[str, Any]) -> str:
     return questions[ordinal % len(questions)]
 
 
+def genre_of(draft: dict[str, Any]) -> str:
+    """この投稿のジャンル。ハッシュタグの出し分けに使う。
+
+    特集は種別をそのまま持っている。日々の書籍投稿はキューがビジネス書の
+    ジャンルから引いているので business とみなす。
+    """
+    return draft.get("feature_kind") or "business"
+
+
 def build_caption(draft: dict[str, Any]) -> str:
     """本文・問いかけ・アカウント紹介・ハッシュタグを組み立てる。
 
@@ -404,6 +413,7 @@ def build_caption(draft: dict[str, Any]) -> str:
 
     account = load_account()
     tags = list(account.get("fixed_hashtags", []))
+    tags += account.get("genre_hashtags", {}).get(genre_of(draft), [])
     for tag in draft.get("hashtags", []):
         tag = tag if tag.startswith("#") else f"#{tag}"
         if tag not in tags:

@@ -639,3 +639,37 @@ def test_report_shows_retention_when_the_reel_length_is_known():
     )
     assert "| 2.7秒 | 21% |" in report
     assert "視聴維持率: 21%" in report
+
+
+def test_genre_of_defaults_to_business_for_daily_posts():
+    from bookgram.publish import genre_of
+
+    assert genre_of({"feature_kind": "novel"}) == "novel"
+    assert genre_of({"feature_kind": "classic"}) == "classic"
+    assert genre_of({"book_title": "何か"}) == "business"
+
+
+def test_novel_features_do_not_carry_business_hashtags(monkeypatch):
+    """小説の特集に #ビジネス書 が付くと、扱う話題の判定を濁らせる。"""
+    from bookgram import publish
+
+    account = {
+        "name": "n", "tagline": "t", "closing_questions": [],
+        "fixed_hashtags": ["#読了"],
+        "genre_hashtags": {
+            "business": ["#ビジネス書"],
+            "novel": ["#小説"],
+        },
+    }
+    monkeypatch.setattr("bookgram.config.load_account", lambda: account)
+
+    novel = publish.build_caption(
+        {"caption": "本文", "date": "2026-08-27", "feature_kind": "novel"}
+    )
+    assert "#小説" in novel
+    assert "#ビジネス書" not in novel
+
+    daily = publish.build_caption({"caption": "本文", "date": "2026-08-25"})
+    assert "#ビジネス書" in daily
+    assert "#小説" not in daily
+    assert "#読了" in daily  # ジャンルを問わないタグは両方に付く

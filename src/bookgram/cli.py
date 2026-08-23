@@ -75,6 +75,7 @@ from .render import (
     STORY_FILENAME,
     fetch_cover_data_uri,
     render_feature,
+    render_cover,
     render_post,
     render_story,
 )
@@ -322,6 +323,15 @@ def cmd_rerender(args: argparse.Namespace) -> int:
         post = dict(draft)
         post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
         out_dir = IMG_DIR / day.isoformat()
+        if args.cover_only:
+            # 特集の表紙には cover_tag が無いので対象外
+            if draft.get("kind") == "feature":
+                continue
+            render_cover(post, out_dir)
+            render_story(post, out_dir)
+            print(f"[cover] {day} 『{draft_label(draft)}』")
+            rendered += 1
+            continue
         if draft.get("kind") == "feature":
             for book in post["books"]:
                 book["cover_data_uri"] = fetch_cover_data_uri(book.get("cover_url", ""))
@@ -1128,6 +1138,11 @@ def main(argv: list[str] | None = None) -> int:
     p_re = sub.add_parser("rerender", help="下書きJSONから画像を作り直す")
     p_re.add_argument("--date", help="対象日 (YYYY-MM-DD)。既定は全下書き。")
     p_re.add_argument("--force", action="store_true", help="投稿済みも作り直す")
+    p_re.add_argument(
+        "--cover-only",
+        action="store_true",
+        help="表紙カードだけ描き直す（cover_tag など表紙にしか出ない文言を変えたとき）",
+    )
     p_re.set_defaults(func=cmd_rerender)
 
     sub.add_parser("doctor", help="設定と接続の点検").set_defaults(func=cmd_doctor)
