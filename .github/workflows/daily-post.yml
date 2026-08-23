@@ -2,8 +2,10 @@ name: 毎日 Instagram 投稿
 
 on:
   schedule:
-    # 07:00 JST = 前日 22:00 UTC
-    - cron: "0 22 * * *"
+    # 狙いは 07:00 JST 着地。GitHub Actions の定時実行は共有マシンの混雑で
+    # 数十分ずれ、実測では毎回55分前後の遅れが出ていた（08:02 / 07:57 / 07:54）。
+    # その分を見込んで1時間前倒しし、06:00 JST = 前日 21:00 UTC で予約する。
+    - cron: "0 21 * * *"
   workflow_dispatch:
     inputs:
       date:

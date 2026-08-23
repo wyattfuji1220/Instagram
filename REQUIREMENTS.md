@@ -42,7 +42,7 @@ books/queue.yaml  ←  あなたが本を追加（書名 + ISBN任意）
       │
       │  ★ あなたがレビュー → マージ = 承認
       ▼
-  [毎日 07:00 JST] daily-post.yml
+  [毎日 07:00 JST ごろ] daily-post.yml（予約は 06:00。実行の遅れを見込む）
       ▼
   ⑥ 投稿             Instagram Graph API
                      /media (×5) → /media (CAROUSEL) → /media_publish
@@ -86,7 +86,7 @@ books/queue.yaml  ←  あなたが本を追加（書名 + ISBN任意）
 Instagram/
 ├─ .github/workflows/
 │   ├─ weekly-generate.yml   日曜20:00 生成＋PR作成
-│   └─ daily-post.yml        毎朝07:00 投稿
+│   └─ daily-post.yml        毎朝07:00ごろ 投稿（予約は06:00）
 ├─ src/bookgram/
 │   ├─ config.py             設定・環境変数
 │   ├─ bookdata.py           openBD / Google Books
