@@ -87,6 +87,15 @@
   "reel": {
     "built_at": "2026-08-24T20:15:09.406797+09:00",
     "cards": 5,
-    "bytes": 886122
+    "bytes": 886122,
+    "media_id": "18624072199029152",
+    "posted_at": "2026-08-24T20:16:28.856190+09:00",
+    "audio": {
+      "audio_id": "24357110390657450",
+      "title": "Elevate",
+      "display_artist": "Giulio Cercato",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    }
   }
 }
