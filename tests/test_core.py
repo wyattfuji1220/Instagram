@@ -422,10 +422,12 @@ def test_reel_starts_with_the_conclusion_and_stays_readable(tmp_path):
     cards = [p.name for p in reel_cards(tmp_path, "book")]
     assert cards[0] == "01.jpg"
     assert cards[1] == "04.jpg"
-    assert "02.jpg" not in cards  # 書誌情報は動画では読ませない
+    # 書影は締めの直前。無いと、どの本の話だったのか分からないまま終わる。
+    assert cards[-2] == "02.jpg"
+    assert cards[-1] == "10.jpg"
     assert "story.jpg" not in cards
     # 総尺が伸びすぎないこと。長いほど維持率は落ちる。
-    assert len(cards) * SECONDS_PER_CARD <= 13
+    assert len(cards) * SECONDS_PER_CARD <= 15
 
 
 def test_reel_uses_every_card_for_features(tmp_path):
