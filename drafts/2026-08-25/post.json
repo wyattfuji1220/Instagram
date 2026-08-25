@@ -88,6 +88,15 @@
   "reel": {
     "built_at": "2026-08-25T20:04:59.693586+09:00",
     "cards": 6,
-    "bytes": 1602076
+    "bytes": 1602076,
+    "media_id": "18104270933228054",
+    "posted_at": "2026-08-25T20:06:14.819170+09:00",
+    "audio": {
+      "audio_id": "2477944699150252",
+      "title": "Peaceful Piano",
+      "display_artist": "Dr. Pheel",
+      "mood": "静か",
+      "query": "calm piano"
+    }
   }
 }
