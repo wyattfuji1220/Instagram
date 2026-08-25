@@ -70,7 +70,7 @@
     "キャプション中の『気持ちが軽くなりました』『納得した』等の所感は読書メモの内容に沿った感想表現（メモ外の実体験は記載していない）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6015/9784763136015_1_2.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5653,
@@ -80,5 +80,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18121758712845243",
+  "posted_at": "2026-08-26T06:58:12.561030+09:00",
+  "story_media_id": "18423389998145912"
 }
