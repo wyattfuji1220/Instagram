@@ -87,6 +87,15 @@
   "reel": {
     "built_at": "2026-08-26T20:16:53.749160+09:00",
     "cards": 6,
-    "bytes": 1107644
+    "bytes": 1107644,
+    "media_id": "17912570562449622",
+    "posted_at": "2026-08-26T20:19:02.661997+09:00",
+    "audio": {
+      "audio_id": "592271352837708",
+      "title": "Beautiful",
+      "display_artist": "Giulio Cercato",
+      "mood": "静か",
+      "query": "calm piano"
+    }
   }
 }
