@@ -70,7 +70,7 @@
     "「意志の弱さではなく」という表現は本文にある言葉ではなく、メモ内容からの言い換え"
   ],
   "cover_url": "",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5295,
@@ -79,5 +79,8 @@
       "ndl",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18065606843573441",
+  "posted_at": "2026-08-28T11:27:23.526803+09:00",
+  "story_media_id": "18119699186291136"
 }
