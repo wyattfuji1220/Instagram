@@ -619,7 +619,9 @@ def test_retention_turns_watch_time_into_a_share_of_the_video():
     """12.8秒の3秒と30秒の3秒は意味が違う。必ず割合に直す。"""
     from bookgram.insights import retention, reel_seconds
 
-    assert reel_seconds(5) == pytest.approx(12.0)
+    assert reel_seconds({"seconds": 12.8}) == pytest.approx(12.8)  # 記録が優先
+    assert reel_seconds({"cards": 5}) == pytest.approx(12.0)  # 無ければ逆算
+    assert reel_seconds({}) is None
     assert retention(2654, 12.8) == "21%"
     assert retention(2654, None) == "-"
     assert retention(None, 12.8) == "-"

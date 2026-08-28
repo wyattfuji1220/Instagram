@@ -588,6 +588,9 @@ def cmd_reel(args: argparse.Namespace) -> int:
     draft["reel"] = {
         "built_at": datetime.now(JST).isoformat(),
         "cards": len(cards),
+        # 実尺を残す。枚数から後で逆算すると、SECONDS_PER_CARD を変えた
+        # 時点で過去の動画の長さまで変わってしまい、維持率が狂う。
+        "seconds": round(len(cards) * SECONDS_PER_CARD, 2),
         "bytes": out_path.stat().st_size,
     }
     bookqueue.save_draft(day, draft)
@@ -1040,8 +1043,10 @@ def cmd_stats(args: argparse.Namespace) -> int:
     durations: dict[str, float] = {}
     for path in sorted(DRAFTS_DIR.glob("*/post.json")):
         reel = (json.loads(path.read_text(encoding="utf-8")).get("reel")) or {}
-        if reel.get("media_id") and reel.get("cards"):
-            durations[str(reel["media_id"])] = insights.reel_seconds(reel["cards"])
+        if reel.get("media_id"):
+            seconds = insights.reel_seconds(reel)
+            if seconds:
+                durations[str(reel["media_id"])] = seconds
 
     report = insights.build_report(profile, account, rows, today_jst(), durations)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

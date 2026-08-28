@@ -89,9 +89,18 @@ def _seconds(milliseconds: int | None) -> str:
     return f"{milliseconds / 1000:.1f}秒"
 
 
-def reel_seconds(cards: int) -> float:
-    """カード枚数から動画の長さ。下書きに残した枚数から逆算する。"""
-    return cards * SECONDS_PER_CARD
+def reel_seconds(record: dict[str, Any]) -> float | None:
+    """その動画の長さ。下書きに残した記録から取る。
+
+    実尺が記録されていればそれを使う。枚数からの逆算は、構成を変えた
+    あとに過去の動画の長さまで変えてしまう（1枚1.6秒だった頃の8枚を
+    2.4秒で数え、維持率が23%から15%に化けた）。逆算は記録が無い分の
+    保険にとどめる。
+    """
+    if record.get("seconds"):
+        return float(record["seconds"])
+    cards = record.get("cards")
+    return cards * SECONDS_PER_CARD if cards else None
 
 
 def retention(milliseconds: int | None, seconds: float | None) -> str:
