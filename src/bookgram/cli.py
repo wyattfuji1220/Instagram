@@ -23,7 +23,9 @@ import json
 import os
 import shutil
 import sys
+import tempfile
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from . import insights
@@ -70,13 +72,22 @@ from .publish import (
     publish_story,
 )
 from .music import pick_audio, recent_audio_ids
-from .reel import REEL_FILENAME, build_reel, reel_cards
+from .reel import (
+    BOOK_REEL_VARIANTS,
+    REEL_FILENAME,
+    SECONDS_PER_CARD,
+    build_reel,
+    reel_cards,
+    thumb_offset_ms,
+    variant_for,
+)
 from .render import (
     STORY_FILENAME,
     fetch_cover_data_uri,
     render_feature,
     render_fixed_text_cards,
     render_post,
+    render_reel_cards,
     render_story,
 )
 
@@ -571,7 +582,24 @@ def cmd_reel(args: argparse.Namespace) -> int:
         return 1
 
     image_dir = IMG_DIR / day.isoformat()
-    cards = reel_cards(image_dir, draft.get("kind", "book"))
+    kind = draft.get("kind", "book")
+    variant = variant_for(day) if kind == "book" else None
+
+    # 書籍投稿はリール専用の 9:16 を描き直す。カルーセルの 4:5 を流用すると
+    # 文字が画面の1割にしかならず、平均視聴が2〜3秒から動かなかった。
+    # 出来上がりは動画に焼くだけなので、一時領域に置いてあとで捨てる。
+    reel_dir: tempfile.TemporaryDirectory[str] | None = None
+    if kind == "book":
+        reel_dir = tempfile.TemporaryDirectory(prefix="bookgram-reel-")
+        post = dict(draft)
+        post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
+        cards = render_reel_cards(
+            post, Path(reel_dir.name), BOOK_REEL_VARIANTS[variant]
+        )
+        print(f"[reel] 構成「{variant}」で 9:16 の面を{len(cards)}枚描きました。")
+    else:
+        cards = reel_cards(image_dir, kind)
+
     if len(cards) < 3:
         print(
             f"[error] {day} のカード画像が足りません（{len(cards)}枚）。"
@@ -582,11 +610,16 @@ def cmd_reel(args: argparse.Namespace) -> int:
 
     out_path = image_dir / REEL_FILENAME
     print(f"[reel] {day} 『{draft_label(draft)}』 カード{len(cards)}枚を動画にします…")
-    build_reel(cards, out_path)
+    try:
+        build_reel(cards, out_path)
+    finally:
+        if reel_dir is not None:
+            reel_dir.cleanup()
     size_mb = out_path.stat().st_size / 1_000_000
 
     draft["reel"] = {
         "built_at": datetime.now(JST).isoformat(),
+        "variant": variant,
         "cards": len(cards),
         # 実尺を残す。枚数から後で逆算すると、SECONDS_PER_CARD を変えた
         # 時点で過去の動画の長さまで変わってしまい、維持率が狂う。
@@ -685,7 +718,13 @@ def cmd_post_reel(args: argparse.Namespace) -> int:
 
     print(f"[reel] {day} 『{draft_label(draft)}』 をリール投稿中…")
     try:
-        media_id = publish_reel(client, video_url, caption, configuration)
+        media_id = publish_reel(
+            client,
+            video_url,
+            caption,
+            configuration,
+            thumb_offset_ms((draft.get("reel") or {}).get("variant") or ""),
+        )
     except PublishError as error:
         print(f"::error::リールの投稿に失敗しました: {error}", file=sys.stderr)
         return 1
@@ -1041,14 +1080,19 @@ def cmd_stats(args: argparse.Namespace) -> int:
     # 下書きに残したカード枚数から動画の長さを逆算し、維持率を出せるようにする。
     # リールを出した日と素材になった投稿の日はずれるので、media_id で結ぶ。
     durations: dict[str, float] = {}
+    variants: dict[str, str] = {}
     for path in sorted(DRAFTS_DIR.glob("*/post.json")):
         reel = (json.loads(path.read_text(encoding="utf-8")).get("reel")) or {}
         if reel.get("media_id"):
             seconds = insights.reel_seconds(reel)
             if seconds:
                 durations[str(reel["media_id"])] = seconds
+            if reel.get("variant"):
+                variants[str(reel["media_id"])] = reel["variant"]
 
-    report = insights.build_report(profile, account, rows, today_jst(), durations)
+    report = insights.build_report(
+        profile, account, rows, today_jst(), durations, variants
+    )
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     path = OUTPUT_DIR / "stats.md"
     path.write_text(report, encoding="utf-8")

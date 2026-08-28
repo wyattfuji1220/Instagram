@@ -126,6 +126,7 @@ def build_report(
     rows: list[dict[str, Any]],
     today: date,
     durations: dict[str, float] | None = None,
+    variants: dict[str, str] | None = None,
 ) -> str:
     """人が読む形にまとめる。数字が取れていない欄は - にする。
 
@@ -133,6 +134,7 @@ def build_report(
     動画の素材になった投稿の日はずれるので、日付では結べない。
     """
     durations = durations or {}
+    variants = variants or {}
     out: list[str] = []
     add = out.append
 
@@ -212,16 +214,20 @@ def build_report(
             add(f"- 平均再生数: {sum(seen) / len(seen):.0f}")
         if watched:
             add(f"- 平均視聴時間: {_seconds(int(sum(watched) / len(watched)))}")
-        held = [
-            retention(
-                m["stats"].get("ig_reels_avg_watch_time"),
-                durations.get(m.get("id", "")),
-            )
-            for m in reels
-        ]
-        held = [h for h in held if h != "-"]
-        if held:
-            add(f"- 視聴維持率: {' / '.join(held)}")
+        # 構成ごとに分けて見る。全部まとめると、何が効いたのか分からない。
+        by_variant: dict[str, list[float]] = {}
+        for m in reels:
+            watch = m["stats"].get("ig_reels_avg_watch_time")
+            seconds = durations.get(m.get("id", ""))
+            if not (watch and seconds):
+                continue
+            name = variants.get(m.get("id", "")) or "（記録なし）"
+            by_variant.setdefault(name, []).append(watch / 1000 / seconds * 100)
+        if by_variant:
+            add("| 構成 | 本数 | 平均維持率 |")
+            add("|---|---|---|")
+            for name, values in sorted(by_variant.items()):
+                add(f"| {name} | {len(values)} | {sum(values) / len(values):.0f}% |")
             add("")
             add(
                 "目安として、維持率が5割を超えると配信が伸び始める。"

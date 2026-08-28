@@ -44,6 +44,19 @@ COVER_USABLE_WIDTH = 900
 LEAD_MAX_FONT = 58
 LEAD_USABLE_WIDTH = 880
 LONG_TEXT_CHARS = 34
+
+# ---- リール用（9:16）
+# 4:5 のカードを 9:16 の画面に置くと、文字は画面高さの1割ほどにしかならない。
+# 実測で平均視聴2〜3秒・維持率2割台から動かず、秒数や枚数をいじっても変わら
+# なかったため、専用の面を描いて文字そのものを大きくする。
+REEL_SCALE = 1.6
+# 補助的な文字（案内・ハンドル）の倍率。本文ほど上げると一行に収まらない。
+REEL_SMALL_SCALE = 1.25
+# プロフィールのグリッドは 9:16 を中央 4:5 に切って並べる。その外に文字を置くと
+# 一覧で切れるので、本文は必ず中央 1350px の帯に収める。下側はリールのUI
+# （キャプション・ボタン）にも覆われるため、余白を厚めに取る。
+REEL_PAD_TOP = 300
+REEL_PAD_BOTTOM = 340
 COVER_TIMEOUT = 30
 
 
@@ -118,17 +131,28 @@ def _highlighted(text: str, highlight: str) -> Markup:
     return Markup(escaped.replace(target, f'<span class="hl">{target}</span>', 1))
 
 
-def build_card_contexts(post: dict[str, Any]) -> list[dict[str, Any]]:
-    """10枚分のテンプレート変数を組み立てる。"""
+def build_card_contexts(
+    post: dict[str, Any], *, reel: bool = False
+) -> list[dict[str, Any]]:
+    """10枚分のテンプレート変数を組み立てる。
+
+    reel=True で 9:16・文字大きめの面を作る。カルーセル側の見え方は
+    変えない（倍率の既定は1で、出力はバイト単位で一致する）。
+    """
     account = load_account()
     seed = post["book_title"]
     icon_path = find_profile_icon()
     icon = _data_uri(icon_path) if icon_path else ""
     cover_image = post.get("cover_data_uri", "")
 
+    scale = REEL_SCALE if reel else 1
     base = {
-        "width": CARD_WIDTH,
-        "height": CARD_HEIGHT,
+        "width": STORY_WIDTH if reel else CARD_WIDTH,
+        "height": STORY_HEIGHT if reel else CARD_HEIGHT,
+        "scale": scale,
+        "small_scale": REEL_SMALL_SCALE if reel else 1,
+        "pad_top": REEL_PAD_TOP if reel else 68,
+        "pad_bottom": REEL_PAD_BOTTOM if reel else 62,
         "top_note": account["top_note"],
         "cover_tag": account["cover_tag"],
         "handle": account["handle"],
@@ -162,7 +186,7 @@ def build_card_contexts(post: dict[str, Any]) -> list[dict[str, Any]]:
             long_text=len(data["text"]) > LONG_TEXT_CHARS,
             font_size=_fit_font(
                 data["text"],
-                COVER_MAX_FONT if is_cover else LEAD_MAX_FONT,
+                int((COVER_MAX_FONT if is_cover else LEAD_MAX_FONT) * scale),
                 COVER_USABLE_WIDTH if is_cover else LEAD_USABLE_WIDTH,
             ),
         )
@@ -315,6 +339,37 @@ def build_story_context(post: dict[str, Any], feed_image: str = "") -> dict[str,
 # account.yaml の固定文言が載るカード（0始まりの位置）。
 # 0=表紙 に cover_tag、9=最終面 に account_name と outro_text が入る。
 FIXED_TEXT_SLIDES = (0, 9)
+
+
+def render_reel_cards(
+    post: dict[str, Any], out_dir: Path, order: tuple[int, ...]
+) -> list[Path]:
+    """リール用に 9:16 の面を描く。order は1始まりのカード番号。
+
+    投稿済みのカルーセル画像を使い回さず、その場で描き直す。出来上がりは
+    動画に焼くだけで、リポジトリには残さない（1本ぶん6枚で1MB前後になる）。
+    """
+    template = _env().get_template("card.html.j2")
+    contexts = build_card_contexts(post, reel=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": STORY_WIDTH, "height": STORY_HEIGHT},
+            device_scale_factor=1,
+        )
+        for position, number in enumerate(order, start=1):
+            page.set_content(
+                template.render(**contexts[number - 1]), wait_until="load"
+            )
+            path = out_dir / f"{position:02d}.jpg"
+            page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
+            paths.append(path)
+        browser.close()
+
+    return paths
 
 
 def render_fixed_text_cards(post: dict[str, Any], out_dir: Path) -> list[Path]:

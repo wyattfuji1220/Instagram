@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <style>
   :root {
+    /* 文字の倍率。カルーセルは1、リールは9:16で小さく見えるため大きくする。 */
+    --s: {{ scale | default(1) }};
+    /* 補助的な文字は本文ほど大きくしない。同じ倍率だと横一行に収まらず
+       折り返してしまう（↑詳細レビューは…が2行になった）。 */
+    --s-sm: {{ small_scale | default(1) }};
     --ink: #FFFFFF;
     --ink-dim: #D8D4CC;
     --hl: #F2C14E;          /* 本文のハイライト（黄〜橙） */
@@ -55,11 +60,11 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 68px 76px 62px;
+    padding: {{ pad_top | default(68) }}px 76px {{ pad_bottom | default(62) }}px;
   }
 
   .top-note {
-    font-size: 31px;
+    font-size: calc(31px * var(--s-sm));
     letter-spacing: 0.04em;
     color: var(--ink-dim);
     white-space: nowrap;
@@ -75,7 +80,7 @@
   }
 
   .lead {
-    font-size: 58px;
+    font-size: calc(58px * var(--s));
     font-weight: 500;
     line-height: 1.95;
     letter-spacing: 0.02em;
@@ -83,17 +88,17 @@
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
     max-width: 900px;
   }
-  .lead.small { font-size: 50px; line-height: 2.0; }
+  .lead.small { font-size: calc(50px * var(--s)); line-height: 2.0; }
   .hl { color: var(--hl); }
 
   .foot {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: calc(20px * var(--s));
   }
   .icon {
-    width: 78px; height: 78px; border-radius: 50%;
+    width: calc(78px * var(--s)); height: calc(78px * var(--s)); border-radius: 50%;
     background-image: url("{{ icon }}");
     background-size: cover; background-position: center;
     background-color: #2A2A2A;
@@ -101,9 +106,9 @@
   }
   .icon.letter {
     display: flex; align-items: center; justify-content: center;
-    font-size: 36px; color: var(--ink-dim);
+    font-size: calc(36px * var(--s)); color: var(--ink-dim);
   }
-  .handle { font-size: 40px; letter-spacing: 0.02em; }
+  .handle { font-size: calc(40px * var(--s-sm)); letter-spacing: 0.02em; }
 
   /* ------------------------------------------------------------------ 表紙 */
   /* グリッド(4:5)で切られないよう、要素をすべて中央に寄せる。 */
@@ -116,12 +121,12 @@
   }
   .cover-tagline {
     text-align: center;
-    font-size: 34px;
+    font-size: calc(34px * var(--s-sm));
     letter-spacing: 0.12em;
     color: var(--ink-dim);
   }
   .cover-title {
-    font-size: 82px;
+    font-size: calc(82px * var(--s));
     font-weight: 700;
     line-height: 1.68;
     letter-spacing: 0.01em;
@@ -131,7 +136,7 @@
   }
   .cover-title .hl { color: var(--hl-cover); }
   .cover-tag {
-    font-size: 34px;
+    font-size: calc(34px * var(--s));
     letter-spacing: 0.08em;
     color: var(--ink-dim);
     margin-bottom: 32px;
@@ -142,7 +147,7 @@
 
   .biblio-title {
     margin-top: 40px;
-    font-size: 48px;
+    font-size: calc(48px * var(--s));
     font-weight: 600;
     text-align: center;
     line-height: 1.5;
@@ -153,7 +158,7 @@
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 54px;
+    gap: calc(54px * var(--s));
     padding: 44px 0;
   }
   .cover-image {
@@ -167,37 +172,37 @@
   .cover-image.placeholder {
     display: flex; align-items: center; justify-content: center;
     text-align: center; padding: 40px;
-    font-size: 40px; line-height: 1.7; color: var(--ink-dim);
+    font-size: calc(40px * var(--s)); line-height: 1.7; color: var(--ink-dim);
     border: 1px solid #3A3A40;
   }
   .facts { flex: 1; }
   .fact { margin-bottom: 52px; }
-  .fact-label { font-size: 38px; color: var(--hl); margin-bottom: 16px; }
-  .fact-value { font-size: 42px; line-height: 1.6; }
-  .biblio-note { font-size: 31px; text-align: center; color: var(--ink-dim); }
+  .fact-label { font-size: calc(38px * var(--s)); color: var(--hl); margin-bottom: 16px; }
+  .fact-value { font-size: calc(42px * var(--s)); line-height: 1.6; }
+  .biblio-note { font-size: calc(31px * var(--s-sm)); text-align: center; color: var(--ink-dim); }
 
   /* ---------------------------------------------------- こんな方におすすめ */
 
   .rec-title {
     margin-top: 24px;
-    font-size: 56px;
+    font-size: calc(56px * var(--s));
     letter-spacing: 0.05em;
     margin-bottom: 64px;
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
   }
   .rec-list { width: 100%; max-width: 900px; }
   .rec-item {
-    display: flex; align-items: flex-start; gap: 28px;
+    display: flex; align-items: flex-start; gap: calc(28px * var(--s));
     margin-bottom: 52px; text-align: left;
   }
   .check {
     flex: 0 0 auto; width: 48px; height: 48px;
     border: 3px solid var(--ink);
     display: flex; align-items: center; justify-content: center;
-    font-size: 34px; line-height: 1; margin-top: 10px;
+    font-size: calc(34px * var(--s)); line-height: 1; margin-top: 10px;
   }
   .rec-text {
-    font-size: 44px; line-height: 1.75;
+    font-size: calc(44px * var(--s)); line-height: 1.75;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
   }
 
@@ -205,14 +210,14 @@
 
   .outro-head {
     white-space: pre-line;
-    font-size: 48px;
+    font-size: calc(48px * var(--s));
     line-height: 1.8;
     max-width: 860px;
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
   }
   .outro-text {
     margin-top: 64px;
-    font-size: 38px;
+    font-size: calc(38px * var(--s));
     line-height: 1.9;
     color: var(--ink-dim);
     white-space: pre-line;

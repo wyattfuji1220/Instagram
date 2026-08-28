@@ -596,9 +596,14 @@ def test_report_marks_missing_numbers_rather_than_showing_zero():
 
 def test_report_shows_reel_watch_time_in_seconds():
     row = _reel_row({"views": 300, "reach": 280, "ig_reels_avg_watch_time": 4200})
-    report = build_report({"username": "x"}, {"reach": 280}, [row], date(2026, 8, 22))
+    report = build_report(
+        {"username": "x"}, {"reach": 280}, [row], date(2026, 8, 22),
+        {"m1": 12.0}, {"m1": "conclusion"},
+    )
     assert "4.2秒" in report
     assert "平均再生数: 300" in report
+    # 構成ごとに分けて出す。まとめると何が効いたのか分からない。
+    assert "| conclusion | 1 | 35% |" in report
 
 
 def test_reel_opening_card_differs_from_the_thumbnail():
@@ -642,7 +647,6 @@ def test_report_shows_retention_when_the_reel_length_is_known():
         {"username": "x"}, {}, [row], date(2026, 8, 22), {"m1": 12.8}
     )
     assert "| 2.7秒 | 21% |" in report
-    assert "視聴維持率: 21%" in report
 
 
 def test_genre_of_defaults_to_business_for_daily_posts():
@@ -677,3 +681,40 @@ def test_novel_features_do_not_carry_business_hashtags(monkeypatch):
     assert "#ビジネス書" in daily
     assert "#小説" not in daily
     assert "#読了" in daily  # ジャンルを問わないタグは両方に付く
+
+
+def test_reel_variants_alternate_and_keep_the_cover_out_of_the_thumbnail():
+    """構成は日替わりで交互。サムネイルはカルーセル表紙と重ねない。"""
+    from datetime import date as _date
+    from bookgram.reel import (
+        BOOK_REEL_VARIANTS,
+        SECONDS_PER_CARD,
+        thumb_offset_ms,
+        variant_for,
+    )
+
+    a = variant_for(_date(2026, 8, 26))
+    b = variant_for(_date(2026, 8, 27))
+    assert a != b  # 隣り合う日で必ず入れ替わる
+    assert variant_for(_date(2026, 8, 26)) == a  # 作り直しても同じ
+
+    for name, order in BOOK_REEL_VARIANTS.items():
+        offset = thumb_offset_ms(name)
+        shown = order[int(offset / 1000 // SECONDS_PER_CARD)]
+        assert shown != 1, f"{name} のサムネイルがカルーセル表紙と同じ絵になる"
+
+
+def test_vertical_cards_fill_the_frame_instead_of_being_letterboxed():
+    """9:16 で描いた面は、余白を足さずに画面いっぱいに使う。"""
+    from PIL import Image
+    from bookgram.reel import _compose
+    from bookgram.config import STORY_HEIGHT, STORY_WIDTH
+
+    tall = Image.new("RGB", (STORY_WIDTH, STORY_HEIGHT), (200, 30, 30))
+    out = _compose(tall, 1.0)
+    assert out.size == (STORY_WIDTH, STORY_HEIGHT)
+    assert out.getpixel((STORY_WIDTH // 2, 20)) == (200, 30, 30)  # 上端まで絵がある
+
+    wide = Image.new("RGB", (1080, 1350), (200, 30, 30))
+    out = _compose(wide, 1.0)
+    assert out.getpixel((STORY_WIDTH // 2, 5)) != (200, 30, 30)  # 4:5 は余白が出る

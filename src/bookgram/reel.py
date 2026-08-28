@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import subprocess
 import tempfile
+from datetime import date
 from pathlib import Path
 
 import imageio_ffmpeg
@@ -36,12 +37,39 @@ VERTICAL_SHIFT = 40
 CRF = 30  # リールは何本も溜まるのでファイルを小さく保つ
 REEL_FILENAME = "reel.mp4"
 # 書籍投稿10枚のうち、動画で見せる並び（1始まり）。
-# 1=結論 を先頭に置く。このカードだけフォントが大きく設計されており（render の
-# COVER_MAX_FONT）、1秒しかない場面では問いかけより情報のほうが速く伝わる。
-# 2=書誌情報（書影・著者・発行日）は締めの直前に置く。ここが無いと、最後まで
-# 見ても「どの本の話だったのか」が分からないまま終わる。
+# 2=書誌情報（書影・著者・発行日）は締めの直前。ここが無いと、最後まで見ても
+# 「どの本の話だったのか」が分からないまま終わる。
 # 3=おすすめ と要点の後半は落とし、読み切れる枚数に絞る。
-BOOK_REEL_ORDER = (1, 4, 5, 6, 2, 10)
+#
+# 冒頭だけ違う2種類を交互に出す。全部同じ作りだと、維持率が動いたときに
+# 何が効いたのか分からない。1=結論 は唯一フォントが大きく設計された面
+# （render の COVER_MAX_FONT）で、4=問いかけ は答えを待たせる面。
+BOOK_REEL_VARIANTS = {
+    "conclusion": (1, 4, 5, 6, 2, 10),
+    "question": (4, 1, 5, 6, 2, 10),
+}
+VARIANT_NAMES = tuple(sorted(BOOK_REEL_VARIANTS))
+BOOK_REEL_ORDER = BOOK_REEL_VARIANTS["conclusion"]
+
+
+def variant_for(day: date) -> str:
+    """その日の構成。日付で決めるので、作り直しても同じものが出る。"""
+    return VARIANT_NAMES[day.toordinal() % len(VARIANT_NAMES)]
+
+
+# カルーセルの1枚目と同じ絵（=カード1）は、プロフィールのグリッドで重複して
+# 見えるのでサムネイルに使わない。最初にカード1以外が出る面の途中を選ぶ。
+COVER_CARD = 1
+
+
+def thumb_offset_ms(variant: str) -> int:
+    """グリッドに出す静止画の位置（ミリ秒）。"""
+    order = BOOK_REEL_VARIANTS.get(variant, BOOK_REEL_ORDER)
+    position = next(
+        (i for i, number in enumerate(order) if number != COVER_CARD), 0
+    )
+    # その面の真ん中。切り替わり際のフェード中に当たらないようにする。
+    return int((position + 0.5) * SECONDS_PER_CARD * 1000)
 
 
 def _frame_count() -> int:
@@ -52,13 +80,29 @@ def _fade_frames() -> int:
     return int(FADE_SECONDS * FPS)
 
 
-def _compose(card: Image.Image, scale: float) -> Image.Image:
-    """1枚のカードを 9:16 の画面に配置する。余白は黒で埋める。
+def _is_vertical(card: Image.Image) -> bool:
+    """すでに 9:16 で描かれた面かどうか。"""
+    return card.height / card.width >= STORY_HEIGHT / STORY_WIDTH - 0.01
 
-    横幅は最大でも画面いっぱいまでにする。カードは端近くまで文字を置いて
-    いるので、これ以上寄せると文字が切れる（1.24倍で試したら「理解」の理と
-    「脳」が欠けた）。寄りの動きは 1/(1+ZOOM_RANGE) から 1.0 の範囲で作る。
+
+def _compose(card: Image.Image, scale: float) -> Image.Image:
+    """1枚のカードを 9:16 の画面に配置する。
+
+    リール用に描いた 9:16 の面は、画面を覆うまで広げて余りを切る。文字は
+    中央の 4:5 に収めてあるので、端が数%欠けても本文には当たらない。
+
+    カルーセルの 4:5 を流用する場合は、横幅いっぱいで止めて余白を黒で埋める。
+    カードが端近くまで文字を置いているため、これ以上寄せると文字が切れる
+    （1.24倍で試したら「理解」の理と「脳」が欠けた）。
     """
+    if _is_vertical(card):
+        height = int(STORY_HEIGHT * scale)
+        width = int(height * card.width / card.height)
+        big = card.resize((max(width, STORY_WIDTH), height), Image.LANCZOS)
+        left = (big.width - STORY_WIDTH) // 2
+        top = (big.height - STORY_HEIGHT) // 2
+        return big.crop((left, top, left + STORY_WIDTH, top + STORY_HEIGHT))
+
     frame = Image.new("RGB", (STORY_WIDTH, STORY_HEIGHT), BACKDROP)
     width = int(STORY_WIDTH * scale / (1 + ZOOM_RANGE))
     height = int(width * card.height / card.width)
@@ -218,7 +262,9 @@ def cards_in(image_dir: Path) -> list[Path]:
     return sorted(p for p in image_dir.glob("*.jpg") if p.stem.isdigit())
 
 
-def reel_cards(image_dir: Path, kind: str = "book") -> list[Path]:
+def reel_cards(
+    image_dir: Path, kind: str = "book", variant: str | None = None
+) -> list[Path]:
     """動画にするカードを、リール向けの並びで返す。
 
     書籍投稿だけ並べ替える。特集は枚数が少なく、順番自体が読み物なので
@@ -227,6 +273,7 @@ def reel_cards(image_dir: Path, kind: str = "book") -> list[Path]:
     cards = cards_in(image_dir)
     if kind != "book":
         return cards
+    order = BOOK_REEL_VARIANTS.get(variant or "", BOOK_REEL_ORDER)
     by_number = {int(p.stem): p for p in cards}
-    picked = [by_number[n] for n in BOOK_REEL_ORDER if n in by_number]
+    picked = [by_number[n] for n in order if n in by_number]
     return picked or cards

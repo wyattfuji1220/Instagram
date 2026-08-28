@@ -185,6 +185,7 @@ class InstagramClient:
         video_url: str,
         caption: str,
         audio_configuration: dict[str, Any] | None = None,
+        thumb_offset_ms: int = 0,
     ) -> str:
         payload: dict[str, Any] = {
             "media_type": "REELS",
@@ -193,10 +194,9 @@ class InstagramClient:
             # フィードにも出す。リーチを取りに行くのがリールの目的なので、
             # プロフィールグリッドに並ぶことより露出を優先する。
             "share_to_feed": "true",
-            # 動画は結論のカードから始めるが、それはカルーセルの1枚目と同じ絵
-            # なので、先頭をサムネイルにするとプロフィールに同じ絵が2つ並ぶ。
-            # 2枚目（問いかけ）の途中を選び、グリッド上で重複させない。
-            "thumb_offset": str(REEL_THUMB_MS),
+            # カルーセルの1枚目と同じ絵をサムネイルにすると、プロフィールに
+            # 同じ絵が2つ並ぶ。構成によって位置が変わるので呼び出し側で決める。
+            "thumb_offset": str(thumb_offset_ms if thumb_offset_ms else REEL_THUMB_MS),
         }
         if audio_configuration:
             payload["audio_configuration"] = json.dumps(audio_configuration)
@@ -341,10 +341,13 @@ def publish_reel(
     video_url: str,
     caption: str,
     audio_configuration: dict[str, Any] | None = None,
+    thumb_offset_ms: int = 0,
 ) -> str:
     """リールを投稿して media_id を返す。"""
     verify_images_public([video_url])
-    creation_id = client.create_reel(video_url, caption, audio_configuration)
+    creation_id = client.create_reel(
+        video_url, caption, audio_configuration, thumb_offset_ms
+    )
     client.wait_until_ready(creation_id, REEL_POLL_MAX)
     return client.publish(creation_id)
 

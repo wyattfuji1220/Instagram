@@ -42,9 +42,11 @@ jobs:
           cache: pip
 
       - name: 依存関係をインストール
-        # cli は generate / render を読み込むため、投稿だけでも一式が要る。
-        # ブラウザ本体は描画しないので入れない。
-        run: pip install -r requirements.txt
+        # リールは 9:16 の面をその場で描くので、ブラウザ本体も要る。
+        # カルーセルの 4:5 を流用していた頃は不要だった。
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
 
       - name: 動画を組み立て
         id: build
