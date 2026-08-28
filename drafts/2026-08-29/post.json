@@ -69,7 +69,7 @@
     "著者名：書誌データの「山口周1970-」より姓名部分のみ使用"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9967/9784334039967_1_2.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5814,
@@ -79,5 +79,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18143900989514356",
+  "posted_at": "2026-08-29T07:01:43.831959+09:00",
+  "story_media_id": "18112869889798837"
 }
