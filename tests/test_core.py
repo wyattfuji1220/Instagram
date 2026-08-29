@@ -814,6 +814,7 @@ def test_prompt_tells_the_model_whether_a_reading_memo_exists():
     material.description = "内容紹介" * 30
 
     without = _build_user_prompt(material)
+    assert "読書メモ" not in without  # 空のメモ欄は根拠ブロックに出さない
     assert "読んだふりをせず" in without
     assert "読者像を具体的に絞り込んで" in without
 
