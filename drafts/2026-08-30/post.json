@@ -68,7 +68,7 @@
     "ピッグス湾の表記はメモの「ビッグス湾」を一般的表記に改めたもの（判断による調整）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9012/90123494.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5350,
@@ -78,5 +78,8 @@
       "openbd"
     ]
   },
-  "isbn": "9784901234948"
+  "isbn": "9784901234948",
+  "media_id": "18203681815366057",
+  "posted_at": "2026-08-30T06:07:46.236662+09:00",
+  "story_media_id": "18121905221493787"
 }
