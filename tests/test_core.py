@@ -718,3 +718,26 @@ def test_vertical_cards_fill_the_frame_instead_of_being_letterboxed():
     wide = Image.new("RGB", (1080, 1350), (200, 30, 30))
     out = _compose(wide, 1.0)
     assert out.getpixel((STORY_WIDTH // 2, 5)) != (200, 30, 30)  # 4:5 は余白が出る
+
+
+def test_ndl_titles_are_verified_before_their_data_is_used():
+    """書名が違えば採用しない。別の本の著者と発行日が入るのを防ぐ。"""
+    from bookgram.bookdata import titles_match
+
+    # 実際に起きた取り違え
+    assert not titles_match("決断の本質", "クラウゼヴィッツの戦略思考 : 『戦争論』に学ぶ")
+    # カタログ側に売り文句が前置されるのは同じ本
+    assert titles_match("すごい左利き", "1万人の脳を見た名医が教えるすごい左利き : 「選ばれた才能」")
+    # 副題と版表示の違いは吸収する
+    assert titles_match("科学者たちが語る食欲", "科学者たちが語る食欲 : 食べすぎてしまう人類に贈る")
+    assert titles_match("2030半導体の地政学", "2030 半導体の地政学（増補版）")
+    # 短い語での偶然の一致は認めない
+    assert not titles_match("経営", "経営学の基本と応用")
+
+
+def test_author_names_drop_the_birth_year_ndl_appends():
+    from bookgram.bookdata import _normalize_person
+
+    assert _normalize_person("渋澤, 健, 1961-") == "渋澤健"
+    assert _normalize_person("太田, 泰彦, 1963-2020") == "太田泰彦"
+    assert _normalize_person("相良, 奈美香") == "相良奈美香"

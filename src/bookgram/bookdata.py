@@ -19,6 +19,7 @@ from __future__ import annotations
 import os
 import random
 import time
+import unicodedata
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass, field
@@ -208,8 +209,13 @@ def _publication_precision(raw: str) -> int:
 
 
 def _normalize_person(raw: str) -> str:
-    """NDL の「相良, 奈美香」形式を「相良奈美香」に整える。"""
-    return raw.replace(", ", "").replace(",", "").strip()
+    """NDL の「相良, 奈美香」形式を「相良奈美香」に整える。
+
+    NDL は「渋澤, 健, 1961-」のように生年を付けて返すことがある。
+    そのままだとカードに「渋澤健1961-」と出るので落とす。
+    """
+    name = re.sub(r",?\s*\d{3,4}\s*-\s*(\d{3,4})?\s*$", "", raw.strip())
+    return name.replace(", ", "").replace(",", "").strip()
 
 
 # ------------------------------------------------------------------- NDLサーチ
@@ -243,16 +249,51 @@ def _ndl_item_fields(item: ET.Element) -> dict[str, Any]:
     return fields
 
 
+# 書名照合で偶然の一致を避けるための下限。これ未満は完全一致だけ認める。
+MIN_TITLE_MATCH_CHARS = 5
+
+
+def _match_key(title: str) -> str:
+    """書名を照合用に均す。全角半角・記号・副題の差を吸収する。"""
+    text = unicodedata.normalize("NFKC", title or "")
+    text = re.split(r"[:：]", text)[0]              # NDL は「書名 : 副題」形式
+    text = re.sub(r"[（(\[].*?[)）\]]", "", text)   # 版表示や補足
+    return re.sub(r"[\s・!！?？\-—～~'\"”“、,.。]", "", text).lower()
+
+
+def titles_match(wanted: str, found: str) -> bool:
+    """検索で返った書名が、探していた本のものと言えるか。
+
+    NDL の書名検索は語が部分的に当たるだけで別の本を返す。実際に
+    『決断の本質』の検索で「クラウゼヴィッツの戦略思考」が返り、その
+    著者と発行日が下書きに入っていた。
+
+    片方がもう片方を含むことを条件にする。カタログ側は「1万人の脳を見た
+    名医が教えるすごい左利き」のように売り文句が前に付くため、頭一致では
+    正しい本まで落ちる。短すぎる語での偶然の一致を避けるため下限を置く。
+
+    これでも「ハイパフォーマー思考」と「仕事で必ず結果が出るハイパフォーマー
+    思考」のような別本は見分けられない。キューに ISBN があれば確実なので、
+    判別できなかったものは covers で一覧に出して人が見る。
+    """
+    a, b = _match_key(wanted), _match_key(found)
+    if len(a) < MIN_TITLE_MATCH_CHARS or len(b) < MIN_TITLE_MATCH_CHARS:
+        return a == b and bool(a)
+    return a in b or b in a
+
+
 def search_ndl(title: str) -> dict[str, Any]:
-    """国立国会図書館サーチで和書を検索する。ISBNを持つ最初の候補を返す。
+    """国立国会図書館サーチで和書を検索する。
 
     検索結果には書評や雑誌記事が混ざるため、ISBNを持つ＝図書である候補に絞る。
+    さらに書名が一致することを確かめる。確かめないと別の本の著者・発行日が
+    そのままカードに載る。
     """
     response = _request(NDL_ENDPOINT, {"title": title, "cnt": 10})
     root = ET.fromstring(response.content)
     for item in root.findall(".//item"):
         fields = _ndl_item_fields(item)
-        if fields["isbn"]:
+        if fields["isbn"] and titles_match(title, fields["title"]):
             return fields
     return {}
 

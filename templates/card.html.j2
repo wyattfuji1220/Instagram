@@ -178,7 +178,13 @@
   .facts { flex: 1; }
   .fact { margin-bottom: 52px; }
   .fact-label { font-size: calc(38px * var(--s)); color: var(--hl); margin-bottom: 16px; }
-  .fact-value { font-size: calc(42px * var(--s)); line-height: 1.6; }
+  .fact-value {
+    font-size: calc(42px * var(--s));
+    line-height: 1.6;
+    /* 訳者まで入る長い著者名は 9:16 の拡大時に右へ溢れる。折り返す。 */
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
   .biblio-note { font-size: calc(31px * var(--s-sm)); text-align: center; color: var(--ink-dim); }
 
   /* ---------------------------------------------------- こんな方におすすめ */

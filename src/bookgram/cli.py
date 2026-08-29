@@ -11,6 +11,7 @@
   python -m bookgram whoami      アクセストークンから IG_USER_ID を調べる
   python -m bookgram fb-whoami   音源ライブラリ用のFacebookトークンを点検する
   python -m bookgram fb-refresh-token  音源用の長期トークンを延長する
+  python -m bookgram covers      書影が付いていない下書きを洗い出す
   python -m bookgram stats       リーチ・再生数など届き方の数字を読み出す
   python -m bookgram cleanup     古い画像を削除する
   python -m bookgram refresh-token  長期アクセストークンを延長する
@@ -874,6 +875,22 @@ def cmd_doctor(_: argparse.Namespace) -> int:
     else:
         print(f"[ok] トークンの残り有効期間: {days_left}日")
 
+    no_cover = sum(
+        1
+        for path in DRAFTS_DIR.glob("*/post.json")
+        for draft in [json.loads(path.read_text(encoding="utf-8"))]
+        if draft.get("status") != "posted"
+        and draft.get("kind") != "feature"
+        and not draft.get("cover_url")
+    )
+    if no_cover:
+        # 書影が無い＝書誌ソースがその本を特定できていない。著者や発行日まで
+        # 別の本のものが入っていることがあるので、警告で終わらせない。
+        print(f"[NG] 書影が付いていない下書きが{no_cover}件あります（covers で確認）。")
+        problems += 1
+    else:
+        print("[ok] すべての下書きに書影が付いています。")
+
     data = bookqueue.load_queue()
     pending = len(bookqueue.pending_books(data))
     coverage = bookqueue.coverage_days(today_jst())
@@ -1048,6 +1065,44 @@ def cmd_fb_refresh_token(_: argparse.Namespace) -> int:
     return 0
 
 
+# --------------------------------------------------------------------------- covers
+
+
+def cmd_covers(args: argparse.Namespace) -> int:
+    """書影が付いていない下書きを洗い出す。
+
+    書影が取れないのは、書誌ソースがその本を特定できなかったということ。
+    著者や発行日まで別の本のものが入っている恐れがあるので、単なる見た目の
+    問題として扱わない（実際に『決断の本質』へ別書の著者と発行日が入っていた）。
+    """
+    missing: list[tuple[str, str, str]] = []
+    total = 0
+    for path in sorted(DRAFTS_DIR.glob("*/post.json")):
+        draft = json.loads(path.read_text(encoding="utf-8"))
+        day = draft.get("date", path.parent.name)
+        if draft.get("status") == "posted" and not args.all:
+            continue
+        if draft.get("kind") == "feature":
+            for book in draft.get("books") or []:
+                total += 1
+                if not book.get("cover_url"):
+                    missing.append((day, "特集", book.get("title", "")))
+        else:
+            total += 1
+            if not draft.get("cover_url"):
+                missing.append((day, "書籍", draft.get("book_title", "")))
+
+    print(f"[--] 確認: {total}件 / 書影なし: {len(missing)}件")
+    for day, kind, title in missing:
+        print(f"[NG] {day} ({kind}) {title}")
+    if missing:
+        print(
+            "[--] books/queue.yaml の該当書に isbn を書き足すのが最も確実です。"
+            " ISBN があれば書影も書誌も一意に引けます。"
+        )
+    return 1 if missing else 0
+
+
 # ---------------------------------------------------------------------------- stats
 
 
@@ -1207,6 +1262,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "fb-refresh-token", help="音源ライブラリ用の長期トークンを延長する"
     ).set_defaults(func=cmd_fb_refresh_token)
+    p_cov = sub.add_parser("covers", help="書影が付いていない下書きを洗い出す")
+    p_cov.add_argument("--all", action="store_true", help="投稿済みも含める")
+    p_cov.set_defaults(func=cmd_covers)
+
     p_stats = sub.add_parser("stats", help="届き方の数字を読み出す")
     p_stats.add_argument("--limit", type=int, default=12, help="見る投稿数")
     p_stats.set_defaults(func=cmd_stats)
