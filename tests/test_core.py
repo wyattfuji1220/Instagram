@@ -757,3 +757,22 @@ def test_posting_stops_when_a_cover_is_missing():
         ],
     }
     assert missing_covers(feature) == ["なし"]
+
+
+def test_local_cover_is_used_when_the_apis_have_none(tmp_path, monkeypatch):
+    """絶版で楽天にも openBD にも書影が無い本は、置いた画像を使う。"""
+    from bookgram import render
+    from bookgram.cli import has_cover
+
+    monkeypatch.setattr(render, "COVERS_DIR", tmp_path)
+    (tmp_path / "9784569841939.jpg").write_bytes(b"cover-bytes")
+
+    assert render.local_cover("9784569841939") is not None
+    assert render.local_cover("9999999999999") is None
+    assert render.local_cover("") is None
+    # ハイフン付きでは引かない（ファイル名は13桁そのまま）
+    assert render.local_cover("978-4-569-84193-9") is None
+
+    assert has_cover({"isbn": "9784569841939", "cover_url": ""})
+    assert has_cover({"isbn": "", "cover_url": "https://x/y.jpg"})
+    assert not has_cover({"isbn": "9999999999999", "cover_url": ""})

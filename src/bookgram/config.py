@@ -15,6 +15,8 @@ DRAFTS_DIR = ROOT / "drafts"
 DOCS_DIR = ROOT / "docs"
 IMG_DIR = DOCS_DIR / "img"
 OUTPUT_DIR = ROOT / "output"
+# 書影を手で置く場所。API で取れない本のために、{ISBN}.jpg を入れておく。
+COVERS_DIR = ROOT / "books" / "covers"
 TEMPLATES_DIR = ROOT / "templates"
 ASSETS_DIR = ROOT / "assets"
 BACKGROUNDS_DIR = ASSETS_DIR / "backgrounds"

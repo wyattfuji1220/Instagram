@@ -28,6 +28,7 @@ from .config import (
     CARD_HEIGHT,
     CARD_WIDTH,
     CARDS_PER_POST,
+    COVERS_DIR,
     STORY_HEIGHT,
     STORY_WIDTH,
     TEMPLATES_DIR,
@@ -423,6 +424,32 @@ def render_story(post: dict[str, Any], out_dir: Path) -> Path:
         browser.close()
 
     return path
+
+
+COVER_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def local_cover(isbn: str) -> Path | None:
+    """books/covers に置いた書影を探す。無ければ None。
+
+    楽天に取扱いが無く openBD にも書影が無い本のための逃げ道。
+    絶版や在庫切れだと API からは永久に取れないので、手で置けるようにする。
+    """
+    if not isbn:
+        return None
+    for suffix in COVER_SUFFIXES:
+        path = COVERS_DIR / f"{isbn}{suffix}"
+        if path.exists():
+            return path
+    return None
+
+
+def cover_data_uri(draft: dict[str, Any]) -> str:
+    """その本の書影をデータURIで返す。手持ち優先、無ければURLから取る。"""
+    path = local_cover(str(draft.get("isbn") or ""))
+    if path is not None:
+        return _file_data_uri(path)
+    return _remote_data_uri(draft.get("cover_url", ""))
 
 
 def fetch_cover_data_uri(url: str) -> str:

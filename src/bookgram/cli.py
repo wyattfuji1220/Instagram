@@ -39,6 +39,7 @@ from .config import (
     IMAGE_RETENTION_DAYS,
     IMG_DIR,
     JST,
+    COVERS_DIR,
     OUTPUT_DIR,
     POSTED_LOG,
     QUEUE_LOW_THRESHOLD,
@@ -84,7 +85,9 @@ from .reel import (
 )
 from .render import (
     STORY_FILENAME,
+    cover_data_uri,
     fetch_cover_data_uri,
+    local_cover,
     render_feature,
     render_fixed_text_cards,
     render_post,
@@ -229,13 +232,18 @@ def draft_label(draft: dict[str, Any]) -> str:
     return draft.get("book_title", "(無題)")
 
 
+def has_cover(entry: dict[str, Any]) -> bool:
+    """書影が使えるか。API のURLでも、books/covers に置いた画像でもよい。"""
+    return bool(entry.get("cover_url")) or local_cover(str(entry.get("isbn") or "")) is not None
+
+
 def missing_covers(draft: dict[str, Any]) -> list[str]:
     """書影が付いていない本の名前を返す。付いていれば空。"""
     if draft.get("kind") == "feature":
         return [
-            b.get("title", "?") for b in (draft.get("books") or []) if not b.get("cover_url")
+            b.get("title", "?") for b in (draft.get("books") or []) if not has_cover(b)
         ]
-    return [] if draft.get("cover_url") else [draft.get("book_title", "?")]
+    return [] if has_cover(draft) else [draft.get("book_title", "?")]
 
 
 def cmd_post(args: argparse.Namespace) -> int:
@@ -356,7 +364,7 @@ def cmd_rerender(args: argparse.Namespace) -> int:
             print(f"[skip] {day} は投稿済みです。作り直すには --force を付けてください。")
             continue
         post = dict(draft)
-        post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
+        post["cover_data_uri"] = cover_data_uri(draft)
         out_dir = IMG_DIR / day.isoformat()
         if args.fixed_only:
             # 特集は別テンプレートで、固定文言を載せていないので対象外
@@ -369,7 +377,7 @@ def cmd_rerender(args: argparse.Namespace) -> int:
             continue
         if draft.get("kind") == "feature":
             for book in post["books"]:
-                book["cover_data_uri"] = fetch_cover_data_uri(book.get("cover_url", ""))
+                book["cover_data_uri"] = cover_data_uri(book)
             render_feature(post, out_dir)
         else:
             render_post(post, out_dir)
@@ -482,7 +490,7 @@ def build_feature(
 
     post = generate_feature_post(candidates, secrets.anthropic_api_key, target, spec)
     for book in post["books"]:
-        book["cover_data_uri"] = fetch_cover_data_uri(book["cover_url"])
+        book["cover_data_uri"] = cover_data_uri(book)
 
     out_dir = IMG_DIR / target.isoformat()
     paths = render_feature(post, out_dir)
@@ -616,7 +624,7 @@ def cmd_reel(args: argparse.Namespace) -> int:
     if kind == "book":
         reel_dir = tempfile.TemporaryDirectory(prefix="bookgram-reel-")
         post = dict(draft)
-        post["cover_data_uri"] = fetch_cover_data_uri(draft.get("cover_url", ""))
+        post["cover_data_uri"] = cover_data_uri(draft)
         cards = render_reel_cards(
             post, Path(reel_dir.name), BOOK_REEL_VARIANTS[variant]
         )
@@ -902,9 +910,7 @@ def cmd_doctor(_: argparse.Namespace) -> int:
         1
         for path in DRAFTS_DIR.glob("*/post.json")
         for draft in [json.loads(path.read_text(encoding="utf-8"))]
-        if draft.get("status") != "posted"
-        and draft.get("kind") != "feature"
-        and not draft.get("cover_url")
+        if draft.get("status") != "posted" and missing_covers(draft)
     )
     if no_cover:
         # 書影が無い＝書誌ソースがその本を特定できていない。著者や発行日まで
@@ -1108,11 +1114,11 @@ def cmd_covers(args: argparse.Namespace) -> int:
         if draft.get("kind") == "feature":
             for book in draft.get("books") or []:
                 total += 1
-                if not book.get("cover_url"):
+                if not has_cover(book):
                     missing.append((day, "特集", book.get("title", "")))
         else:
             total += 1
-            if not draft.get("cover_url"):
+            if not has_cover(draft):
                 missing.append((day, "書籍", draft.get("book_title", "")))
 
     print(f"[--] 確認: {total}件 / 書影なし: {len(missing)}件")
@@ -1122,6 +1128,10 @@ def cmd_covers(args: argparse.Namespace) -> int:
         print(
             "[--] books/queue.yaml の該当書に isbn を書き足すのが最も確実です。"
             " ISBN があれば書影も書誌も一意に引けます。"
+        )
+        print(
+            f"[--] API から取れない本は、{COVERS_DIR} に「ISBN.jpg」の名前で"
+            " 画像を置けばそちらを使います（絶版・在庫切れの本向け）。"
         )
     return 1 if missing else 0
 
