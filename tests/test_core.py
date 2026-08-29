@@ -803,3 +803,21 @@ def test_covers_are_collected_from_the_inbox(tmp_path, monkeypatch):
     filed, unknown = cli.collect_covers({"image-1787989935907.png": "9784815602505"})
     assert (store / "9784815602505.png").exists()
     assert unknown == []
+
+
+def test_prompt_tells_the_model_whether_a_reading_memo_exists():
+    """メモの有無で立ち位置が変わる。無いのに読んだふりをさせない。"""
+    from bookgram.bookdata import BookMaterial
+    from bookgram.generate import _build_user_prompt
+
+    material = BookMaterial(title="何か")
+    material.description = "内容紹介" * 30
+
+    without = _build_user_prompt(material)
+    assert "読んだふりをせず" in without
+    assert "読者像を具体的に絞り込んで" in without
+
+    material.personal_notes = "自分のメモ"
+    with_memo = _build_user_prompt(material)
+    assert "読んだ人として" in with_memo
+    assert "読んだふりをせず" not in with_memo
