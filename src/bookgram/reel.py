@@ -114,29 +114,43 @@ def _compose(card: Image.Image, scale: float) -> Image.Image:
     return frame
 
 
-def _card_frames(card: Image.Image) -> list[Image.Image]:
+def _ease(t: float) -> float:
+    """両端で速度を落とす。等速だと切り替わりで動きが急に止まって見える。"""
+    return t * t * (3 - 2 * t)
+
+
+def _card_frames(card: Image.Image, zoom_in: bool) -> list[Image.Image]:
+    """1枚ぶんのフレーム。寄るか引くかを交互に入れ替える。
+
+    全部を「寄り」にすると、次のカードがまた小さい状態から始まるため、
+    切り替わりのたびに画がひと回り縮んで見える。交互にすれば境目で
+    大きさが揃い、続けて動いているように見える。
+    """
     total = _frame_count()
+    near, far = 1.0 + ZOOM_RANGE, 1.0
+    start, end = (far, near) if zoom_in else (near, far)
     return [
-        _compose(card, 1.0 + ZOOM_RANGE * (i / max(total - 1, 1)))
+        _compose(card, start + (end - start) * _ease(i / max(total - 1, 1)))
         for i in range(total)
     ]
 
 
 def iter_frames(card_paths: list[Path]):
-    """カードをまたいでクロスフェードしながらフレームを吐く。"""
+    """カードをまたいでクロスフェードしながらフレームを吐く。
+
+    1枚目は寄り、2枚目は引き、と交互にする。境目では前のカードの終わりと
+    次のカードの始まりが同じ大きさになるので、拡大率が跳ねない。
+    """
     fade = _fade_frames()
     previous_tail: list[Image.Image] = []
 
-    for path in card_paths:
+    for index, path in enumerate(card_paths):
         with Image.open(path) as raw:
-            frames = _card_frames(raw.convert("RGB"))
+            frames = _card_frames(raw.convert("RGB"), zoom_in=index % 2 == 0)
 
         for i, frame in enumerate(frames):
             if i < fade and previous_tail:
-                blended = Image.blend(previous_tail[i], frame, (i + 1) / fade)
-                yield blended
-            elif i < fade:
-                yield frame
+                yield Image.blend(previous_tail[i], frame, (i + 1) / fade)
             else:
                 yield frame
         previous_tail = frames[-fade:] if fade else []

@@ -822,3 +822,40 @@ def test_prompt_tells_the_model_whether_a_reading_memo_exists():
     with_memo = _build_user_prompt(material)
     assert "読んだ人として" in with_memo
     assert "読んだふりをせず" not in with_memo
+
+
+def test_zoom_alternates_so_the_scale_matches_at_each_cut():
+    """全部を寄りにすると、切り替わるたびに画がひと回り縮んで見える。"""
+    from PIL import Image
+    import bookgram.reel as reel
+
+    seen: list[float] = []
+    original = reel._compose
+    reel._compose = lambda card, scale: (
+        seen.append(round(scale, 4)), Image.new("RGB", (4, 4))
+    )[1]
+    try:
+        blank = Image.new("RGB", (1080, 1920))
+        reel._card_frames(blank, zoom_in=True)
+        zoom_in = (seen[0], seen[-1])
+        seen.clear()
+        reel._card_frames(blank, zoom_in=False)
+        zoom_out = (seen[0], seen[-1])
+    finally:
+        reel._compose = original
+
+    assert zoom_in[0] < zoom_in[1]      # 寄る
+    assert zoom_out[0] > zoom_out[1]    # 引く
+    assert zoom_in[1] == zoom_out[0]    # 境目で大きさが揃う
+    assert zoom_out[1] == zoom_in[0]    # 次の境目でも揃う
+
+
+def test_easing_slows_the_movement_at_both_ends():
+    from bookgram.reel import _ease
+
+    assert _ease(0.0) == 0.0
+    assert _ease(1.0) == 1.0
+    assert _ease(0.5) == pytest.approx(0.5)
+    # 端では中央より動きが小さい
+    assert _ease(0.1) < 0.1
+    assert _ease(0.9) > 0.9
