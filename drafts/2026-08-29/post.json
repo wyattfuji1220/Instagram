@@ -88,6 +88,15 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1350540
+    "bytes": 1350540,
+    "media_id": "18210720829359872",
+    "posted_at": "2026-08-29T20:42:43.209936+09:00",
+    "audio": {
+      "audio_id": "244026519601076",
+      "title": "Mesmer",
+      "display_artist": "Austin Woodward, Adam Griffith",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    }
   }
 }
