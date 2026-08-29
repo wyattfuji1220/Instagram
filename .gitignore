@@ -10,3 +10,6 @@ output/*.mp4
 output/pr-body.md
 secrets-to-copy.txt
 fb.txt
+
+# 画像の一時置き場（書影は books/covers に ISBN 名で入れる）
+Image strage/
