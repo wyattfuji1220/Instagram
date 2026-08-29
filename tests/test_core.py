@@ -776,3 +776,30 @@ def test_local_cover_is_used_when_the_apis_have_none(tmp_path, monkeypatch):
     assert has_cover({"isbn": "9784569841939", "cover_url": ""})
     assert has_cover({"isbn": "", "cover_url": "https://x/y.jpg"})
     assert not has_cover({"isbn": "9999999999999", "cover_url": ""})
+
+
+def test_covers_are_collected_from_the_inbox(tmp_path, monkeypatch):
+    """置き場に入れた画像を books/covers に取り込む。"""
+    from bookgram import cli
+
+    inbox, store = tmp_path / "in", tmp_path / "out"
+    inbox.mkdir()
+    monkeypatch.setattr(cli, "IMAGE_INBOX", inbox)
+    monkeypatch.setattr(cli, "COVERS_DIR", store)
+
+    (inbox / "9784569841939.jpg").write_bytes(b"a")   # 名前にISBN
+    (inbox / "cover-978-4-062-16782-6.png").write_bytes(b"b")  # ハイフン付き
+    (inbox / "image-1787989935907.png").write_bytes(b"c")  # 判別できない
+    (inbox / "notes.txt").write_bytes(b"d")           # 画像ではない
+
+    filed, unknown = cli.collect_covers()
+    assert sorted(p.name for p in filed) == [
+        "9784062167826.png",
+        "9784569841939.jpg",
+    ]
+    assert [p.name for p in unknown] == ["image-1787989935907.png"]
+
+    # 判別できなかったものは、こちらで割り当てれば入る
+    filed, unknown = cli.collect_covers({"image-1787989935907.png": "9784815602505"})
+    assert (store / "9784815602505.png").exists()
+    assert unknown == []

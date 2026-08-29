@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -40,6 +41,7 @@ from .config import (
     IMG_DIR,
     JST,
     COVERS_DIR,
+    IMAGE_INBOX,
     OUTPUT_DIR,
     POSTED_LOG,
     QUEUE_LOW_THRESHOLD,
@@ -85,6 +87,7 @@ from .reel import (
 )
 from .render import (
     STORY_FILENAME,
+    COVER_SUFFIXES,
     cover_data_uri,
     fetch_cover_data_uri,
     local_cover,
@@ -1097,6 +1100,39 @@ def cmd_fb_refresh_token(_: argparse.Namespace) -> int:
 # --------------------------------------------------------------------------- covers
 
 
+ISBN13 = re.compile(r"97[89]\d{10}")
+
+
+def collect_covers(assign: dict[str, str] | None = None) -> tuple[list[Path], list[Path]]:
+    """置き場の画像を books/covers に取り込む。
+
+    ファイル名に ISBN が入っていればそのまま。入っていなければ assign で
+    「ファイル名 -> ISBN」を渡す。どちらでもないものは判別できないので
+    呼び出し側に返し、人が見て決める。
+    """
+    assign = assign or {}
+    filed: list[Path] = []
+    unknown: list[Path] = []
+    if not IMAGE_INBOX.exists():
+        return filed, unknown
+
+    COVERS_DIR.mkdir(parents=True, exist_ok=True)
+    for path in sorted(IMAGE_INBOX.iterdir()):
+        if path.suffix.lower() not in COVER_SUFFIXES:
+            continue
+        isbn = assign.get(path.name)
+        if not isbn:
+            found = ISBN13.search(path.stem.replace("-", ""))
+            isbn = found.group(0) if found else ""
+        if not isbn:
+            unknown.append(path)
+            continue
+        target = COVERS_DIR / f"{isbn}{path.suffix.lower()}"
+        target.write_bytes(path.read_bytes())
+        filed.append(target)
+    return filed, unknown
+
+
 def cmd_covers(args: argparse.Namespace) -> int:
     """書影が付いていない下書きを洗い出す。
 
@@ -1104,6 +1140,14 @@ def cmd_covers(args: argparse.Namespace) -> int:
     著者や発行日まで別の本のものが入っている恐れがあるので、単なる見た目の
     問題として扱わない（実際に『決断の本質』へ別書の著者と発行日が入っていた）。
     """
+    if args.collect or args.assign:
+        assign = dict(pair.split("=", 1) for pair in (args.assign or []))
+        filed, unknown = collect_covers(assign)
+        for path in filed:
+            print(f"[ok] 取り込み: {path.name}")
+        for path in unknown:
+            print(f"[--] どの本か不明: {path.name}（--assign 'ファイル名=ISBN' で指定）")
+
     missing: list[tuple[str, str, str]] = []
     total = 0
     for path in sorted(DRAFTS_DIR.glob("*/post.json")):
@@ -1302,6 +1346,17 @@ def main(argv: list[str] | None = None) -> int:
     ).set_defaults(func=cmd_fb_refresh_token)
     p_cov = sub.add_parser("covers", help="書影が付いていない下書きを洗い出す")
     p_cov.add_argument("--all", action="store_true", help="投稿済みも含める")
+    p_cov.add_argument(
+        "--collect",
+        action="store_true",
+        help="Image storage の画像を books/covers に取り込む",
+    )
+    p_cov.add_argument(
+        "--assign",
+        action="append",
+        metavar="ファイル名=ISBN",
+        help="ファイル名から ISBN が読み取れないときに割り当てる",
+    )
     p_cov.set_defaults(func=cmd_covers)
 
     p_stats = sub.add_parser("stats", help="届き方の数字を読み出す")

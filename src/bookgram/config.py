@@ -17,6 +17,8 @@ IMG_DIR = DOCS_DIR / "img"
 OUTPUT_DIR = ROOT / "output"
 # 書影を手で置く場所。API で取れない本のために、{ISBN}.jpg を入れておく。
 COVERS_DIR = ROOT / "books" / "covers"
+# 画像を放り込む場所。ここに置いたものを covers --collect が取り込む。
+IMAGE_INBOX = ROOT / "Image storage"
 TEMPLATES_DIR = ROOT / "templates"
 ASSETS_DIR = ROOT / "assets"
 BACKGROUNDS_DIR = ASSETS_DIR / "backgrounds"
