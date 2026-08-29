@@ -2,9 +2,9 @@
   "date": "2026-10-04",
   "kind": "book",
   "image_count": 10,
-  "book_title": "先読み！Chat GPT",
-  "book_author": "古川 渉一",
-  "published": "2023年4月",
+  "book_title": "先読み！IT×ビジネス講座 ChatGPT",
+  "book_author": "古川渉一、酒井麻里子",
+  "published": "2023年4月6日",
   "cover": {
     "text": "ChatGPTから\n思い通りの答えを\n引き出す聞き方",
     "highlight": "思い通りの答え"
@@ -66,12 +66,13 @@
     "著者・出版日・ページ数はデータに記載なし（不明のまま）",
     "キャプション末尾の問いかけは読者への呼びかけ（データに根拠なし・事実主張は含まない）"
   ],
-  "cover_url": "",
+  "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6380/9784295016380_1_4.jpg?_ex=200x200",
   "status": "draft",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5102,
     "output_tokens": 1333,
     "sources": []
-  }
+  },
+  "isbn": "9784295016380"
 }

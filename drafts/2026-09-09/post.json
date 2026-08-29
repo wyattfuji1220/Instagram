@@ -2,9 +2,9 @@
   "date": "2026-09-09",
   "kind": "book",
   "image_count": 10,
-  "book_title": "論語と算盤（上 自己修養篇）",
-  "book_author": "渋澤健1961-",
-  "published": "2019年2月",
+  "book_title": "論語と算盤（上）自己修養篇",
+  "book_author": "渋沢栄一、奥野宣之",
+  "published": "2016年7月",
   "cover": {
     "text": "道徳と商売は\n一致すべきもの\n100年前の言葉が今に響く",
     "highlight": "一致すべきもの"
@@ -69,12 +69,13 @@
     "points4：メモ「一人が勉強することが町全体に波及する。それは引いては国力の為」",
     "著者名・出版日・ページ数：根拠データに記載なく不明のため空欄"
   ],
-  "cover_url": "",
+  "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1186/9784800911186.jpg?_ex=200x200",
   "status": "draft",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5159,
     "output_tokens": 1402,
     "sources": []
-  }
+  },
+  "isbn": "9784800911186"
 }

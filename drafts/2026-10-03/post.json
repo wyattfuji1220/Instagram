@@ -3,7 +3,7 @@
   "kind": "book",
   "image_count": 10,
   "book_title": "ティム・クック",
-  "book_author": "リーアンダー・ケイニー（堤沙織 訳）",
+  "book_author": "リーアンダー・ケイニー（堤沙織訳）",
   "published": "2019年9月",
   "cover": {
     "text": "ジョブズとは違う\n現場主義の経営者\nティム・クック",
@@ -78,5 +78,6 @@
       "ndl",
       "openbd"
     ]
-  }
+  },
+  "isbn": "9784815602505"
 }

@@ -229,6 +229,15 @@ def draft_label(draft: dict[str, Any]) -> str:
     return draft.get("book_title", "(無題)")
 
 
+def missing_covers(draft: dict[str, Any]) -> list[str]:
+    """書影が付いていない本の名前を返す。付いていれば空。"""
+    if draft.get("kind") == "feature":
+        return [
+            b.get("title", "?") for b in (draft.get("books") or []) if not b.get("cover_url")
+        ]
+    return [] if draft.get("cover_url") else [draft.get("book_title", "?")]
+
+
 def cmd_post(args: argparse.Namespace) -> int:
     required = () if args.dry_run else ("IG_USER_ID", "IG_ACCESS_TOKEN")
     secrets = load_secrets(require=required)
@@ -242,6 +251,20 @@ def cmd_post(args: argparse.Namespace) -> int:
     if draft.get("status") == "posted":
         print(f"[skip] {day} は投稿済みです (media_id={draft.get('media_id')})。")
         return 0
+
+    missing = missing_covers(draft)
+    if missing and not args.allow_missing_cover:
+        # 書影が無いのは見た目の問題ではなく、書誌ソースがその本を特定できて
+        # いないということ。実際に『決断の本質』へ別書の著者と発行日が入って
+        # いた。確認を経ずに出さない。投稿を止めれば通知の Issue が立つ。
+        print(
+            f"::error::{day} の書影がありません（{'、'.join(missing)}）。"
+            " 書誌が別の本のものになっている恐れがあるため投稿を止めました。"
+            " books/queue.yaml に isbn を追記して作り直すか、内容を確認のうえ"
+            " --allow-missing-cover を付けて実行してください。",
+            file=sys.stderr,
+        )
+        return 1
 
     image_urls = [
         f"{secrets.pages_base_url}/img/{day.isoformat()}/{i:02d}.jpg"
@@ -1206,6 +1229,11 @@ def main(argv: list[str] | None = None) -> int:
     p_gen.set_defaults(func=cmd_generate)
 
     p_post = sub.add_parser("post", help="その日の下書きを投稿")
+    p_post.add_argument(
+        "--allow-missing-cover",
+        action="store_true",
+        help="書影が無くても投稿する（内容を目視で確認したときだけ）",
+    )
     p_post.add_argument("--date", help="投稿対象日 (YYYY-MM-DD)。既定は本日。")
     p_post.add_argument("--dry-run", action="store_true", help="投稿せず内容を表示する")
     p_post.set_defaults(func=cmd_post)

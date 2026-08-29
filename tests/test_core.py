@@ -741,3 +741,19 @@ def test_author_names_drop_the_birth_year_ndl_appends():
     assert _normalize_person("渋澤, 健, 1961-") == "渋澤健"
     assert _normalize_person("太田, 泰彦, 1963-2020") == "太田泰彦"
     assert _normalize_person("相良, 奈美香") == "相良奈美香"
+
+
+def test_posting_stops_when_a_cover_is_missing():
+    """書影が無い＝書誌が別の本のものかもしれない。確認前に出さない。"""
+    from bookgram.cli import missing_covers
+
+    assert missing_covers({"book_title": "何か", "cover_url": "https://x/y.jpg"}) == []
+    assert missing_covers({"book_title": "何か", "cover_url": ""}) == ["何か"]
+    feature = {
+        "kind": "feature",
+        "books": [
+            {"title": "あり", "cover_url": "https://x/y.jpg"},
+            {"title": "なし", "cover_url": ""},
+        ],
+    }
+    assert missing_covers(feature) == ["なし"]

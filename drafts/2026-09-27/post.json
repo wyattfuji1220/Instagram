@@ -3,7 +3,7 @@
   "kind": "book",
   "image_count": 10,
   "book_title": "ハーバード流 企画実現力",
-  "book_author": "John P. Kotter、Lorne A. Whitehead、庭田よう子",
+  "book_author": "JohnP.Kotter、LorneA.Whitehead、庭田よう子",
   "published": "2011年7月",
   "cover": {
     "text": "よいアイデアを\n守るための技術",
@@ -77,5 +77,6 @@
       "ndl",
       "openbd"
     ]
-  }
+  },
+  "isbn": "9784062167826"
 }

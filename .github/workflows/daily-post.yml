@@ -83,7 +83,15 @@ jobs:
         if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: src
+        # 書影が無くて止まった場合が多いので、該当書を本文に載せる。
+        # ログを開かなくても、何を確認すればいいかが分かるようにする。
         run: |
-          gh issue create \
-            --title "投稿に失敗しました ($(date -u -d '+9 hours' +%Y-%m-%d))" \
-            --body "ログ: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          {
+            echo "ログ: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo
+            echo '```'
+            python -m bookgram covers 2>&1 || true
+            echo '```'
+          } > issue-body.md
+          gh issue create --title "投稿に失敗しました ($(date -u -d '+9 hours' +%Y-%m-%d))" --body-file issue-body.md
