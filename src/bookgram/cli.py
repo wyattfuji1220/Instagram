@@ -32,7 +32,7 @@ from typing import Any
 
 from . import insights
 from . import queue as bookqueue
-from .bookdata import fetch_material
+from .bookdata import fetch_material, search_google_books
 from .config import (
     CARDS_PER_POST,
     FEATURE_WEEKDAYS,
@@ -908,6 +908,21 @@ def cmd_doctor(_: argparse.Namespace) -> int:
         problems += 1
     else:
         print(f"[ok] トークンの残り有効期間: {days_left}日")
+
+    # Google Books は鍵が無いと匿名枠になり、すぐ429で落ちる。設定の有無では
+    # なく、実際に引けるかを見る。
+    if os.getenv("GOOGLE_BOOKS_API_KEY", "").strip():
+        try:
+            volume = search_google_books("", "9784478111390")  # すごい左利き
+            if volume.get("title"):
+                print(f"[ok] Google Books に接続できました（{volume['title'][:20]}）。")
+            else:
+                print("[--] Google Books は応答しましたが、結果が空でした。")
+        except Exception as error:  # ネットワーク・レート制限どちらもここに来る
+            print(f"[NG] Google Books を引けません: {str(error)[:90]}")
+            problems += 1
+    else:
+        print("[--] GOOGLE_BOOKS_API_KEY が未設定です（書誌ソースが1つ減ります）。")
 
     no_cover = sum(
         1
