@@ -50,6 +50,16 @@ jobs:
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium
 
+      - name: 日本語フォントを導入
+        # Ubuntu ランナーには日本語の明朝が無く、指定が効かずに中国語の
+        # ゴシックへ落ちる。9:16 の面をここで描くようにした際、週次生成には
+        # あったこの手当てを入れ忘れ、2026-08-30 のリールが中国語字形で
+        # 配信された。取れなければ後段で気づけるよう確認まで行う。
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra
+          fc-match "Noto Serif CJK JP" | tee /dev/stderr | grep -qi "Noto Serif CJK JP"
+
       - name: 動画を組み立て
         id: build
         env:
