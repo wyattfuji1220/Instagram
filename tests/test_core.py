@@ -866,7 +866,17 @@ def test_preview_image_paths_match_where_the_page_lives():
     from datetime import date as _date
     from bookgram.preview import _render_day_block
 
-    draft = {"image_count": 2, "book_title": "本", "caption": ""}
+    draft = {
+        "image_count": 2,
+        "book_title": "本",
+        "book_author": "著者",
+        "caption": "",
+        "cover": {"text": "表紙"},
+        "recommend": [],
+        "question": {"text": "問い"},
+        "points": [],
+        "summary": {"text": "まとめ"},
+    }
     day = _date(2026, 8, 31)
 
     # docs/preview/ に置くページ
