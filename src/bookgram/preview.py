@@ -103,10 +103,19 @@ def _slide_lines(draft: dict[str, Any]) -> list[str]:
     return lines
 
 
-def _render_day_block(day_date: date, draft: dict[str, Any]) -> str:
+def _render_day_block(
+    day_date: date, draft: dict[str, Any], img_base: str = "../img"
+) -> str:
+    """1日分の枠。img_base はページの置き場所からの画像への道のり。
+
+    docs/preview/ に置くページは ../img、docs/ 直下のページは img になる。
+    ここを固定にしていたため、upcoming.html から画像がサイトの外を指して
+    404 になっていた。
+    """
     count = draft.get("image_count", CARDS_PER_POST)
     images = "".join(
-        f'<img src="../img/{day_date.isoformat()}/{i:02d}.jpg" alt="card {i}" loading="lazy">'
+        f'<img src="{img_base}/{day_date.isoformat()}/{i:02d}.jpg"'
+        f' alt="card {i}" loading="lazy">'
         for i in range(1, count + 1)
     )
     slides = "".join(f"<li>{_esc(line)}</li>" for line in _slide_lines(draft))
@@ -178,7 +187,9 @@ def render_upcoming(days: int = 14) -> Path:
             rows.append((cursor, draft))
         cursor += timedelta(days=1)
 
-    blocks = "".join(_render_day_block(day, draft) for day, draft in rows)
+    blocks = "".join(
+        _render_day_block(day, draft, img_base="img") for day, draft in rows
+    )
     empty = "<p>これから配信する下書きはありません。</p>"
     page = f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8">

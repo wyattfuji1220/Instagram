@@ -859,3 +859,21 @@ def test_easing_slows_the_movement_at_both_ends():
     # 端では中央より動きが小さい
     assert _ease(0.1) < 0.1
     assert _ease(0.9) > 0.9
+
+
+def test_preview_image_paths_match_where_the_page_lives():
+    """置き場所で階層が違う。固定にすると片方がサイトの外を指す。"""
+    from datetime import date as _date
+    from bookgram.preview import _render_day_block
+
+    draft = {"image_count": 2, "book_title": "本", "caption": ""}
+    day = _date(2026, 8, 31)
+
+    # docs/preview/ に置くページ
+    week = _render_day_block(day, draft)
+    assert 'src="../img/2026-08-31/01.jpg"' in week
+
+    # docs/ 直下に置くページ
+    top = _render_day_block(day, draft, img_base="img")
+    assert 'src="img/2026-08-31/01.jpg"' in top
+    assert "../img" not in top
