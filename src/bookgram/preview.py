@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import html
 import json
-from datetime import date
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -159,6 +159,48 @@ def render_week_preview(
     return path
 
 
+def render_upcoming(days: int = 14) -> Path:
+    """これから配信する分だけを1枚にまとめる。URL は常に同じ。
+
+    週ごとのページは過去の投稿も混ざるうえ、どれが次の週か探す手間がある。
+    「まだ投稿していない日」だけを日付順に並べた固定のページを置く。
+    """
+    from .queue import load_draft
+
+    today = date.today()
+    rows: list[tuple[date, dict[str, Any]]] = []
+    cursor = today
+    for _ in range(days * 3):  # 空き日を飛ばすため、暦としては長めに走査する
+        if len(rows) >= days:
+            break
+        draft = load_draft(cursor)
+        if draft and draft.get("status") != "posted":
+            rows.append((cursor, draft))
+        cursor += timedelta(days=1)
+
+    blocks = "".join(_render_day_block(day, draft) for day, draft in rows)
+    empty = "<p>これから配信する下書きはありません。</p>"
+    page = f"""<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="600">
+<title>これから配信する投稿</title>
+<style>{PAGE_CSS}</style></head>
+<body><div class="wrap">
+<h1>これから配信する投稿</h1>
+<p class="lede">
+  まだ投稿していない下書きを、日付の早い順に{days}件まで並べています。
+  投稿が済んだ分は自動的に消えます。更新日時: {_esc(datetime.now().strftime("%Y-%m-%d %H:%M"))}
+</p>
+{blocks or empty}
+</div></body></html>
+"""
+    DOCS_DIR.mkdir(parents=True, exist_ok=True)
+    path = DOCS_DIR / "upcoming.html"
+    path.write_text(page, encoding="utf-8")
+    return path
+
+
 def _index_html(links_html: str) -> str:
     return f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8">
@@ -183,6 +225,13 @@ def render_index(pages_base_url: str) -> list[Path]:
     pages = sorted(preview_dir.glob("*.html"), reverse=True) if preview_dir.exists() else []
     empty = "<li>まだプレビューはありません。日曜の週次生成を待つか、Actions から手動実行してください。</li>"
 
+    top = (
+        '<p style="margin:0 0 28px"><a href="upcoming.html" '
+        'style="display:inline-block;padding:14px 26px;border-radius:10px;'
+        'background:#F5B94A;color:#101521;font-weight:800;text-decoration:none">'
+        'これから配信する投稿を見る</a></p>'
+    )
+
     relative = "".join(
         f'<li><a href="{PAGES_PREVIEW_DIRNAME}/{_esc(p.name)}">'
         f"{_esc(p.stem)} の投稿プレビュー</a></li>"
@@ -198,8 +247,14 @@ def render_index(pages_base_url: str) -> list[Path]:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     docs_path = DOCS_DIR / "index.html"
     output_path = OUTPUT_DIR / "index.html"
-    docs_path.write_text(_index_html(relative or empty), encoding="utf-8")
-    output_path.write_text(_index_html(absolute or empty), encoding="utf-8")
+    docs_path.write_text(_index_html(top + (relative or empty)), encoding="utf-8")
+    output_path.write_text(
+        _index_html(
+            top.replace("upcoming.html", f"{pages_base_url}/upcoming.html")
+            + (absolute or empty)
+        ),
+        encoding="utf-8",
+    )
     return [docs_path, output_path]
 
 

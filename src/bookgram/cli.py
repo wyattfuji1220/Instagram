@@ -63,6 +63,7 @@ from .preview import (
     load_week_drafts,
     render_index,
     render_pr_body,
+    render_upcoming,
     render_week_preview,
 )
 from .publish import (
@@ -220,6 +221,7 @@ def _write_previews(start: date, pages_base_url: str) -> None:
         repo = os.getenv("GITHUB_REPOSITORY", "wyattfuji1220/Instagram")
         branch = os.getenv("DRAFT_BRANCH", f"drafts/{week_label(start)}")
         print(f"[preview] {render_pr_body(week_label(start), drafts, repo, branch)}")
+    print(f"[preview] {render_upcoming()}")
     for path in render_index(pages_base_url):
         print(f"[preview] {path}")
 

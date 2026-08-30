@@ -54,6 +54,15 @@ jobs:
             ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
+      - name: これから配信する分のプレビューを更新
+        if: ${{ !inputs.dry_run }}
+        # 投稿が済んだ日をページから落とすため、投稿のたびに作り直す。
+        continue-on-error: true
+        env:
+          PAGES_BASE_URL: ${{ vars.PAGES_BASE_URL || 'https://wyattfuji1220.github.io/Instagram' }}
+          PYTHONPATH: src
+        run: python -m bookgram preview
+
       - name: 届き方の数字を記録
         if: ${{ !inputs.dry_run }}
         # 投稿の成否とは切り離す。数字が取れなくても投稿は成功扱いにする。
