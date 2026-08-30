@@ -83,19 +83,10 @@
   "posted_at": "2026-08-30T06:07:46.236662+09:00",
   "story_media_id": "18121905221493787",
   "reel": {
-    "built_at": "2026-08-30T19:04:14.347869+09:00",
+    "built_at": "2026-08-30T19:34:00.039969+09:00",
     "variant": "conclusion",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1390991,
-    "media_id": "18111742970022397",
-    "posted_at": "2026-08-30T19:05:48.496628+09:00",
-    "audio": {
-      "audio_id": "1379743266787702",
-      "title": "Imagination",
-      "display_artist": "Giulio Cercato",
-      "mood": "力強い",
-      "query": "cinematic inspiring"
-    }
+    "bytes": 1389894
   }
 }
