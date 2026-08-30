@@ -919,3 +919,27 @@ def test_balanced_break_splits_at_phrase_boundaries():
 
     # 短いものは折り返さない
     assert balanced_break("短い方") == "短い方"
+
+
+def test_privacy_check_finds_identifying_phrases():
+    """読書メモに書いてあっても、書き手が特定できる表現は原稿に出さない。"""
+    from bookgram.cli import identifying_phrases
+
+    def names(draft):
+        return sorted(n for n, _ in identifying_phrases(draft))
+
+    assert names({"caption": "私のいる調達が目指すのは"}) == ["所属・職種"]
+    assert names({"caption": "自社の「囲い込み」はどう映るか"}) == ["所属・職種"]
+    assert names({"caption": "部や室のミーティングで振られる"}) == ["社内の組織語"]
+    assert names({"caption": "田辺社長がYouTubeで紹介していた"}) == ["身近な人の名前"]
+
+    # 本の中身として出てくる人名・企業名は対象外
+    assert names({"caption": "著者の山口周さんは、アップルの事例を挙げています。"}) == []
+    assert names({"caption": "新卒内定時に子会社社長、20代で本社取締役。"}) == []
+    # 一般的な語まで拾わない
+    assert names({"caption": "会議室の予約や待合室での時間について"}) == []
+    # 著者の肩書きに「室長」が入ることがある。これは本の情報なので拾わない
+    assert names({"caption": "防衛研究所室長の高橋杉雄さんが解説しています。"}) == []
+
+    # 本文カードも見る
+    assert names({"caption": "", "points": [{"text": "弊社では難しい"}]}) == ["所属・職種"]

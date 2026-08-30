@@ -12,6 +12,7 @@
   python -m bookgram fb-whoami   音源ライブラリ用のFacebookトークンを点検する
   python -m bookgram fb-refresh-token  音源用の長期トークンを延長する
   python -m bookgram covers      書影が付いていない下書きを洗い出す
+  python -m bookgram privacy     身元が分かる表現が混ざっていないか調べる
   python -m bookgram stats       リーチ・再生数など届き方の数字を読み出す
   python -m bookgram cleanup     古い画像を削除する
   python -m bookgram refresh-token  長期アクセストークンを延長する
@@ -940,6 +941,18 @@ def cmd_doctor(_: argparse.Namespace) -> int:
     else:
         print("[ok] すべての下書きに書影が付いています。")
 
+    leaks = sum(
+        1
+        for path in DRAFTS_DIR.glob("*/post.json")
+        for draft in [json.loads(path.read_text(encoding="utf-8"))]
+        if draft.get("status") != "posted" and identifying_phrases(draft)
+    )
+    if leaks:
+        print(f"[NG] 身元が分かる表現のある下書きが{leaks}件あります（privacy で確認）。")
+        problems += 1
+    else:
+        print("[ok] 身元が分かる表現は見つかりませんでした。")
+
     data = bookqueue.load_queue()
     pending = len(bookqueue.pending_books(data))
     coverage = bookqueue.coverage_days(today_jst())
@@ -1112,6 +1125,59 @@ def cmd_fb_refresh_token(_: argparse.Namespace) -> int:
     print(token)
     print(f"有効期間: 約{days}日")
     return 0
+
+
+# ------------------------------------------------------------------------ privacy
+
+
+# 書き手が誰か分かってしまう言い回し。読書メモに書いてあると原稿にも出る。
+# 本の中身として出てくる人名・企業名は対象外なので、ここでは拾わない。
+IDENTIFYING = {
+    "所属・職種": re.compile(r"私のいる|私の(部署|職場|会社|チーム)|弊社|自社の|勤務先"),
+    # 「会議室」「待合室」と組織単位の「室」は字面では区別できない。組織の
+    # 並記（部や室）と役職（室長）だけを狙い、一般語は拾わない。
+    "社内の組織語": re.compile(r"[部課](や|と|・)室|自分の室|うちの室|本部で|事業部で"),
+    "身近な人の名前": re.compile(r"[一-龥ァ-ヶ]{2,5}(社長|部長|役員|さん)が(YouTube|SNS|X)"),
+}
+
+
+def identifying_phrases(draft: dict[str, Any]) -> list[tuple[str, str]]:
+    """身元が分かる表現を拾う。原稿本文とキャプションだけを見る。"""
+    texts = [draft.get("caption", "")]
+    for key in ("points", "recommend"):
+        texts += [item.get("text", "") for item in draft.get(key) or []]
+    for key in ("cover", "question", "summary"):
+        value = draft.get(key)
+        if isinstance(value, dict):
+            texts.append(value.get("text", ""))
+
+    found: list[tuple[str, str]] = []
+    for name, pattern in IDENTIFYING.items():
+        for text in texts:
+            hit = pattern.search(text)
+            if hit:
+                start = max(0, hit.start() - 12)
+                found.append((name, text[start:hit.end() + 12]))
+                break
+    return found
+
+
+def cmd_privacy(args: argparse.Namespace) -> int:
+    """身元が分かる表現が原稿に混ざっていないか調べる。"""
+    problems = 0
+    checked = 0
+    for path in sorted(DRAFTS_DIR.glob("*/post.json")):
+        draft = json.loads(path.read_text(encoding="utf-8"))
+        if draft.get("status") == "posted" and not args.all:
+            continue
+        checked += 1
+        for name, fragment in identifying_phrases(draft):
+            print(f"[NG] {draft.get('date')} [{name}] …{fragment}…")
+            problems += 1
+    print(f"[--] 確認: {checked}件 / 該当: {problems}件")
+    if problems:
+        print("[--] 該当箇所を直すか、books/queue.yaml の notes 側から消してください。")
+    return 1 if problems else 0
 
 
 # --------------------------------------------------------------------------- covers
@@ -1361,6 +1427,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser(
         "fb-refresh-token", help="音源ライブラリ用の長期トークンを延長する"
     ).set_defaults(func=cmd_fb_refresh_token)
+    p_priv = sub.add_parser("privacy", help="身元が分かる表現を洗い出す")
+    p_priv.add_argument("--all", action="store_true", help="投稿済みも含める")
+    p_priv.set_defaults(func=cmd_privacy)
+
     p_cov = sub.add_parser("covers", help="書影が付いていない下書きを洗い出す")
     p_cov.add_argument("--all", action="store_true", help="投稿済みも含める")
     p_cov.add_argument(
