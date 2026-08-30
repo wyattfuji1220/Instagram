@@ -209,6 +209,9 @@
   }
   .rec-text {
     font-size: calc(44px * var(--s)); line-height: 1.75;
+    /* 折り返し位置は Python 側で文節を見て決め、改行文字で渡す。
+       ブラウザ任せだと語の途中で切れ、「方」の1文字だけが次行に残る。 */
+    white-space: pre-line;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
   }
 

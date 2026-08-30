@@ -887,3 +887,35 @@ def test_preview_image_paths_match_where_the_page_lives():
     top = _render_day_block(day, draft, img_base="img")
     assert 'src="img/2026-08-31/01.jpg"' in top
     assert "../img" not in top
+
+
+def test_balanced_break_splits_at_phrase_boundaries():
+    """語の途中で切らず、助詞を行頭に置かず、上下の分量を揃える。"""
+    from bookgram.render import balanced_break
+
+    NL = chr(10)
+
+    def parts(text):
+        return balanced_break(text).split(NL)
+
+    # 実際に「方」の1文字だけが次行に残っていた例
+    assert parts("やりたいことがわからなくて悩んでいる方") == [
+        "やりたいことが",
+        "わからなくて悩んでいる方",
+    ]
+    # 「わからなくて」の「から」を助詞と誤認しないこと
+    assert "わから" not in parts("やりたいことがわからなくて悩んでいる方")[0][-3:]
+    # 「悩んで」の「で」は活用語尾。ここでは切らない
+    assert not any(p.endswith("悩んで") for p in parts("自分を悩んでいる方"))
+
+    for text in (
+        "今の会社で何が伸ばせるかを考え直したい方",
+        "自分の強みを言葉にしてみたい方",
+        "成長が遅いと感じる自分を責めるのをやめたい方",
+    ):
+        upper, lower = parts(text)
+        assert len(upper) >= 3 and len(lower) >= 3   # 1〜2文字だけ残さない
+        assert lower[0] not in "はがをにでとへやもの"  # 助詞を行頭に置かない
+
+    # 短いものは折り返さない
+    assert balanced_break("短い方") == "短い方"

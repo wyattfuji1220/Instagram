@@ -13,6 +13,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import html
+import re
 import mimetypes
 from functools import lru_cache
 from pathlib import Path
@@ -121,6 +122,67 @@ def _fit_font(text: str, max_font: int, usable_width: int) -> int:
     return max(32, min(max_font, usable_width // max(longest, 1)))
 
 
+# 折り返してよいのは助詞の直後だけ。ただし「悩んで」の「で」のように、
+# 同じ字が活用語尾にも現れる。直前が漢字・カタカナなら自立語の切れ目と
+# みなし、ひらがな続きなら確信が持てないぶん評価を下げる。
+BREAK_AFTER = (
+    "からは", "までは", "については", "としては",
+    "から", "まで", "より", "ので", "のに", "でも", "では", "には", "とは",
+    "ても", "ては", "とも", "だけ", "こそ", "しか",
+    "は", "が", "を", "に", "で", "と", "も", "の", "へ", "や", "、",
+)
+NOT_BREAK_BEFORE = set("はがをにでとへやもの、。」』）】・")
+CONTENT_END = re.compile(r"[一-龥ァ-ヶー0-9A-Za-z]")
+# 切れ端がこれ未満だと「方」の1文字だけが次行に残る。
+MIN_SIDE_CHARS = 3
+# これ以下なら折り返さない。カードの1行に収まる目安。
+NO_WRAP_CHARS = 13
+# 直前がひらがなで助詞か活用語尾か判別できない位置は、この分だけ評価を下げる。
+UNCERTAIN_PENALTY = 3
+
+
+def _break_candidates(text: str) -> list[tuple[float, int]]:
+    """折り返してよい位置を (評価, 位置) で返す。評価は小さいほど良い。"""
+    middle = len(text) / 2
+    found: dict[int, float] = {}
+    for i in range(len(text)):
+        for particle in BREAK_AFTER:
+            if not text.startswith(particle, i):
+                continue
+            end = i + len(particle)
+            if end < MIN_SIDE_CHARS or len(text) - end < MIN_SIDE_CHARS:
+                break
+            if text[end] in NOT_BREAK_BEFORE:
+                break
+            certain = bool(i and CONTENT_END.match(text[i - 1]))
+            # 「わからなくて」の「から」のように、2文字以上の助詞は活用語の
+            # 途中にそのまま現れる。自立語の直後でなければ助詞と見なさない。
+            if len(particle) > 1 and not certain:
+                break
+            # 「悩んで」「行って」の「で」「て」は活用語尾。助詞ではない。
+            if particle in ("で", "と") and i and text[i - 1] in "んっ":
+                break
+            score = abs(end - middle) + (0 if certain else UNCERTAIN_PENALTY)
+            found[end] = min(found.get(end, score), score)
+            break
+    return sorted((score, at) for at, score in found.items())
+
+
+def balanced_break(text: str) -> str:
+    """1行に収まらない文を、上下の分量が揃うように1箇所で折り返す。
+
+    ブラウザ任せだと語の途中で切れ、「方」の1文字だけが次の行に残る。
+    文節の切れ目のうち、真ん中に近いものを選ぶ。
+    """
+    if '\n' in text or len(text) <= NO_WRAP_CHARS:
+        return text
+    candidates = _break_candidates(text)
+    if not candidates:
+        return text
+    at = candidates[0][1]
+    return text[:at] + '\n' + text[at:]
+
+
 def _highlighted(text: str, highlight: str) -> Markup:
     """ハイライト部分だけ色を変えた HTML を作る。"""
     escaped = html.escape(text)
@@ -199,7 +261,9 @@ def build_card_contexts(
             2,
             "recommend",
             items=[
-                _highlighted(item["text"], item.get("highlight", ""))
+                _highlighted(
+                    balanced_break(item["text"]), item.get("highlight", "")
+                )
                 for item in post["recommend"]
             ],
         ),
