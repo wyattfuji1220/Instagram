@@ -90,6 +90,15 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1345501
+    "bytes": 1345501,
+    "media_id": "18002752629003943",
+    "posted_at": "2026-09-02T20:30:59.041667+09:00",
+    "audio": {
+      "audio_id": "3175125592571403",
+      "title": "Piano Sketch #1",
+      "display_artist": "Brent Bourgeois",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    }
   }
 }
