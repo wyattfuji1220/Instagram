@@ -36,6 +36,8 @@ concurrency:
 jobs:
   reel:
     runs-on: ubuntu-latest
+    # 既定の上限は6時間。固まると concurrency で翌日の実行まで待たされる。
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,11 +59,23 @@ jobs:
         # Ubuntu ランナーには日本語の明朝が無く、指定が効かずに中国語の
         # ゴシックへ落ちる。9:16 の面をここで描くようにした際、週次生成には
         # あったこの手当てを入れ忘れ、2026-08-30 のリールが中国語字形で
-        # 配信された。取れなければ後段で気づけるよう確認まで行う。
+        # 配信された。
+        #
+        # 確認を `fc-match | tee /dev/stderr | grep -q` で書いたところ、
+        # grep -q が先に終了して tee が書き込めなくなり、ステップが固まった
+        # （2026-09-02 のリールが75分止まって配信されず）。パイプを使わず、
+        # 変数に受けてから確かめる。
+        timeout-minutes: 10
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra
-          fc-match "Noto Serif CJK JP" | tee /dev/stderr | grep -qi "Noto Serif CJK JP"
+          set -euo pipefail
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra
+          matched=$(fc-match "Noto Serif CJK JP")
+          echo "fc-match: $matched"
+          case "$matched" in
+            *"Noto Serif CJK"*) ;;
+            *) echo "::error::日本語の明朝が入っていません"; exit 1 ;;
+          esac
 
       - name: 動画を組み立て
         id: build
