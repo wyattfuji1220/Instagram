@@ -958,3 +958,29 @@ def test_outro_lines_are_kept_as_written_but_folded_when_they_overflow():
     assert chr(10) in folded
     upper, lower = folded.split(chr(10))
     assert lower[0] not in "はがをにでとへやもの"      # 助詞を行頭に置かない
+
+
+def test_employer_is_flagged_only_when_spoken_from_the_inside(monkeypatch):
+    """本の題材として社名を出すのは構わない。自分の側から語ると所属が出る。"""
+    from bookgram import cli
+
+    monkeypatch.setattr(
+        cli, "load_account", lambda: {"employers": ["トヨタ", "TOYOTA"]}
+    )
+
+    def flagged(text):
+        return any(n == "勤務先をほのめかす" for n, _ in cli.identifying_phrases({"caption": text}))
+
+    # 実際に書かれていた形
+    assert flagged("トヨタにもチャレンジを大切にする文化があると思いますが")
+    assert flagged("私が気になったのは、ではトヨタのビジネスはどうなるかでした")
+    assert flagged("トヨタでも私たちのやり方は通じるのか")
+
+    # 本の中身としての言及は通す
+    assert not flagged("トヨタの生産方式について書かれた一冊です")
+    assert not flagged("著者はトヨタで長く働いた人物です")
+    assert not flagged("トヨタ生産方式の要点が3つにまとまっています")
+
+    # 勤務先を登録していなければ何も見ない
+    monkeypatch.setattr(cli, "load_account", lambda: {})
+    assert not flagged("トヨタにもチャレンジを大切にする文化があると思いますが")

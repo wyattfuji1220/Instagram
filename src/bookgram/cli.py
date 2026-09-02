@@ -48,6 +48,7 @@ from .config import (
     QUEUE_LOW_THRESHOLD,
     FACEBOOK_API_HOST,
     feature_kind_for,
+    load_account,
     load_secrets,
 )
 from .generate import generate_book_post
@@ -1138,7 +1139,25 @@ IDENTIFYING = {
     # 並記（部や室）と役職（室長）だけを狙い、一般語は拾わない。
     "社内の組織語": re.compile(r"[部課](や|と|・)室|自分の室|うちの室|本部で|事業部で"),
     "身近な人の名前": re.compile(r"[一-龥ァ-ヶ]{2,5}(社長|部長|役員|さん)が(YouTube|SNS|X)"),
+    # 勤務先。本の題材として論じるのは構わないが、「〜にも」「私たちの」の
+    # ように自分の側から語ると所属が出る。実際に「トヨタにもチャレンジを
+    # 大切にする文化があると思いますが」と書かれた。社名は account.yaml の
+    # employers に置き、リポジトリのコードには残さない。
+    "勤務先をほのめかす": None,
 }
+
+
+def _employer_pattern() -> "re.Pattern[str] | None":
+    """勤務先を自分の側から語っている形を拾う式を組み立てる。"""
+    names = [re.escape(n) for n in load_account().get("employers", []) if n]
+    if not names:
+        return None
+    company = "(?:" + "|".join(names) + ")"
+    return re.compile(
+        company + r"(?:にも|でも|も)[^。]{0,40}?(?:と思|感じ|でしょう)"
+        r"|(?:私|自分|うち)[^。]{0,20}?" + company
+        + r"|" + company + r"[^。]{0,15}?(?:私たち|自分たち|うちの)"
+    )
 
 
 def identifying_phrases(draft: dict[str, Any]) -> list[tuple[str, str]]:
@@ -1151,8 +1170,13 @@ def identifying_phrases(draft: dict[str, Any]) -> list[tuple[str, str]]:
         if isinstance(value, dict):
             texts.append(value.get("text", ""))
 
+    checks = {k: v for k, v in IDENTIFYING.items() if v is not None}
+    employer = _employer_pattern()
+    if employer is not None:
+        checks["勤務先をほのめかす"] = employer
+
     found: list[tuple[str, str]] = []
-    for name, pattern in IDENTIFYING.items():
+    for name, pattern in checks.items():
         for text in texts:
             hit = pattern.search(text)
             if hit:
