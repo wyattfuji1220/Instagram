@@ -943,3 +943,18 @@ def test_privacy_check_finds_identifying_phrases():
 
     # 本文カードも見る
     assert names({"caption": "", "points": [{"text": "弊社では難しい"}]}) == ["所属・職種"]
+
+
+def test_outro_lines_are_kept_as_written_but_folded_when_they_overflow():
+    """最終面の改行は account.yaml の指定どおり。拡大で溢れる行だけ折る。"""
+    from bookgram.render import balanced_break
+
+    line = "最後までご覧になっていただき"          # 14文字
+    assert balanced_break(line, limit=22) == line   # カルーセルでは折らない
+
+    long_line = "いいね・フォローもぜひ！お願いします。"  # 19文字
+    assert balanced_break(long_line, limit=22) == long_line
+    folded = balanced_break(long_line, limit=14)     # リールでは折る
+    assert chr(10) in folded
+    upper, lower = folded.split(chr(10))
+    assert lower[0] not in "はがをにでとへやもの"      # 助詞を行頭に置かない

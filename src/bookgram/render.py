@@ -59,6 +59,10 @@ REEL_SMALL_SCALE = 1.25
 # （キャプション・ボタン）にも覆われるため、余白を厚めに取る。
 REEL_PAD_TOP = 300
 REEL_PAD_BOTTOM = 340
+
+# 最終面の文言が収まる幅と字の大きさ。card.html.j2 の .outro-text と揃える。
+OUTRO_WIDTH_PX = 860
+OUTRO_FONT_PX = 38
 COVER_TIMEOUT = 30
 
 
@@ -168,13 +172,13 @@ def _break_candidates(text: str) -> list[tuple[float, int]]:
     return sorted((score, at) for at, score in found.items())
 
 
-def balanced_break(text: str) -> str:
+def balanced_break(text: str, limit: int = NO_WRAP_CHARS) -> str:
     """1行に収まらない文を、上下の分量が揃うように1箇所で折り返す。
 
     ブラウザ任せだと語の途中で切れ、「方」の1文字だけが次の行に残る。
     文節の切れ目のうち、真ん中に近いものを選ぶ。
     """
-    if '\n' in text or len(text) <= NO_WRAP_CHARS:
+    if '\n' in text or len(text) <= limit:
         return text
     candidates = _break_candidates(text)
     if not candidates:
@@ -220,7 +224,12 @@ def build_card_contexts(
         "cover_tag": account["cover_tag"],
         "handle": account["handle"],
         "account_name": account["name"],
-        "outro_text": account["outro_text"].strip(),
+        # リールでは文字が1.6倍になり、指定した改行のままだと1行が
+        # 収まらない。収まらない行だけ文節で折る。
+        "outro_text": chr(10).join(
+            balanced_break(line, limit=int(OUTRO_WIDTH_PX / (OUTRO_FONT_PX * scale)))
+            for line in account["outro_text"].strip().splitlines()
+        ),
         "icon": icon,
         "book_title": post["book_title"],
         "book_author": post["book_author"],
