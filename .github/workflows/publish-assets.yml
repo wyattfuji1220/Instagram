@@ -1,0 +1,61 @@
+name: 画像を公開用リポジトリへ送る
+
+# カード画像と動画は Instagram に公開URLで渡す必要があるため、公開リポジトリ
+# （Instagram-assets）から GitHub Pages で配信します。本体は読書メモや原稿を
+# 抱えているので公開できません。docs/img が変わるたびに、その中身だけを
+# 公開側へ写します。
+#
+# 本体側の docs/img も当面は残します。PAGES_BASE_URL を戻せばいつでも
+# 元の配信に切り替えられるようにしておくためです。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/img/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-assets
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: 公開用リポジトリを取得
+        env:
+          TOKEN: ${{ secrets.ASSETS_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN:-}" ]; then
+            echo "::error::ASSETS_TOKEN が設定されていません。"
+            exit 1
+          fi
+          git clone --depth 1 \
+            "https://x-access-token:${TOKEN}@github.com/wyattfuji1220/Instagram-assets.git" \
+            assets
+
+      - name: 画像を写して送る
+        run: |
+          set -euo pipefail
+          # 消えた日付フォルダも反映させたいので --delete で丸ごと合わせる。
+          rsync -a --delete docs/img/ assets/img/
+          cd assets
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "変更はありません。"
+            exit 0
+          fi
+          git commit -m "画像を更新 ($(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M))"
+          git push origin main
