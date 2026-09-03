@@ -104,7 +104,10 @@ def _slide_lines(draft: dict[str, Any]) -> list[str]:
 
 
 def _render_day_block(
-    day_date: date, draft: dict[str, Any], img_base: str = "../img"
+    day_date: date,
+    draft: dict[str, Any],
+    img_base: str = "../img",
+    show_grounding: bool = False,
 ) -> str:
     """1日分の枠。img_base はページの置き場所からの画像への道のり。
 
@@ -120,7 +123,11 @@ def _render_day_block(
     )
     slides = "".join(f"<li>{_esc(line)}</li>" for line in _slide_lines(draft))
     tags = "".join(f'<span class="tag">{_esc(t)}</span>' for t in draft.get("hashtags", []))
-    grounding = "".join(f"<li>{_esc(g)}</li>" for g in draft.get("grounding", []))
+    # grounding は読書メモの引用を含む。ページは公開されるので既定では出さない。
+    grounding_html = ""
+    if show_grounding:
+        items = "".join(f"<li>{_esc(g)}</li>" for g in draft.get("grounding", []))
+        grounding_html = f"<h3>根拠メモ (grounding)</h3><ul class=\"grounding\">{items}</ul>"
 
     return f"""
     <section class="day">
@@ -136,8 +143,7 @@ def _render_day_block(
       <pre class="caption">{_esc(draft.get('caption', ''))}</pre>
       <h3>書籍固有ハッシュタグ</h3>
       <div class="tags">{tags}</div>
-      <h3>根拠メモ (grounding)</h3>
-      <ul class="grounding">{grounding}</ul>
+      {grounding_html}
     </section>
     """
 
