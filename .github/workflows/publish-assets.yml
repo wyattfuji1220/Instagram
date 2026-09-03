@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: publish-assets
@@ -36,6 +36,8 @@ jobs:
           TOKEN: ${{ secrets.ASSETS_TOKEN }}
         run: |
           set -uo pipefail
+          mkdir -p output
+          exec > >(tee output/assets-check.md) 2>&1
           # 値は伏せたまま、どこで失敗したかが分かるようにする。
           if [ -z "${TOKEN:-}" ]; then
             echo "::error::ASSETS_TOKEN が設定されていません。"
@@ -48,7 +50,7 @@ jobs:
             *)            echo "種類: 不明" ;;
           esac
           code=$(curl -s -o /tmp/repo.json -w "%{http_code}"             -H "Authorization: Bearer ${TOKEN}"             -H "Accept: application/vnd.github+json"             https://api.github.com/repos/wyattfuji1220/Instagram-assets)
-          echo "リポジトリ照会: HTTP ${code}"
+          echo "リポジトリ照会: HTTP ${code}" 
           if [ "$code" != "200" ]; then
             echo "::error::トークンで Instagram-assets を参照できません（HTTP ${code}）。"
             head -c 300 /tmp/repo.json
@@ -72,4 +74,18 @@ jobs:
             exit 0
           fi
           git commit -m "画像を更新 ($(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M))"
+          git push origin main
+
+      - name: 診断結果を残す
+        if: always()
+        # Actions のログは管理者しか読めない。原因をリポジトリ側に残す。
+        run: |
+          set -euo pipefail
+          [ -f output/assets-check.md ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f output/assets-check.md
+          git diff --cached --quiet && exit 0
+          git commit -m "画像送信の診断結果"
+          git pull --rebase origin main
           git push origin main
