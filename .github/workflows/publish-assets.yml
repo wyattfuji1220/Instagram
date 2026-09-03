@@ -58,14 +58,17 @@ jobs:
           fi
           grep -o '"push":[a-z]*' /tmp/repo.json | head -1
           set -e
-          git clone --depth 1             "https://x-access-token:${TOKEN}@github.com/wyattfuji1220/Instagram-assets.git"             assets
+          # 置き場の名前は assets を避ける。assets/ はカードの背景画像が入る
+          # 既存のフォルダで、そこへ clone しようとして失敗した。
+          rm -rf .assets-repo
+          git clone --depth 1             "https://x-access-token:${TOKEN}@github.com/wyattfuji1220/Instagram-assets.git"             .assets-repo
 
       - name: 画像を写して送る
         run: |
           set -euo pipefail
           # 消えた日付フォルダも反映させたいので --delete で丸ごと合わせる。
-          rsync -a --delete docs/img/ assets/img/
-          cd assets
+          rsync -a --delete docs/img/ .assets-repo/img/
+          cd .assets-repo
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
