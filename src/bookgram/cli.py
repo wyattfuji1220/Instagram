@@ -569,6 +569,21 @@ def _draft_days() -> list[date]:
     return sorted(days, reverse=True)
 
 
+def reel_posted_on(day: date) -> str | None:
+    """その日にリールを出していれば media_id を返す。
+
+    定時実行は毎時0分に集中して間引かれることがあり、実際に 2026-09-03 は
+    発火しなかった。時間をずらした保険の枠を足すが、両方が動いたときに
+    2本出ては困る。1日1本を、記録を見て担保する。
+    """
+    for path in DRAFTS_DIR.glob("*/post.json"):
+        reel = (json.loads(path.read_text(encoding="utf-8")).get("reel")) or {}
+        posted_at = reel.get("posted_at", "")
+        if posted_at[:10] == day.isoformat() and reel.get("media_id"):
+            return str(reel["media_id"])
+    return None
+
+
 def pick_reel_source(*, built: bool) -> date | None:
     """リールの元にする投稿日を選ぶ。
 
@@ -599,6 +614,12 @@ def cmd_reel(args: argparse.Namespace) -> int:
     """投稿済みのカード画像から縦動画を組み立てる。"""
     if not args.date:
         # 未投稿の動画を積み上げない。1本ずつ作って、出してから次を作る。
+        already = reel_posted_on(today_jst())
+        if already:
+            print(f"[skip] 今日はもうリールを出しています (media_id={already})。")
+            _emit_step_output("skipped", "true")
+            return 0
+
         waiting = pick_reel_source(built=True)
         if waiting is not None:
             print(f"[skip] {waiting} の動画がまだ投稿待ちです。")

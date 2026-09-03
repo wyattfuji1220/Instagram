@@ -984,3 +984,32 @@ def test_employer_is_flagged_only_when_spoken_from_the_inside(monkeypatch):
     # 勤務先を登録していなければ何も見ない
     monkeypatch.setattr(cli, "load_account", lambda: {})
     assert not flagged("トヨタにもチャレンジを大切にする文化があると思いますが")
+
+
+def test_reel_is_posted_at_most_once_a_day(tmp_path, monkeypatch):
+    """保険の枠を足したぶん、2本出ないことを記録で担保する。"""
+    import json as _json
+    from datetime import date as _date
+    from bookgram import cli
+
+    monkeypatch.setattr(cli, "DRAFTS_DIR", tmp_path)
+
+    def put(day, reel):
+        d = tmp_path / day
+        d.mkdir()
+        (d / "post.json").write_text(
+            _json.dumps({"date": day, "reel": reel}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+    put("2026-09-02", {"posted_at": "2026-09-03T18:08:00+09:00", "media_id": "111"})
+    put("2026-09-01", {"posted_at": "2026-09-02T18:08:00+09:00", "media_id": "222"})
+
+    # 素材の日付ではなく、リールを出した日で見る
+    assert cli.reel_posted_on(_date(2026, 9, 3)) == "111"
+    assert cli.reel_posted_on(_date(2026, 9, 2)) == "222"
+    assert cli.reel_posted_on(_date(2026, 9, 4)) is None
+
+    # 組み立て済みでも未投稿なら、その日はまだ出していない扱い
+    put("2026-08-31", {"built_at": "2026-09-04T18:00:00+09:00"})
+    assert cli.reel_posted_on(_date(2026, 9, 4)) is None
