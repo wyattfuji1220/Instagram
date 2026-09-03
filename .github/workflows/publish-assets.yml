@@ -35,14 +35,28 @@ jobs:
         env:
           TOKEN: ${{ secrets.ASSETS_TOKEN }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          # 値は伏せたまま、どこで失敗したかが分かるようにする。
           if [ -z "${TOKEN:-}" ]; then
             echo "::error::ASSETS_TOKEN が設定されていません。"
             exit 1
           fi
-          git clone --depth 1 \
-            "https://x-access-token:${TOKEN}@github.com/wyattfuji1220/Instagram-assets.git" \
-            assets
+          echo "トークンの長さ: ${#TOKEN}"
+          case "$TOKEN" in
+            github_pat_*) echo "種類: fine-grained" ;;
+            ghp_*)        echo "種類: classic" ;;
+            *)            echo "種類: 不明" ;;
+          esac
+          code=$(curl -s -o /tmp/repo.json -w "%{http_code}"             -H "Authorization: Bearer ${TOKEN}"             -H "Accept: application/vnd.github+json"             https://api.github.com/repos/wyattfuji1220/Instagram-assets)
+          echo "リポジトリ照会: HTTP ${code}"
+          if [ "$code" != "200" ]; then
+            echo "::error::トークンで Instagram-assets を参照できません（HTTP ${code}）。"
+            head -c 300 /tmp/repo.json
+            exit 1
+          fi
+          grep -o '"push":[a-z]*' /tmp/repo.json | head -1
+          set -e
+          git clone --depth 1             "https://x-access-token:${TOKEN}@github.com/wyattfuji1220/Instagram-assets.git"             assets
 
       - name: 画像を写して送る
         run: |
