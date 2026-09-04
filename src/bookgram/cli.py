@@ -569,6 +569,27 @@ def _draft_days() -> list[date]:
     return sorted(days, reverse=True)
 
 
+# 取りこぼしを拾う枠を動かすとき、直前のリールからこの時間が空いていなければ
+# 何もしない。夕方の枠が正常に動いた日に、翌朝もう1本出さないため。
+CATCHUP_AFTER_HOURS = 20
+
+
+def last_reel_posted_at() -> datetime | None:
+    """最後にリールを出した日時。一度も出していなければ None。"""
+    latest: datetime | None = None
+    for path in DRAFTS_DIR.glob("*/post.json"):
+        reel = (json.loads(path.read_text(encoding="utf-8")).get("reel")) or {}
+        if not (reel.get("media_id") and reel.get("posted_at")):
+            continue
+        try:
+            at = datetime.fromisoformat(reel["posted_at"])
+        except ValueError:
+            continue
+        if latest is None or at > latest:
+            latest = at
+    return latest
+
+
 def reel_posted_on(day: date) -> str | None:
     """その日にリールを出していれば media_id を返す。
 
@@ -614,6 +635,21 @@ def cmd_reel(args: argparse.Namespace) -> int:
     """投稿済みのカード画像から縦動画を組み立てる。"""
     if not args.date:
         # 未投稿の動画を積み上げない。1本ずつ作って、出してから次を作る。
+        if args.catch_up:
+            # 夕方の枠が発火しなかった日を、翌朝の投稿処理から拾う。
+            # 正常に動いた翌朝は何もしない。
+            last = last_reel_posted_at()
+            if last is not None:
+                hours = (datetime.now(JST) - last).total_seconds() / 3600
+                if hours < CATCHUP_AFTER_HOURS:
+                    print(
+                        f"[skip] 直近のリールから{hours:.0f}時間しか経っていません"
+                        f"（{CATCHUP_AFTER_HOURS}時間未満なので取りこぼしではない）。"
+                    )
+                    _emit_step_output("skipped", "true")
+                    return 0
+            print("[catch-up] 夕方の枠で出ていないため、ここで作ります。")
+
         already = reel_posted_on(today_jst())
         if already:
             print(f"[skip] 今日はもうリールを出しています (media_id={already})。")
@@ -1442,6 +1478,11 @@ def main(argv: list[str] | None = None) -> int:
 
     p_reel = sub.add_parser("reel", help="投稿済みのカードから縦動画を作る")
     p_reel.add_argument("--date", help="元にする投稿日 (YYYY-MM-DD)。既定は自動選択。")
+    p_reel.add_argument(
+        "--catch-up",
+        action="store_true",
+        help="取りこぼしのときだけ作る（直近のリールから20時間未満なら何もしない）",
+    )
     p_reel.set_defaults(func=cmd_reel)
 
     p_preel = sub.add_parser("post-reel", help="作った動画をリールとして投稿")

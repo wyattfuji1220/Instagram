@@ -16,6 +16,12 @@ on:
     # 1対1に揃えて、溜まった分も消化する。
     - cron: "8 9 * * *"
     - cron: "38 9 * * *"
+  # 夕方の枠は 2026-09-03 と 09-04 に発火しなかった。GitHub 側の都合で
+  # こちらからは強制できないため、毎日確実に動いている朝の投稿の完了を
+  # きっかけにも起動する。正常に出ている日は --catch-up が何もしない。
+  workflow_run:
+    workflows: ["毎日 Instagram 投稿"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       date:
@@ -36,6 +42,10 @@ concurrency:
 
 jobs:
   reel:
+    # 朝の投稿が失敗した回では追いかけない。原因が共通のことがある。
+    if: >-
+      github.event_name != 'workflow_run'
+      || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     # 既定の上限は6時間。固まると concurrency で翌日の実行まで待たされる。
     timeout-minutes: 30
@@ -89,6 +99,7 @@ jobs:
           set -o pipefail
           mkdir -p output
           python -m bookgram reel \
+            ${{ github.event_name == 'workflow_run' && '--catch-up' || '' }} \
             ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
             2>&1 | tee output/reel-build.log
 

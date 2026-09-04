@@ -1013,3 +1013,44 @@ def test_reel_is_posted_at_most_once_a_day(tmp_path, monkeypatch):
     # 組み立て済みでも未投稿なら、その日はまだ出していない扱い
     put("2026-08-31", {"built_at": "2026-09-04T18:00:00+09:00"})
     assert cli.reel_posted_on(_date(2026, 9, 4)) is None
+
+
+def test_catch_up_only_fires_when_the_evening_slot_was_missed(tmp_path, monkeypatch):
+    """夕方の枠が動いた翌朝に、もう1本出してしまわないこと。"""
+    import json as _json
+    from datetime import datetime as _dt, timedelta as _td
+    from bookgram import cli
+    from bookgram.config import JST
+
+    monkeypatch.setattr(cli, "DRAFTS_DIR", tmp_path)
+
+    def put(name, posted_at):
+        d = tmp_path / name
+        d.mkdir()
+        (d / "post.json").write_text(
+            _json.dumps({"reel": {"media_id": "1", "posted_at": posted_at}}),
+            encoding="utf-8",
+        )
+
+    now = _dt.now(JST)
+    # 12時間前に出ている＝夕方の枠は動いた。翌朝は何もしない。
+    put("a", (now - _td(hours=12)).isoformat())
+    last = cli.last_reel_posted_at()
+    assert last is not None
+    assert (now - last).total_seconds() / 3600 < cli.CATCHUP_AFTER_HOURS
+
+    # 36時間前が最後＝昨日の夕方が出ていない。ここでは拾う。
+    for child in tmp_path.iterdir():
+        for f in child.iterdir():
+            f.unlink()
+        child.rmdir()
+    put("b", (now - _td(hours=36)).isoformat())
+    last = cli.last_reel_posted_at()
+    assert (now - last).total_seconds() / 3600 >= cli.CATCHUP_AFTER_HOURS
+
+    # 一度も出していなければ None（初回は拾う側に倒す）
+    for child in tmp_path.iterdir():
+        for f in child.iterdir():
+            f.unlink()
+        child.rmdir()
+    assert cli.last_reel_posted_at() is None
