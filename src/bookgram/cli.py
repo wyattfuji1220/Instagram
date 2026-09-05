@@ -56,6 +56,7 @@ from .feature import SPECS, generate_feature_post, spec_for
 from .newbooks import (
     NewBooksUnavailableError,
     diagnose_rakuten,
+    fetch_bargains,
     fetch_classics,
     fetch_new_business_books,
     fetch_new_novels,
@@ -449,7 +450,10 @@ def collect_candidates(kind: str, target: date, limit: int):
         return fetch_new_business_books(target, limit=limit)
     if kind == "novel":
         return fetch_new_novels(target, limit=limit)
+    # 殿堂入りと1000円以下は、既に紹介した本を除く。同じ本が何度も出ないため。
     isbns, titles = covered_books()
+    if kind == "bargain":
+        return fetch_bargains(exclude_isbns=isbns, exclude_titles=titles, limit=limit)
     return fetch_classics(exclude_isbns=isbns, exclude_titles=titles, limit=limit)
 
 

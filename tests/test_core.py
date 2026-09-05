@@ -1054,3 +1054,24 @@ def test_catch_up_only_fires_when_the_evening_slot_was_missed(tmp_path, monkeypa
             f.unlink()
         child.rmdir()
     assert cli.last_reel_posted_at() is None
+
+
+def test_bargain_feature_shows_price_not_release_date():
+    """1000円以下の特集は、発売日ではなく価格と評価を出す。"""
+    from bookgram.newbooks import NewBook
+    from datetime import date as _date
+
+    book = NewBook(
+        title="本", author="著者", publisher="出版社",
+        sales_date=_date(2020, 1, 1), sales_date_label="2020年1月1日",
+        isbn="9784000000000", cover_url="https://x/y.jpg", caption="紹介文",
+        review_count=237, review_average=4.5, price=924,
+    )
+    assert book.price_label == "924円"
+    assert "924円" in book.to_prompt_block()
+    assert "レビュー237件" in book.review_label
+
+    # 価格が取れない本では空になる（0円と書かない）
+    book.price = 0
+    assert book.price_label == ""
+    assert "価格:" not in book.to_prompt_block()

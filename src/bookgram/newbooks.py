@@ -44,6 +44,16 @@ CLASSIC_PAGES = 6
 CLASSIC_MIN_REVIEWS = 200
 CLASSIC_MIN_AVERAGE = 4.0
 CLASSIC_MIN_CAPTION_CHARS = 100
+
+# 「安いのに評価が高い」特集。価格の意外性で見てもらい、買う直前の判断材料に
+# なるので保存されやすい。値だけが根拠なので、条件は緩めない。
+BARGAIN_PAGES = 20
+BARGAIN_MAX_PRICE = 1000
+BARGAIN_MIN_AVERAGE = 4.2
+# 100件だと候補が7冊しか集まらず、4冊の特集を2本作れない。60件まで緩める。
+# それでも「読まれたうえで高評価」と言える水準。
+BARGAIN_MIN_REVIEWS = 60
+BARGAIN_MIN_CAPTION_CHARS = 100
 HITS_PER_PAGE = 30
 MAX_PAGES = 25
 MIN_CAPTION_CHARS = 60
@@ -67,7 +77,13 @@ class NewBook:
     caption: str
     review_count: int = 0
     review_average: float = 0.0
+    price: int = 0
     tags: list[str] = field(default_factory=list)
+
+    @property
+    def price_label(self) -> str:
+        """「880円」。取れなければ空。"""
+        return f"{self.price:,}円" if self.price else ""
 
     @property
     def review_label(self) -> str:
@@ -83,6 +99,8 @@ class NewBook:
             f"出版社: {self.publisher or '不明'}",
             f"発売日: {self.sales_date_label}",
         ]
+        if self.price_label:
+            lines.append(f"価格: {self.price_label}")
         if self.review_label:
             lines.append(f"読者の評価: {self.review_label}")
         lines += ["内容紹介:", self.caption]
@@ -153,6 +171,7 @@ def _to_book(item: dict[str, Any], sales_date: date) -> NewBook:
         caption=(item.get("itemCaption") or "").strip(),
         review_count=int(item.get("reviewCount") or 0),
         review_average=float(item.get("reviewAverage") or 0),
+        price=int(item.get("itemPrice") or 0),
     )
 
 
@@ -390,6 +409,60 @@ def fetch_classics(
     if not books:
         raise NewBooksUnavailableError(
             "殿堂入りの候補が見つかりませんでした。除外条件が厳しすぎる可能性があります。"
+        )
+    return books[:limit]
+
+
+def fetch_bargains(
+    *,
+    exclude_isbns: set[str] | None = None,
+    exclude_titles: set[str] | None = None,
+    limit: int = 16,
+) -> list[NewBook]:
+    """1,000円以下で評価の高いビジネス書を集める。
+
+    「安い＝内容が薄い」とは限らない、という切り口。根拠は楽天の価格・
+    平均点・レビュー件数で、いずれも実データそのもの。
+    """
+    auth, headers = _auth(), _headers()
+    exclude_isbns = exclude_isbns or set()
+    normalized = {_normalize_title(t) for t in (exclude_titles or set())}
+
+    found: dict[str, NewBook] = {}
+    # レビュー数の多い順だけだと母集団が偏る。安い順からも拾って幅を出す。
+    for order in ("reviewCount", "+itemPrice"):
+      for page in range(1, BARGAIN_PAGES + 1):
+        items = _search(
+            auth, headers, booksGenreId=BUSINESS_GENRE_ID, sort=order, page=page
+        )
+        if not items:
+            break
+        for item in items:
+            sales_date = parse_sales_date(item.get("salesDate", "")) or date(1970, 1, 1)
+            book = _to_book(item, sales_date)
+            if not book.price or book.price > BARGAIN_MAX_PRICE:
+                continue
+            if book.review_average < BARGAIN_MIN_AVERAGE:
+                continue
+            if book.review_count < BARGAIN_MIN_REVIEWS:
+                continue
+            if len(book.caption) < BARGAIN_MIN_CAPTION_CHARS or not book.cover_url:
+                continue
+            if book.isbn in exclude_isbns:
+                continue
+            if _normalize_title(book.title) in normalized:
+                continue
+            found.setdefault(book.isbn, book)
+        _polite_sleep()
+
+    # 安い順ではなく評価順。「安いから薄い」ではないことを示す並び。
+    books = sorted(
+        found.values(), key=lambda b: (b.review_average, b.review_count), reverse=True
+    )
+    if not books:
+        raise NewBooksUnavailableError(
+            f"{BARGAIN_MAX_PRICE}円以下・評価{BARGAIN_MIN_AVERAGE}以上の候補が"
+            "見つかりませんでした。除外条件が厳しすぎる可能性があります。"
         )
     return books[:limit]
 

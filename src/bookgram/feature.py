@@ -113,6 +113,32 @@ SPECS: dict[str, FeatureSpec] = {
         story_hint="例:「何年経っても読まれ続ける4冊」",
         hashtags=("#名著", "#ビジネス書おすすめ"),
     ),
+    # 「安い＝内容が薄い」ではない、という切り口。価格という新しい軸で、
+    # 買う直前の判断材料になるため保存されやすい。誰も貶めない。
+    "bargain": FeatureSpec(
+        key="bargain",
+        name="1000円以下の名著",
+        cover_main="ビジネス書",
+        count_word="1000円以下",
+        dated=False,
+        cover_top="安くても中身は濃い",
+        lead="今日から始められる",
+        fact_label="価格と評価",
+        point_label="この値段で読める理由",
+        stance=(
+            "自分が読んだ体験としては語らない。"
+            "内容紹介・価格・読者の評価という事実に基づいて、どんな本かを説明する。"
+            "「安かろう悪かろう」を否定する書き方をするが、高い本を貶めない。"
+            "値段の話だけで終わらせず、中身が何なのかを必ず書く。"
+        ),
+        point_hint=(
+            "この値段で読めるのが意外だと思える中身。内容紹介から具体的に書く。"
+            "「コスパが良い」のような曖昧な褒め方はしない。何が書かれているかを言う。"
+        ),
+        caption_opening="「1,000円以下で読める、評価の高いビジネス書を4冊まとめました。」",
+        story_hint="例:「1,000円以下とは思えない4冊」",
+        hashtags=("#ビジネス書おすすめ", "#コスパ最強"),
+    ),
 }
 
 
@@ -290,9 +316,11 @@ def generate_feature_post(
                 "sales_date": book.sales_date_label,
                 "review_label": book.review_label,
                 # カード2つ目の見出しに出す値。特集の種類で中身が変わる。
-                "fact_value": (
-                    book.review_label if spec.key == "classic" else book.sales_date_label
-                ),
+                # 新刊は発売日、殿堂入りは評価、1000円以下は価格と評価。
+                "fact_value": {
+                    "classic": book.review_label,
+                    "bargain": f"{book.price_label}　{book.review_label}".strip(),
+                }.get(spec.key, book.sales_date_label),
                 "isbn": book.isbn,
                 "cover_url": book.cover_url,
                 "point": entry["point"],
