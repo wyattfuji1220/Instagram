@@ -70,7 +70,7 @@
     "「こんな方におすすめ」3項目：内容紹介と読書メモから読者像を想定（直接の記載はなし）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4783/47836071.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5565,
@@ -79,5 +79,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18122746177870348",
+  "posted_at": "2026-09-06T06:01:43.668634+09:00",
+  "story_media_id": "17937229674360226"
 }
