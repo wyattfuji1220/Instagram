@@ -6,6 +6,11 @@ on:
     # 数十分ずれ、実測では毎回55分前後の遅れが出ていた（08:02 / 07:57 / 07:54）。
     # その分を見込んで1時間前倒しし、06:00 JST = 前日 21:00 UTC で予約する。
     - cron: "0 21 * * *"
+  # 外部の定時サービスから叩いてもらう入口。GitHub の schedule は
+  # 2026-09-02 以降、遅れが数分から2〜4時間に悪化して時刻を守れない。
+  # schedule は保険として残す（外部が落ちても、遅れて必ず動く）。
+  repository_dispatch:
+    types: [post-carousel]
   workflow_dispatch:
     inputs:
       date:

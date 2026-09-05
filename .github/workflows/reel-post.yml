@@ -22,6 +22,10 @@ on:
   workflow_run:
     workflows: ["毎日 Instagram 投稿"]
     types: [completed]
+  # 外部の定時サービスから叩いてもらう入口。09:00 UTC は世界的に混雑し、
+  # 実測で4時間18分遅れた日がある。schedule は保険として残す。
+  repository_dispatch:
+    types: [post-reel]
   workflow_dispatch:
     inputs:
       date:
