@@ -135,6 +135,15 @@ jobs:
           git commit -m "リール: 動画を追加 ($(date -u -d '+9 hours' +%Y-%m-%d))"
           git push origin main
 
+      - name: 公開用リポジトリへ動画を送る
+        if: steps.build.outputs.skipped != 'true' && !inputs.dry_run
+        env:
+          TOKEN: ${{ secrets.ASSETS_TOKEN }}
+        # 直前の push は GITHUB_TOKEN で行うため、publish-assets.yml は動かない
+        # （GitHub の仕様で、既定トークンの push は新しいワークフローを起こさない）。
+        # 待つ相手がいないので、ここで自分から送る。
+        run: bash scripts/publish-assets.sh
+
       - name: Pages への反映を待つ
         if: steps.build.outputs.skipped != 'true' && !inputs.dry_run
         env:

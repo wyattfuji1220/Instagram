@@ -17,3 +17,6 @@ Image storage/
 
 # 参考用に置いた過去のリール。公開リポジトリなので取り込まない。
 sample movie/
+
+# 公開用リポジトリの作業コピー。ワークフローが clone する一時物。
+.assets-repo/
