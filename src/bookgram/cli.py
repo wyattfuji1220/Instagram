@@ -1431,6 +1431,36 @@ def cmd_cleanup(_: argparse.Namespace) -> int:
 # -------------------------------------------------------------------------------- main
 
 
+def cmd_motion_sample(args: argparse.Namespace) -> int:
+    """写真の上に文字を打ち出す形式のリールを、試作として1本だけ書き出す。
+
+    下書きの状態も posted.jsonl も触らない。今の配信（`reel` / `post-reel`）
+    とは独立していて、出来上がったファイルを見るためだけのもの。
+    """
+    from .motion import build_scenes, total_seconds
+    from .reel import encode_frames
+    from .motion import iter_frames as motion_frames
+
+    path = DRAFTS_DIR / args.date / "post.json"
+    if not path.exists():
+        print(f"[error] {path} がありません。")
+        return 1
+    draft = json.loads(path.read_text(encoding="utf-8"))
+    if draft.get("kind") != "book":
+        print("[error] 書籍の投稿にだけ対応しています。")
+        return 1
+
+    scenes = build_scenes(draft)
+    for number, scene in enumerate(scenes, 1):
+        print(f"  場面{number}: {scene.seconds:.1f}秒 / 背景 {scene.background.name}")
+    print(f"  合計 {total_seconds(scenes):.1f}秒")
+
+    out = Path(args.out) if args.out else OUTPUT_DIR / f"motion-{args.date}.mp4"
+    encode_frames(lambda: motion_frames(scenes), out)
+    print(f"[ok] {out} ({out.stat().st_size / 1e6:.1f}MB)")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     # Windows のコンソールは既定が cp932 で、絵文字や一部の記号で落ちる。
     for stream in (sys.stdout, sys.stderr):
@@ -1488,6 +1518,13 @@ def main(argv: list[str] | None = None) -> int:
         help="取りこぼしのときだけ作る（直近のリールから20時間未満なら何もしない）",
     )
     p_reel.set_defaults(func=cmd_reel)
+
+    p_motion = sub.add_parser(
+        "motion-sample", help="写真に文字を打ち出す形式のリールを試作する"
+    )
+    p_motion.add_argument("--date", required=True, help="元にする投稿日 (YYYY-MM-DD)")
+    p_motion.add_argument("--out", help="書き出し先。既定は output/motion-{日付}.mp4")
+    p_motion.set_defaults(func=cmd_motion_sample)
 
     p_preel = sub.add_parser("post-reel", help="作った動画をリールとして投稿")
     p_preel.add_argument("--date", help="元にした投稿日 (YYYY-MM-DD)。既定は自動選択。")

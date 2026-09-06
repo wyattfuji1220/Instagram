@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>リールの新形式サンプル</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0;
+    padding: 32px 20px 80px;
+    background: #121014;
+    color: #f2efe9;
+    font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+    line-height: 1.8;
+  }
+  main { max-width: 940px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 8px; }
+  p.lead { color: #b6afa4; margin: 0 0 36px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+  figure { margin: 0; }
+  video {
+    width: 100%;
+    border-radius: 14px;
+    background: #000;
+    display: block;
+  }
+  figcaption { margin-top: 12px; font-size: .95rem; color: #cfc8bc; }
+  figcaption b { color: #f7c746; font-weight: 600; }
+  section { margin-top: 48px; }
+  h2 { font-size: 1.1rem; margin: 0 0 10px; }
+  ul { margin: 0; padding-left: 1.2em; color: #cfc8bc; }
+  li { margin-bottom: 6px; }
+  footer { margin-top: 56px; color: #7d766c; font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>リールの新形式サンプル</h1>
+  <p class="lead">
+    2024年1月に配信していたリールの作りを再現したものです。まだ試作で、
+    毎日の配信は今までどおりの形式で動いています。
+  </p>
+
+  <div class="grid">
+    <figure>
+      <video src="img/samples/motion-kurushikatta.mp4" controls playsinline loop muted preload="metadata"></video>
+      <figcaption><b>苦しかったときの話をしようか</b>／森岡毅（14.3秒）</figcaption>
+    </figure>
+    <figure>
+      <video src="img/samples/motion-facilitator.mp4" controls playsinline loop muted preload="metadata"></video>
+      <figcaption><b>ザ・ファシリテーター</b>／森時彦（14.1秒）</figcaption>
+    </figure>
+  </div>
+
+  <section>
+    <h2>今の形式との違い</h2>
+    <ul>
+      <li>投稿カードを貼らず、写真の上に文字を直接置いています。</li>
+      <li>文字が1文字ずつ打ち出されます。冒頭で画面に動きが出ます。</li>
+      <li>1画面の用件を1つに絞り、つかみ → 書誌 → おすすめ → 導線の4場面にしています。</li>
+      <li>色は白と黄の2色だけです。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>元にした4本</h2>
+    <ul>
+      <li>スタンフォード式 最高の睡眠（2024-01-07／いいね27）</li>
+      <li>アオアシに学ぶ考える葦の育ち方（2024-01-06／いいね12）</li>
+      <li>デザインフルネス（2024-01-18／いいね4）</li>
+      <li>世界のエリートはなぜ美意識を鍛えるのか（2024-01-23／いいね16）</li>
+      <li>すごい左利き（お預かりしたmp4）</li>
+    </ul>
+  </section>
+
+  <footer>試作のため予告なく差し替えます。</footer>
+</main>
+</body>
+</html>

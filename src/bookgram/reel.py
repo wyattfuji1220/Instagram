@@ -191,7 +191,7 @@ def _encode_command(out_path: Path, *, silent_audio: bool) -> list[str]:
     return command
 
 
-def _run_encode(card_paths: list[Path], out_path: Path, *, silent_audio: bool) -> None:
+def _run_encode(make_frames, out_path: Path, *, silent_audio: bool) -> None:
     """ffmpeg に生フレームを流し込む。失敗したら stderr を添えて投げる。
 
     stderr はパイプではなく一時ファイルに逃がす。パイプのままだと
@@ -208,7 +208,7 @@ def _run_encode(card_paths: list[Path], out_path: Path, *, silent_audio: bool) -
         assert process.stdin is not None
         broken = False
         try:
-            for frame in iter_frames(card_paths):
+            for frame in make_frames():
                 process.stdin.write(frame.tobytes())
         except BrokenPipeError:
             # ffmpeg が先に死んだ。理由は stderr 側にある。
@@ -246,17 +246,18 @@ def _is_playable(path: Path) -> bool:
     return result.returncode == 0
 
 
-def build_reel(card_paths: list[Path], out_path: Path) -> Path:
-    """カード画像から縦動画を書き出す。"""
-    if not card_paths:
-        raise ValueError("カード画像がありません")
+def encode_frames(make_frames, out_path: Path) -> Path:
+    """フレームを吐く関数を受け取って動画にする。
 
+    make_frames は呼ばれるたびに最初からフレームを返すこと。無音トラック
+    付きで失敗したときに、もう一度頭から流し直すため。
+    """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     problems: list[str] = []
 
     for silent_audio in (True, False):
         try:
-            _run_encode(card_paths, out_path, silent_audio=silent_audio)
+            _run_encode(make_frames, out_path, silent_audio=silent_audio)
         except RuntimeError as error:
             problems.append(str(error))
         else:
@@ -269,6 +270,13 @@ def build_reel(card_paths: list[Path], out_path: Path) -> Path:
     # 壊れたファイルを残すと、それが公開されて Instagram 側で ERROR になる。
     out_path.unlink(missing_ok=True)
     raise RuntimeError("動画を書き出せませんでした: " + " / ".join(problems))
+
+
+def build_reel(card_paths: list[Path], out_path: Path) -> Path:
+    """カード画像から縦動画を書き出す。"""
+    if not card_paths:
+        raise ValueError("カード画像がありません")
+    return encode_frames(lambda: iter_frames(card_paths), out_path)
 
 
 def cards_in(image_dir: Path) -> list[Path]:

@@ -1075,3 +1075,76 @@ def test_bargain_feature_shows_price_not_release_date():
     book.price = 0
     assert book.price_label == ""
     assert "価格:" not in book.to_prompt_block()
+
+
+# ---- 動きのあるリール（motion） -------------------------------------------
+
+
+def test_motion_highlight_spans_lines():
+    """ハイライトが行をまたいでも、その範囲だけ色が変わる。"""
+    from bookgram.motion import ACCENT, TEXT, colored_lines
+
+    lines = colored_lines("人を伸ばし、\n組織を変える\nファシリテーション", "組織を変える")
+    assert lines[0] == [("人を伸ばし、", TEXT)]
+    assert lines[1] == [("組織を変える", ACCENT)]
+
+    # 行をまたぐ指定でも、行ごとに割り付けられる
+    lines = colored_lines("会社と結婚するな、\n職能と結婚せよ", "な、\n職能と")
+    assert lines[0] == [("会社と結婚する", TEXT), ("な、", ACCENT)]
+    assert lines[1] == [("職能と", ACCENT), ("結婚せよ", TEXT)]
+
+    # 見つからない指定は無視する（例外にしない）
+    assert colored_lines("ある文", "無い語") == [[("ある文", TEXT)]]
+
+
+def test_motion_typing_cuts_advance_across_segments():
+    """打ち出しの位置は、色が変わっても左から右へ進み続ける。
+
+    色ごとに描画位置を戻してしまうと、後半の文字が先に見えてしまう。
+    """
+    from bookgram.motion import ACCENT, TEXT, line_image
+
+    image, cuts = line_image([("人を伸ばし、", TEXT), ("組織", ACCENT)], 60)
+    assert len(cuts) == len("人を伸ばし、組織") + 1
+    assert cuts == tuple(sorted(cuts))
+    assert cuts[-1] <= image.width
+
+
+def test_motion_book_scene_keeps_cover_below_author():
+    """書名が2行になっても、書影が著者名に重ならない。"""
+    from bookgram import motion
+
+    draft = {
+        "date": "2026-09-02",
+        "book_title": "苦しかったときの話をしようか",
+        "book_author": "森岡毅",
+        "cover": {"text": "会社と結婚するな、\n職能と結婚せよ", "highlight": "職能と結婚せよ"},
+        "recommend": [{"text": "やりたいことが\nわからなくて悩んでいる方", "highlight": "やりたいこと"}],
+        "cover_url": "",
+    }
+    backgrounds = motion._pick_backgrounds(draft["book_title"], 4)
+    scene = motion._book_scene(draft, backgrounds[1])
+    author = scene.elements[-1]
+    assert author.y + author.image.height < motion.COVER_BOTTOM
+
+
+def test_motion_scene_order_and_length():
+    """4場面に分かれ、リールとして短すぎず長すぎない尺になる。"""
+    from bookgram import motion
+
+    draft = {
+        "date": "2026-09-06",
+        "book_title": "ザ・ファシリテーター",
+        "book_author": "森時彦",
+        "cover": {"text": "人を伸ばし、\n組織を変える\nファシリテーション", "highlight": "組織を変える"},
+        "recommend": [
+            {"text": "畑違いの部署を\n任された方", "highlight": "畑違いの部署"},
+            {"text": "年上の部下を率いて\nチームを動かしたい方", "highlight": "年上の部下"},
+        ],
+        "cover_url": "",
+    }
+    scenes = motion.build_scenes(draft)
+    assert len(scenes) == 4
+    assert 9 <= motion.total_seconds(scenes) <= 20
+    # 背景は場面ごとに変える
+    assert len({s.background for s in scenes}) == 4
