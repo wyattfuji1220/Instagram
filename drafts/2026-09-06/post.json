@@ -88,6 +88,15 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1367925
+    "bytes": 1367925,
+    "media_id": "17907846006527268",
+    "posted_at": "2026-09-06T20:17:40.690937+09:00",
+    "audio": {
+      "audio_id": "1236602464539322",
+      "title": "Life's What You Make It (Instrumental)",
+      "display_artist": "Julia Gartha",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    }
   }
 }
