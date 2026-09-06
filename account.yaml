@@ -80,3 +80,7 @@ feature_lead: "楽しみにしている"
 # ストーリー（9:16）に入れる文言
 story_label: "New Post！"
 story_cta: "詳しくはフィード投稿から →"
+
+# 夕方のリールを知らせるストーリーの文言。朝のカルーセルとは別に出します。
+story_reel_label: "New Reel！"
+story_reel_cta: "リールはこちらから →"

@@ -39,6 +39,11 @@ from .config import (
 
 JPEG_QUALITY = 92
 STORY_FILENAME = "story.jpg"
+# リールの告知に使うストーリー。朝のカルーセルとは別に出す。
+REEL_STORY_FILENAME = "story-reel.jpg"
+# そこに埋め込む面。朝のストーリーが 1=結論 なので、こちらは 4=問いかけ に
+# する。同じ日に同じ絵が2度流れると、2本目を開いてもらえない。
+REEL_STORY_CARD = "04.jpg"
 # 文字が枠からはみ出さないよう、最長行の文字数から字送りを決める。
 # 和文は1文字がほぼ字送りぶんの幅を取るため、有効幅÷文字数で近似できる。
 COVER_MAX_FONT = 82
@@ -383,29 +388,43 @@ def render_feature(post: dict[str, Any], out_dir: Path) -> list[Path]:
 
 
 def story_line_for(post: dict[str, Any]) -> str:
-    """ストーリーに載せる一言。無ければ表紙の文言で代用する。"""
+    """ストーリーに載せる一言。無ければ表紙の文言で代用する。
+
+    改行はここで決めて、そのまま出す。ブラウザ任せにすると語の途中で
+    折り返して助詞が行頭に来る（「組織を変え／える ファシリテーション」）。
+    """
     line = (post.get("story_line") or "").strip()
     if line:
-        return line
+        return balanced_break(line)
     cover = post.get("cover")
     if isinstance(cover, dict) and cover.get("text"):
-        return cover["text"].replace(chr(10), " ")
-    return post.get("book_title") or post.get("period_label", "")
+        # 表紙の改行はカード側で文節ごとに整えてある。潰さずに使う。
+        return cover["text"]
+    return balanced_break(post.get("book_title") or post.get("period_label", ""))
 
 
-def build_story_context(post: dict[str, Any], feed_image: str = "") -> dict[str, Any]:
+def build_story_context(
+    post: dict[str, Any], feed_image: str = "", *, for_reel: bool = False
+) -> dict[str, Any]:
     account = load_account()
     icon_path = find_profile_icon()
     seed = post.get("book_title") or post.get("period_label", "")
+    if for_reel:
+        label = account.get("story_reel_label", "New Reel！")
+        cta = account.get("story_reel_cta", "リールはこちらから →")
+    else:
+        label = account.get("story_label", "New Post！")
+        cta = account.get("story_cta", "詳しくはフィード投稿から →")
     return {
         "width": STORY_WIDTH,
         "height": STORY_HEIGHT,
-        "bg": _pick_background(seed, 0),
+        # 背景は朝夕でずらす。同じ写真だと、続けて見たときに使い回しに見える。
+        "bg": _pick_background(seed, 1 if for_reel else 0),
         "feed_image": feed_image,
         "icon": _data_uri(icon_path) if icon_path else "",
-        "label": account.get("story_label", "New Post！"),
+        "label": label,
         "line": story_line_for(post),
-        "cta": account.get("story_cta", "詳しくはフィード投稿から →"),
+        "cta": cta,
         "handle": account["handle"],
     }
 
@@ -473,16 +492,22 @@ def render_fixed_text_cards(post: dict[str, Any], out_dir: Path) -> list[Path]:
     return paths
 
 
-def render_story(post: dict[str, Any], out_dir: Path) -> Path:
+def render_story(
+    post: dict[str, Any], out_dir: Path, *, for_reel: bool = False
+) -> Path:
     """ストーリー用の縦長画像を1枚書き出す。
 
-    中央にはフィードの1枚目をそのまま埋め込む。カード生成のあとに呼ぶこと。
+    中央にはカードの1枚を埋め込む。カード生成のあとに呼ぶこと。
+    for_reel を立てると、夕方のリールを知らせる別の1枚になる。
     """
     out_dir.mkdir(parents=True, exist_ok=True)
     template = _env().get_template("story.html.j2")
-    path = out_dir / STORY_FILENAME
-    first_card = out_dir / "01.jpg"
-    feed_image = _file_data_uri(first_card) if first_card.exists() else ""
+    path = out_dir / (REEL_STORY_FILENAME if for_reel else STORY_FILENAME)
+    card = out_dir / (REEL_STORY_CARD if for_reel else "01.jpg")
+    if not card.exists():
+        # 特集は枚数が少ない。無い面を指したら1枚目に戻す。
+        card = out_dir / "01.jpg"
+    feed_image = _file_data_uri(card) if card.exists() else ""
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
@@ -491,7 +516,8 @@ def render_story(post: dict[str, Any], out_dir: Path) -> Path:
             device_scale_factor=1,
         )
         page.set_content(
-            template.render(**build_story_context(post, feed_image)), wait_until="load"
+            template.render(**build_story_context(post, feed_image, for_reel=for_reel)),
+            wait_until="load",
         )
         page.screenshot(path=str(path), type="jpeg", quality=JPEG_QUALITY)
         browser.close()

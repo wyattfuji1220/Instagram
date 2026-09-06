@@ -1148,3 +1148,34 @@ def test_motion_scene_order_and_length():
     assert 9 <= motion.total_seconds(scenes) <= 20
     # 背景は場面ごとに変える
     assert len({s.background for s in scenes}) == 4
+
+
+def test_story_line_keeps_card_line_breaks():
+    """ストーリーの一言は、カードで整えた改行をそのまま使う。
+
+    空白に潰すとブラウザが語の途中で折り返し、助詞が行頭に来る。
+    """
+    from bookgram.render import story_line_for
+
+    post = {"cover": {"text": "人を伸ばし、\n組織を変える\nファシリテーション"}}
+    assert story_line_for(post) == "人を伸ばし、\n組織を変える\nファシリテーション"
+
+    # 表紙が無ければ書名。長ければ文節で折り返す。
+    assert "\n" in story_line_for({"book_title": "苦しかったときの話をしようか"})
+
+
+def test_reel_story_differs_from_morning_story():
+    """夕方のストーリーは、朝のものと文言・絵・背景を変える。
+
+    同じ日に同じ絵が2度流れると、2本目を開いてもらえない。
+    """
+    from bookgram.render import REEL_STORY_CARD, build_story_context
+
+    post = {"book_title": "ザ・ファシリテーター", "cover": {"text": "人を伸ばし、"}}
+    morning = build_story_context(post, "feed")
+    evening = build_story_context(post, "feed", for_reel=True)
+
+    assert morning["label"] != evening["label"]
+    assert morning["cta"] != evening["cta"]
+    assert morning["bg"] != evening["bg"]
+    assert REEL_STORY_CARD == "04.jpg"

@@ -74,7 +74,8 @@
     font-size: 50px;
     font-weight: 600;
     line-height: 1.7;
-    text-wrap: balance;
+    /* 改行は story_line_for が決める。ブラウザに任せると文節の途中で切れる。 */
+    white-space: pre-line;
     text-shadow: 0 4px 24px rgba(0, 0, 0, 0.75);
   }
 

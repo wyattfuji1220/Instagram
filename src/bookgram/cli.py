@@ -90,6 +90,7 @@ from .reel import (
     variant_for,
 )
 from .render import (
+    REEL_STORY_FILENAME,
     STORY_FILENAME,
     COVER_SUFFIXES,
     cover_data_uri,
@@ -715,6 +716,9 @@ def cmd_reel(args: argparse.Namespace) -> int:
     finally:
         if reel_dir is not None:
             reel_dir.cleanup()
+    # 告知用のストーリーもここで描く。投稿は post-reel だが、画像は動画と
+    # 同じ push で公開先へ渡らないと、投稿の直前に取りに行っても404になる。
+    render_story(draft, image_dir, for_reel=True)
     size_mb = out_path.stat().st_size / 1_000_000
 
     draft["reel"] = {
@@ -812,6 +816,9 @@ def cmd_post_reel(args: argparse.Namespace) -> int:
         print(f"[dry-run] リール {day} 『{draft_label(draft)}』")
         print(f"  video: {video_url}")
         print(f"  audio: {configuration or '（音源なし）'}")
+        print(
+            f"  story: {secrets.pages_base_url}/img/{day.isoformat()}/{REEL_STORY_FILENAME}"
+        )
         print("--- caption ---")
         print(caption)
         return 0
@@ -848,6 +855,17 @@ def cmd_post_reel(args: argparse.Namespace) -> int:
         }
     )
     print(f"[done] リールを投稿しました: media_id={media_id}")
+
+    story_url = f"{secrets.pages_base_url}/img/{day.isoformat()}/{REEL_STORY_FILENAME}"
+    try:
+        story_id = publish_story(client, story_url)
+    except PublishError as error:
+        # ストーリーはおまけなので、失敗してもリール投稿は成功扱いにする
+        print(f"::warning::ストーリーの投稿に失敗しました: {error}", file=sys.stderr)
+    else:
+        reel["story_media_id"] = story_id
+        bookqueue.save_draft(day, draft)
+        print(f"[done] ストーリーも投稿しました: media_id={story_id}")
 
     # 公開が済んだ動画はリポジトリに残さない。画像と違い1本2MB前後あり、
     # 週3本のペースで積み上がると履歴が膨らむ。
