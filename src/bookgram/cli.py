@@ -578,6 +578,22 @@ def _draft_days() -> list[date]:
 # 何もしない。夕方の枠が正常に動いた日に、翌朝もう1本出さないため。
 CATCHUP_AFTER_HOURS = 20
 
+# リールを出してよい時間帯（JST）。夕方の枠として運用しているので、
+# ここから外れた実行は投稿しない。
+#
+# GitHub の定時実行は5〜9時間遅れて動くことがある。2026-09-07 夕方ぶんの枠が
+# 翌 00:01 に発火し、日付が変わっているせいで「今日はまだ出していない」と
+# 判定して深夜に1本出した。すると同日夕方の枠が「今日はもう出した」と止まり、
+# 翌朝の取りこぼし枠が動いて 06:05 に出る。以後ずっと朝に固定される。
+# 時刻で弾けば、遅れて動いた枠は投稿せずに終わる。
+REEL_WINDOW_START = 17
+REEL_WINDOW_END = 24
+
+
+def within_reel_window(now: datetime | None = None) -> bool:
+    """いまリールを出してよい時間帯か。"""
+    return REEL_WINDOW_START <= (now or datetime.now(JST)).hour < REEL_WINDOW_END
+
 
 def last_reel_posted_at() -> datetime | None:
     """最後にリールを出した日時。一度も出していなければ None。"""
@@ -639,6 +655,16 @@ def pick_reel_source(*, built: bool) -> date | None:
 def cmd_reel(args: argparse.Namespace) -> int:
     """投稿済みのカード画像から縦動画を組み立てる。"""
     if not args.date:
+        now = datetime.now(JST)
+        if not within_reel_window(now):
+            # 遅れて動いた枠。ここで投稿すると配信時刻がずれて戻らなくなる。
+            print(
+                f"[skip] いまは {now:%H:%M} です。リールは"
+                f" {REEL_WINDOW_START}:00〜{REEL_WINDOW_END - 1}:59 の枠でだけ出します。"
+            )
+            _emit_step_output("skipped", "true")
+            return 0
+
         # 未投稿の動画を積み上げない。1本ずつ作って、出してから次を作る。
         if args.catch_up:
             # 夕方の枠が発火しなかった日を、翌朝の投稿処理から拾う。
@@ -778,6 +804,14 @@ def cmd_post_reel(args: argparse.Namespace) -> int:
     """組み立て済みの動画をリールとして投稿する。"""
     required = () if args.dry_run else ("IG_USER_ID", "IG_ACCESS_TOKEN")
     secrets = load_secrets(require=required)
+
+    if not args.date and not args.dry_run and not within_reel_window():
+        now = datetime.now(JST)
+        print(
+            f"[skip] いまは {now:%H:%M} です。リールは"
+            f" {REEL_WINDOW_START}:00〜{REEL_WINDOW_END - 1}:59 の枠でだけ出します。"
+        )
+        return 0
 
     day = date.fromisoformat(args.date) if args.date else pick_reel_source(built=True)
     if day is None:

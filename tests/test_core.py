@@ -1179,3 +1179,25 @@ def test_reel_story_differs_from_morning_story():
     assert morning["cta"] != evening["cta"]
     assert morning["bg"] != evening["bg"]
     assert REEL_STORY_CARD == "04.jpg"
+
+
+def test_reel_only_posts_in_the_evening_window():
+    """夕方の枠から外れた時刻では、リールを出さない。
+
+    GitHub の定時実行は数時間遅れることがある。日付をまたいで発火すると
+    「今日はまだ出していない」と判定して深夜に1本出てしまい、その日の
+    夕方が止まり、翌朝の枠に移る。以後ずっと朝に固定される。
+    """
+    from datetime import datetime as _dt
+
+    from bookgram.cli import JST, within_reel_window
+
+    def at(hour, minute=0):
+        return _dt(2026, 9, 9, hour, minute, tzinfo=JST)
+
+    assert within_reel_window(at(18))       # 本来の枠
+    assert within_reel_window(at(17))       # 枠の頭
+    assert within_reel_window(at(23, 59))   # 遅れても日付内なら出す
+    assert not within_reel_window(at(0, 1))   # 前日ぶんが日付をまたいで発火
+    assert not within_reel_window(at(6, 5))   # 朝の取りこぼし枠
+    assert not within_reel_window(at(16, 59))
