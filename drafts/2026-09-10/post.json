@@ -91,6 +91,16 @@
     "variant": null,
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1308635
+    "bytes": 1308635,
+    "media_id": "18105550709617222",
+    "posted_at": "2026-09-10T18:03:37.211778+09:00",
+    "audio": {
+      "audio_id": "358491660004363",
+      "title": "Our Love (Reels Sound - Listicle)",
+      "display_artist": "Ruby Amanfu",
+      "mood": "静か",
+      "query": "calm piano"
+    },
+    "story_media_id": "17899360110596595"
   }
 }
