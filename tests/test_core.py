@@ -1201,3 +1201,56 @@ def test_reel_only_posts_in_the_evening_window():
     assert not within_reel_window(at(0, 1))   # 前日ぶんが日付をまたいで発火
     assert not within_reel_window(at(6, 5))   # 朝の取りこぼし枠
     assert not within_reel_window(at(16, 59))
+
+
+# ---- 売れ筋の記録（ranking） ----------------------------------------------
+
+
+def test_ranking_covers_every_segment():
+    """紙は判型別、電子はジャンル別。全区分を記録する。"""
+    from bookgram.ranking import SEGMENTS
+
+    keys = {s.key for s in SEGMENTS}
+    assert {"paper-business-1", "paper-business-2", "paper-business-3"} <= keys
+    assert {"paper-novel-1", "paper-novel-2", "paper-novel-3"} <= keys
+    assert {"ebook-business", "ebook-novel", "ebook-mystery"} <= keys
+    # 紙には判型があり、電子には無い
+    assert all(s.size for s in SEGMENTS if s.medium == "paper")
+    assert all(s.size is None for s in SEGMENTS if s.medium == "ebook")
+
+
+def test_ranking_entry_identity_falls_back_to_title():
+    """ISBN が無い本は、書名を正規化した鍵で週をまたいで追う。"""
+    from bookgram.ranking import Entry
+
+    def make(title, item_id=""):
+        return Entry(
+            rank=1, title=title, author="", publisher="", item_id=item_id,
+            price=0, sales_date="", review_count=0, review_average=0.0,
+        )
+
+    assert make("本", "9784000000000").identity == "9784000000000"
+    # 表記ゆれ（全角空白・記号）は同じ本として扱う
+    assert make("本当の自由を手に入れる　お金の大学").identity == make(
+        "本当の自由を手に入れる お金の大学"
+    ).identity
+
+
+def test_ranking_move_labels():
+    """順位の動きを、読める形の一言にする。"""
+    from bookgram.ranking import Entry, Move
+
+    def move(rank, previous):
+        entry = Entry(
+            rank=rank, title="本", author="", publisher="", item_id="x",
+            price=0, sales_date="", review_count=0, review_average=0.0,
+        )
+        return Move(entry=entry, previous_rank=previous, weeks_in=1)
+
+    assert move(2, 7).label == "↑5"
+    assert move(7, 2).label == "↓5"
+    assert move(3, 3).label == "→"
+    assert move(1, None).label == "初登場"
+    assert move(1, None).is_new
+    # 初登場は上下の幅を持たない（0扱い）
+    assert move(1, None).delta == 0

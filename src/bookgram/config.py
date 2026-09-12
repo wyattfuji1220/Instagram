@@ -15,6 +15,9 @@ DRAFTS_DIR = ROOT / "drafts"
 DOCS_DIR = ROOT / "docs"
 IMG_DIR = DOCS_DIR / "img"
 OUTPUT_DIR = ROOT / "output"
+# 楽天の売れ筋を毎週記録する場所。1週1ファイル（YYYY-Www.json）。
+# 楽天の「売れている順」は集計期間が非公開なので、期間はこちらで作る。
+RANKINGS_DIR = ROOT / "rankings"
 # 書影を手で置く場所。API で取れない本のために、{ISBN}.jpg を入れておく。
 COVERS_DIR = ROOT / "books" / "covers"
 # 画像を放り込む場所。ここに置いたものを covers --collect が取り込む。

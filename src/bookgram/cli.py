@@ -1513,6 +1513,42 @@ def cmd_motion_sample(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_ranking(args: argparse.Namespace) -> int:
+    """楽天の売れ筋を1回ぶん記録し、動きをまとめる。
+
+    投稿はしない。比較できるのは2週目からなので、まず記録を貯める。
+    """
+    from . import ranking
+
+    week = args.week or ranking.week_key(today_jst())
+    if not args.report_only:
+        try:
+            snapshot = ranking.take_snapshot(today_jst())
+        except ranking.RankingUnavailableError as error:
+            print(f"[error] {error}", file=sys.stderr)
+            return 1
+        path = ranking.save_snapshot(snapshot)
+        week = snapshot["week"]
+        print(f"[ok] {path} に記録しました。")
+
+    report = ranking.build_report(week)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUTPUT_DIR / "ranking.md").write_text(report, encoding="utf-8")
+    print(f"[ok] output/ranking.md を書きました（記録済み {len(ranking.stored_weeks())}週）。")
+
+    picks = ranking.highlights(week)
+    if picks:
+        print("[ranking] 発信の種になりそうな動き:")
+        for segment, move in picks:
+            print(
+                f"   {segment.label} {move.entry.rank}位 {move.label} "
+                f"{move.weeks_in}週連続 『{move.entry.title}』"
+            )
+    else:
+        print("[ranking] 比較できる週がまだありません。次回から動きが出ます。")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     # Windows のコンソールは既定が cp932 で、絵文字や一部の記号で落ちる。
     for stream in (sys.stdout, sys.stderr):
@@ -1628,6 +1664,13 @@ def main(argv: list[str] | None = None) -> int:
     p_stats = sub.add_parser("stats", help="届き方の数字を読み出す")
     p_stats.add_argument("--limit", type=int, default=12, help="見る投稿数")
     p_stats.set_defaults(func=cmd_stats)
+
+    p_rank = sub.add_parser("ranking", help="楽天の売れ筋を毎週記録する")
+    p_rank.add_argument("--week", help="まとめ直す週 (YYYY-Www)。既定は今週。")
+    p_rank.add_argument(
+        "--report-only", action="store_true", help="取得せず、記録済みの分でまとめ直す"
+    )
+    p_rank.set_defaults(func=cmd_ranking)
 
     sub.add_parser("cleanup", help="古い画像を削除").set_defaults(func=cmd_cleanup)
 

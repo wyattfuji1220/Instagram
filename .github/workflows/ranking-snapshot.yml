@@ -1,0 +1,79 @@
+name: 週次 売れ筋の記録
+
+# 楽天の「売れている順」を毎週そのまま記録します。投稿はしません。
+#
+# 売上部数（実数）はどのAPIからも取れません。楽天から取れるのは並び順だけで、
+# しかも集計期間が公開されていないため、そのままでは「今週の」と名乗れません。
+# 週に一度この並びを残しておけば、「先週7位→今週2位」「3週連続1位」
+# 「今週初登場」を自分の記録から言えるようになります。
+#
+# 生成AIは使わないので費用はかかりません。1回あたり楽天へ9リクエストです。
+
+on:
+  schedule:
+    # 毎週月曜 07:00 JST ごろ = 日曜 22:00 UTC ごろ。
+    # 週次なので数時間遅れても同じ週に収まる。時刻の厳密さは要らない。
+    - cron: "0 22 * * 0"
+  workflow_dispatch:
+    inputs:
+      report_only:
+        description: "取得せず、記録済みの分でまとめ直す"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ranking-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 依存関係をインストール
+        run: pip install -r requirements.txt
+
+      - name: 売れ筋を記録
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          RAKUTEN_REFERER: ${{ vars.RAKUTEN_REFERER || format('{0}/{1}', github.server_url, github.repository) }}
+          PYTHONPATH: src
+        run: |
+          python -m bookgram ranking \
+            ${{ inputs.report_only && '--report-only' || '' }}
+
+      - name: 記録をコミット
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "変更はありません。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rankings output/ranking.md
+          git commit -m "売れ筋の記録: $(date -u -d '+9 hours' +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push origin main
+
+      - name: 失敗を通知
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "売れ筋の記録に失敗しました ($(date -u -d '+9 hours' +%Y-%m-%d))" \
+            --body "ログ: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
