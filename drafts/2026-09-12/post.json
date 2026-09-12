@@ -91,6 +91,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1444165
+    "bytes": 1444165,
+    "media_id": "17970680334156108",
+    "posted_at": "2026-09-12T18:04:55.872781+09:00",
+    "audio": {
+      "audio_id": "565118654020261",
+      "title": "Inspired To Shine",
+      "display_artist": "Global Genius",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    },
+    "story_media_id": "17953465713252555"
   }
 }
