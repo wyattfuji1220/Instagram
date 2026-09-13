@@ -151,7 +151,8 @@
     font-weight: 600;
     text-align: center;
     line-height: 1.5;
-    text-wrap: balance;
+    /* 改行は render.break_to_width が文節で決める。ブラウザは語の途中で切る。 */
+    white-space: pre-line;
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
   }
   .biblio-body {

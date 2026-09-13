@@ -15,7 +15,7 @@ from typing import Any
 
 import anthropic
 
-from .bookdata import BookMaterial
+from .bookdata import BookMaterial, clean_author
 from .config import MODEL
 
 MAX_TOKENS = 32000
@@ -232,6 +232,8 @@ def _fit(items: list, required: int, label: str) -> list:
 
 
 def _validate(payload: dict[str, Any]) -> None:
+    if payload.get("book_author"):
+        payload["book_author"] = clean_author(payload["book_author"])
     payload["recommend"] = _fit(
         payload.get("recommend", []), RECOMMEND_ITEMS, "recommend"
     )

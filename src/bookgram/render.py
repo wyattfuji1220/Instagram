@@ -24,6 +24,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markupsafe import Markup
 from playwright.sync_api import sync_playwright
 
+from .bookdata import clean_author
 from .config import (
     BACKGROUNDS_DIR,
     CARD_HEIGHT,
@@ -56,6 +57,9 @@ LONG_TEXT_CHARS = 34
 # 4:5 のカードを 9:16 の画面に置くと、文字は画面高さの1割ほどにしかならない。
 # 実測で平均視聴2〜3秒・維持率2割台から動かず、秒数や枚数をいじっても変わら
 # なかったため、専用の面を描いて文字そのものを大きくする。
+# 書誌カードの書名。template の .biblio-title と揃える。
+BIBLIO_TITLE_FONT_PX = 48
+BIBLIO_TITLE_WIDTH_PX = 880
 REEL_SCALE = 1.6
 # 補助的な文字（案内・ハンドル）の倍率。本文ほど上げると一行に収まらない。
 REEL_SMALL_SCALE = 1.25
@@ -139,8 +143,27 @@ BREAK_AFTER = (
     "から", "まで", "より", "ので", "のに", "でも", "では", "には", "とは",
     "ても", "ては", "とも", "だけ", "こそ", "しか",
     "は", "が", "を", "に", "で", "と", "も", "の", "へ", "や", "、",
+    # 書名は「心配すんな。全部上手くいく。」のように文で区切られることがある。
+    # 句点のあとは最も自然な切れ目。
+    "。", "！", "？",
 )
 NOT_BREAK_BEFORE = set("はがをにでとへやもの、。」』）】・")
+PUNCTUATION = ("、", "。", "！", "？")
+# 句読点と空白は文の切れ目なので、真ん中から少し外れていてもそこで折る。
+SEPARATOR_BONUS = 2
+OPEN_BRACKETS = "「『（(【〔"
+CLOSE_BRACKETS = "」』）)】〕"
+
+
+def _inside_brackets(text: str, index: int) -> bool:
+    """index の直後で折ると、括弧の中を割ることになるか。"""
+    depth = 0
+    for character in text[: index + 1]:
+        if character in OPEN_BRACKETS:
+            depth += 1
+        elif character in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+    return depth > 0
 CONTENT_END = re.compile(r"[一-龥ァ-ヶー0-9A-Za-z]")
 # 切れ端がこれ未満だと「方」の1文字だけが次行に残る。
 MIN_SIDE_CHARS = 3
@@ -155,6 +178,17 @@ def _break_candidates(text: str) -> list[tuple[float, int]]:
     middle = len(text) / 2
     found: dict[int, float] = {}
     for i in range(len(text)):
+        # 括弧の中では折らない（「未来の／公園」をつくる男）。
+        if _inside_brackets(text, i):
+            continue
+        # 書名の空白は、副題や言い換えの区切りとして書き手が置いたもの。
+        # 助詞より優先して折る（「仕事で大切なことは 孫子の兵法が…」）。
+        if text[i] in " 　":
+            end = i + 1
+            if MIN_SIDE_CHARS <= i and len(text) - end >= MIN_SIDE_CHARS:
+                score = abs(i - middle) - SEPARATOR_BONUS
+                found[end] = min(found.get(end, score), score)
+            continue
         for particle in BREAK_AFTER:
             if not text.startswith(particle, i):
                 continue
@@ -163,7 +197,8 @@ def _break_candidates(text: str) -> list[tuple[float, int]]:
                 break
             if text[end] in NOT_BREAK_BEFORE:
                 break
-            certain = bool(i and CONTENT_END.match(text[i - 1]))
+            # 句読点のあとは、直前が何であれ文の切れ目として確かに折れる。
+            certain = particle in PUNCTUATION or bool(i and CONTENT_END.match(text[i - 1]))
             # 「わからなくて」の「から」のように、2文字以上の助詞は活用語の
             # 途中にそのまま現れる。自立語の直後でなければ助詞と見なさない。
             if len(particle) > 1 and not certain:
@@ -171,7 +206,12 @@ def _break_candidates(text: str) -> list[tuple[float, int]]:
             # 「悩んで」「行って」の「で」「て」は活用語尾。助詞ではない。
             if particle in ("で", "と") and i and text[i - 1] in "んっ":
                 break
+            # 「実行できない」「大切です」の「で」は助詞ではない。
+            if particle == "で" and text[end] in "きすし":
+                break
             score = abs(end - middle) + (0 if certain else UNCERTAIN_PENALTY)
+            if particle in PUNCTUATION:
+                score -= SEPARATOR_BONUS
             found[end] = min(found.get(end, score), score)
             break
     return sorted((score, at) for at, score in found.items())
@@ -189,7 +229,24 @@ def balanced_break(text: str, limit: int = NO_WRAP_CHARS) -> str:
     if not candidates:
         return text
     at = candidates[0][1]
-    return text[:at] + '\n' + text[at:]
+    # 空白で折ったときに、行末・行頭へ空白を残さない。
+    return text[:at].rstrip(" 　") + '\n' + text[at:].lstrip(" 　")
+
+
+def break_to_width(text: str, limit: int) -> str:
+    """1行が limit 文字に収まるまで、文節の切れ目で折り返す。
+
+    balanced_break は1箇所しか折らない。リールでは文字が1.6倍になり、
+    長い書名は2箇所で折らないと収まらない。折れた行ごとにもう一度通す。
+    """
+    lines: list[str] = []
+    for line in text.split(chr(10)):
+        broken = balanced_break(line, limit)
+        if chr(10) not in broken:
+            lines.append(line)
+            continue
+        lines.extend(break_to_width(part, limit) for part in broken.split(chr(10)))
+    return chr(10).join(lines)
 
 
 def _highlighted(text: str, highlight: str) -> Markup:
@@ -236,8 +293,12 @@ def build_card_contexts(
             for line in account["outro_text"].strip().splitlines()
         ),
         "icon": icon,
-        "book_title": post["book_title"],
-        "book_author": post["book_author"],
+        # 書名はブラウザに折らせない。「心配すんな。全／部上手くいく。」のように
+        # 語の途中で切れる。カード幅に収まる文字数を出して、文節で折っておく。
+        "book_title": break_to_width(
+            post["book_title"], max(6, int(BIBLIO_TITLE_WIDTH_PX / (BIBLIO_TITLE_FONT_PX * scale)))
+        ),
+        "book_author": clean_author(post["book_author"]),
         "published": post.get("published", ""),
         "cover_image": cover_image,
     }

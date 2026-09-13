@@ -1254,3 +1254,31 @@ def test_ranking_move_labels():
     assert move(1, None).is_new
     # 初登場は上下の幅を持たない（0扱い）
     assert move(1, None).delta == 0
+
+
+def test_title_breaks_at_phrase_boundaries():
+    """書名は文節・句点・空白で折り、語の途中や括弧の中では折らない。"""
+    from bookgram.render import break_to_width
+
+    # 2026-09-13 に「心配すんな。全／部上手くいく。」と出た
+    assert break_to_width("心配すんな。全部上手くいく。", 11) == "心配すんな。\n全部上手くいく。"
+    # 書き手が置いた空白は助詞より優先し、行頭に空白を残さない
+    assert break_to_width("仕事で大切なことは 孫子の兵法が全部教えてくれる", 18) == (
+        "仕事で大切なことは\n孫子の兵法が全部教えてくれる"
+    )
+    # 「できない」の「で」では折らない
+    assert "実行で\n" not in break_to_width("なぜミーティングで決めたことが実行できないのか", 11)
+    # 括弧の中は割らない
+    assert break_to_width("「未来の公園」をつくる男", 11) == "「未来の公園」を\nつくる男"
+    # 収まる書名はそのまま
+    assert break_to_width("ザ・ファシリテーター", 11) == "ザ・ファシリテーター"
+
+
+def test_clean_author_drops_birth_year_only():
+    """著者欄から生年だけを落とし、区切りには触らない。"""
+    from bookgram.bookdata import clean_author
+
+    assert clean_author("ヒカル1991-") == "ヒカル"
+    assert clean_author("渋澤健1961-、守屋淳") == "渋澤健、守屋淳"
+    assert clean_author("ジェニファー・スコット, 神崎朗子") == "ジェニファー・スコット, 神崎朗子"
+    assert clean_author("森岡毅") == "森岡毅"
