@@ -70,7 +70,7 @@
     "question「スキルの差か思考の差か」は二つのレイヤーの記述に基づく問いの言い換え"
   ],
   "cover_url": "",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5311,
@@ -80,5 +80,8 @@
       "openbd"
     ]
   },
-  "isbn": "9784569841939"
+  "isbn": "9784569841939",
+  "media_id": "18106813097602196",
+  "posted_at": "2026-09-15T06:02:08.059212+09:00",
+  "story_media_id": "18461148658142165"
 }
