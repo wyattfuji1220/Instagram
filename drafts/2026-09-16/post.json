@@ -70,7 +70,7 @@
     "ジャンル表記は避けた（データ上不明のため）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/8300/9784479308300.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5529,
@@ -79,5 +79,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18028888352681285",
+  "posted_at": "2026-09-16T06:01:34.842523+09:00",
+  "story_media_id": "18379760527231859"
 }
