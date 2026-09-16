@@ -88,6 +88,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1461088
+    "bytes": 1461088,
+    "media_id": "18078316973375004",
+    "posted_at": "2026-09-16T18:03:39.621106+09:00",
+    "audio": {
+      "audio_id": "432524367902096",
+      "title": "Piano Mystique",
+      "display_artist": "Brent Bourgeois",
+      "mood": "静か",
+      "query": "calm piano"
+    },
+    "story_media_id": "18114966544798902"
   }
 }
