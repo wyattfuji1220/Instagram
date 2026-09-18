@@ -72,7 +72,7 @@
     "ページ数・ジャンルは不明のため記載せず"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1174/9784801401174_1_6.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5457,
@@ -82,5 +82,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18281110753295085",
+  "posted_at": "2026-09-19T06:01:52.078623+09:00",
+  "story_media_id": "18162743317487881"
 }
