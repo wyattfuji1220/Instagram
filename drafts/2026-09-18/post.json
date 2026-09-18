@@ -90,6 +90,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1393856
+    "bytes": 1393856,
+    "media_id": "18026937506854629",
+    "posted_at": "2026-09-18T18:04:42.310295+09:00",
+    "audio": {
+      "audio_id": "115875406489843",
+      "title": "Inspire (feat. Plum Soul)",
+      "display_artist": "Jumbo",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    },
+    "story_media_id": "18068252435497441"
   }
 }
