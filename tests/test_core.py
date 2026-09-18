@@ -1282,3 +1282,25 @@ def test_clean_author_drops_birth_year_only():
     assert clean_author("渋澤健1961-、守屋淳") == "渋澤健、守屋淳"
     assert clean_author("ジェニファー・スコット, 神崎朗子") == "ジェニファー・スコット, 神崎朗子"
     assert clean_author("森岡毅") == "森岡毅"
+
+
+def test_wrong_cover_is_detected_by_title():
+    """書影の実体と原稿の書名が別なら、一致とみなさない。
+
+    書影が付いていても、書誌ソースが同じ著者の別の本を当てると、書影・著者・
+    発行日がまるごとその本のものになる。有無だけを見る covers は通してしまう。
+    """
+    from bookgram.bookdata import titles_match
+
+    # 2026-09-29『孫子の兵法』に、同じ著者の別書が入っていた
+    assert not titles_match(
+        "仕事で大切なことは 孫子の兵法が全部教えてくれる", "あの日、小林書店で。"
+    )
+    # 2026-10-13『半導体戦争』に、まったく別の本が入っていた
+    assert not titles_match(
+        "半導体戦争", "グローバル資本主義の変容圧力とグローバルサウス──中国経済を中心に"
+    )
+    # 記号や全角空白の違いは同じ本として通す
+    assert titles_match(
+        "キーエンス解剖 最強企業のメカニズム", "キーエンス解剖　最強企業のメカニズム"
+    )

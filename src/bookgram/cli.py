@@ -33,7 +33,12 @@ from typing import Any
 
 from . import insights
 from . import queue as bookqueue
-from .bookdata import fetch_material, search_google_books
+from .bookdata import (
+    fetch_material,
+    search_google_books,
+    search_rakuten,
+    titles_match,
+)
 from .config import (
     CARDS_PER_POST,
     FEATURE_WEEKDAYS,
@@ -1353,6 +1358,38 @@ def collect_covers(assign: dict[str, str] | None = None) -> tuple[list[Path], li
     return filed, unknown
 
 
+def verify_cover_titles(*, include_posted: bool = False) -> list[tuple[str, str, str]]:
+    """書影が「その本のもの」かを、書影URLのISBNから引き直して確かめる。
+
+    書影が付いていても安心できない。書誌ソースが同じ著者の別の本を当てると、
+    書影・発行日・著者がまるごとその本のものになる（2026-09-29 の『孫子の兵法』に
+    『あの日、小林書店で。』、2026-10-13 の『半導体戦争』に別書が入っていた）。
+    `covers` は有無しか見ないので通ってしまう。書名を突き合わせて弾く。
+
+    返すのは (日付, 原稿の書名, 書影の実体) の並び。
+    """
+    found: list[tuple[str, str, str]] = []
+    for path in sorted(DRAFTS_DIR.glob("*/post.json")):
+        draft = json.loads(path.read_text(encoding="utf-8"))
+        if draft.get("kind") != "book":
+            continue
+        if draft.get("status") == "posted" and not include_posted:
+            continue
+        # 手で置いた画像は人が確認済み。照合の対象にしない。
+        if local_cover(str(draft.get("isbn") or "")) is not None:
+            continue
+        match = ISBN13.search(draft.get("cover_url") or "")
+        if not match:
+            continue
+        entry = search_rakuten("", match.group(0))
+        actual = (entry or {}).get("title", "")
+        if not actual:
+            continue
+        if not titles_match(draft.get("book_title", ""), actual):
+            found.append((draft["date"], draft.get("book_title", ""), actual))
+    return found
+
+
 def cmd_covers(args: argparse.Namespace) -> int:
     """書影が付いていない下書きを洗い出す。
 
@@ -1367,6 +1404,18 @@ def cmd_covers(args: argparse.Namespace) -> int:
             print(f"[ok] 取り込み: {path.name}")
         for path in unknown:
             print(f"[--] どの本か不明: {path.name}（--assign 'ファイル名=ISBN' で指定）")
+
+    if args.verify:
+        wrong = verify_cover_titles(include_posted=args.all)
+        for day, wanted, actual in wrong:
+            print(f"[NG] {day} 『{wanted}』の書影は『{actual}』のものです。")
+        if wrong:
+            print(
+                "[--] 書影だけでなく著者や発行日も別の本のものになっている恐れがあります。"
+            )
+            return 1
+        print("[ok] 書影と書名は一致しています。")
+        return 0
 
     missing: list[tuple[str, str, str]] = []
     total = 0
@@ -1648,6 +1697,11 @@ def main(argv: list[str] | None = None) -> int:
 
     p_cov = sub.add_parser("covers", help="書影が付いていない下書きを洗い出す")
     p_cov.add_argument("--all", action="store_true", help="投稿済みも含める")
+    p_cov.add_argument(
+        "--verify",
+        action="store_true",
+        help="書影が別の本のものになっていないか、書名を突き合わせて確かめる",
+    )
     p_cov.add_argument(
         "--collect",
         action="store_true",
