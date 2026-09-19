@@ -1272,6 +1272,10 @@ def test_title_breaks_at_phrase_boundaries():
     assert break_to_width("「未来の公園」をつくる男", 11) == "「未来の公園」を\nつくる男"
     # 収まる書名はそのまま
     assert break_to_width("ザ・ファシリテーター", 11) == "ザ・ファシリテーター"
+    # 「の」は名詞句をつなぐので、ほかに切れ目があればそちらで折る
+    assert break_to_width("仕事で大切なことは孫子の兵法がぜんぶ教えてくれる", 18) == (
+        "仕事で大切なことは孫子の兵法が" + chr(10) + "ぜんぶ教えてくれる"
+    )
 
 
 def test_clean_author_drops_birth_year_only():

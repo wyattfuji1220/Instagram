@@ -151,6 +151,9 @@ NOT_BREAK_BEFORE = set("はがをにでとへやもの、。」』）】・")
 PUNCTUATION = ("、", "。", "！", "？")
 # 句読点と空白は文の切れ目なので、真ん中から少し外れていてもそこで折る。
 SEPARATOR_BONUS = 2
+# 「の」は名詞と名詞をつなぐことが多く、そこで折ると一つの名詞句が割れる
+# （「孫子の／兵法」）。ほかに切れ目があればそちらを選ぶ。
+WEAK_BREAK_PENALTY = {"の": 4}
 OPEN_BRACKETS = "「『（(【〔"
 CLOSE_BRACKETS = "」』）)】〕"
 
@@ -212,6 +215,7 @@ def _break_candidates(text: str) -> list[tuple[float, int]]:
             score = abs(end - middle) + (0 if certain else UNCERTAIN_PENALTY)
             if particle in PUNCTUATION:
                 score -= SEPARATOR_BONUS
+            score += WEAK_BREAK_PENALTY.get(particle, 0)
             found[end] = min(found.get(end, score), score)
             break
     return sorted((score, at) for at, score in found.items())
