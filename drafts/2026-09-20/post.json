@@ -92,6 +92,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1392333
+    "bytes": 1392333,
+    "media_id": "18145522789577753",
+    "posted_at": "2026-09-20T18:04:27.173240+09:00",
+    "audio": {
+      "audio_id": "983561466214319",
+      "title": "Bloom Again (Instrumental)",
+      "display_artist": "Alex G",
+      "mood": "前向き",
+      "query": "uplifting acoustic"
+    },
+    "story_media_id": "18134885509645058"
   }
 }
