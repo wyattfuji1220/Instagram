@@ -85,6 +85,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1466409
+    "bytes": 1466409,
+    "media_id": "18151331449534921",
+    "posted_at": "2026-09-22T18:03:50.166037+09:00",
+    "audio": {
+      "audio_id": "550918548727957",
+      "title": "Beautiful Beginnings",
+      "display_artist": "Global Genius",
+      "mood": "前向き",
+      "query": "uplifting acoustic"
+    },
+    "story_media_id": "18356467315218806"
   }
 }
