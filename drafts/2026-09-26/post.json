@@ -90,6 +90,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1452871
+    "bytes": 1452871,
+    "media_id": "18126334343492346",
+    "posted_at": "2026-09-26T18:04:37.485544+09:00",
+    "audio": {
+      "audio_id": "976299230340697",
+      "title": "Someday (Instrumental)",
+      "display_artist": "Cy Curnin",
+      "mood": "静か",
+      "query": "calm piano"
+    },
+    "story_media_id": "17968586183962138"
   }
 }
