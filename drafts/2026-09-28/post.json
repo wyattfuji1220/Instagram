@@ -89,6 +89,16 @@
     "variant": null,
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1412646
+    "bytes": 1412646,
+    "media_id": "18113417549013673",
+    "posted_at": "2026-09-28T18:03:41.535477+09:00",
+    "audio": {
+      "audio_id": "868648898493565",
+      "title": "I Was Made For You",
+      "display_artist": "Charlie Peacock",
+      "mood": "静か",
+      "query": "calm piano"
+    },
+    "story_media_id": "18353249380174615"
   }
 }
