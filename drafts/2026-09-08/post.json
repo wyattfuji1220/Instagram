@@ -92,6 +92,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1403971
+    "bytes": 1403971,
+    "media_id": "17958411309208459",
+    "posted_at": "2026-09-29T18:08:49.886158+09:00",
+    "audio": {
+      "audio_id": "522959446582142",
+      "title": "Build More",
+      "display_artist": "Global Genius",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    },
+    "story_media_id": "18217560904346493"
   }
 }
