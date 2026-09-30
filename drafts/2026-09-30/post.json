@@ -90,6 +90,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1379209
+    "bytes": 1379209,
+    "media_id": "17957475228016357",
+    "posted_at": "2026-09-30T18:04:27.807843+09:00",
+    "audio": {
+      "audio_id": "802171850302061",
+      "title": "Little Things",
+      "display_artist": "Emy Phelps & Darol Anger",
+      "mood": "前向き",
+      "query": "uplifting acoustic"
+    },
+    "story_media_id": "18144257008574760"
   }
 }
