@@ -70,7 +70,7 @@
     "「熱量そのものが戦略の一部」という表現は読書メモの情熱の記述に基づく私の所感（データに明記なし）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1925/9784041041925.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5555,
@@ -80,5 +80,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "17968317672177606",
+  "posted_at": "2026-10-02T06:01:31.994500+09:00",
+  "story_media_id": "18075898817440104"
 }
