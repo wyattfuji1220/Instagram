@@ -89,6 +89,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1450870
+    "bytes": 1450870,
+    "media_id": "18103279199369714",
+    "posted_at": "2026-10-02T18:04:43.237984+09:00",
+    "audio": {
+      "audio_id": "393903371411311",
+      "title": "The Nerve",
+      "display_artist": "Elad Marish",
+      "mood": "静か",
+      "query": "calm piano"
+    },
+    "story_media_id": "17901945828667057"
   }
 }
