@@ -69,7 +69,7 @@
     "「天才」の語：正式書名の副題に基づく"
   ],
   "cover_url": "",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5253,
@@ -79,5 +79,8 @@
       "openbd"
     ]
   },
-  "isbn": "9784815602505"
+  "isbn": "9784815602505",
+  "media_id": "17948757348319386",
+  "posted_at": "2026-10-03T09:13:41.757431+09:00",
+  "story_media_id": "17960664129208727"
 }
