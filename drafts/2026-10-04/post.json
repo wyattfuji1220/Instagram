@@ -83,6 +83,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1467186
+    "bytes": 1467186,
+    "media_id": "18128432749838638",
+    "posted_at": "2026-10-04T18:03:50.713778+09:00",
+    "audio": {
+      "audio_id": "1379743266787702",
+      "title": "Imagination",
+      "display_artist": "Giulio Cercato",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    },
+    "story_media_id": "18446716075134621"
   }
 }
