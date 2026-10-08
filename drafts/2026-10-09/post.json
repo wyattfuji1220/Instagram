@@ -70,7 +70,7 @@
     "開会式の具体的な内幕（MIKIKO氏・電通・任天堂）は個人の読書メモのため、カード・キャプションでは断定的に列挙せず言及を控えた"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6658/9784847066658_1_4.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5768,
@@ -80,5 +80,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18096615146123107",
+  "posted_at": "2026-10-09T06:01:41.940698+09:00",
+  "story_media_id": "18104175119458504"
 }
