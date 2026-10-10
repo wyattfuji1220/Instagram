@@ -71,7 +71,7 @@
     "キャプション中『デザインで選ばれるものへ変わってきている』は内容紹介の『パッケージが進化を遂げています』を踏まえた私の受け取り方"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/7383/9784756257383_1_3.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 5439,
@@ -81,5 +81,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18165619156473047",
+  "posted_at": "2026-10-11T06:01:31.574737+09:00",
+  "story_media_id": "18126813640917537"
 }
