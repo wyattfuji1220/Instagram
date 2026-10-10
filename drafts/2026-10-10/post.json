@@ -93,6 +93,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1464599
+    "bytes": 1464599,
+    "media_id": "17963028258208988",
+    "posted_at": "2026-10-10T18:03:42.044318+09:00",
+    "audio": {
+      "audio_id": "1129542444105585",
+      "title": "Snowhole",
+      "display_artist": "The Polish Ambassador",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    },
+    "story_media_id": "18287581777288231"
   }
 }
