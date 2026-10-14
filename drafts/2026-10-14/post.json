@@ -88,6 +88,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1423263
+    "bytes": 1423263,
+    "media_id": "18225128536323406",
+    "posted_at": "2026-10-14T18:04:33.565463+09:00",
+    "audio": {
+      "audio_id": "1149312656962222",
+      "title": "Better For Me (Instrumental)",
+      "display_artist": "ill Think in ink",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    },
+    "story_media_id": "18116970581585822"
   }
 }
