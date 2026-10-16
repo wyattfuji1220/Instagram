@@ -86,6 +86,16 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1459200
+    "bytes": 1459200,
+    "media_id": "18397633255202591",
+    "posted_at": "2026-10-16T18:04:24.727031+09:00",
+    "audio": {
+      "audio_id": "859319581616251",
+      "title": "Locked and Loaded",
+      "display_artist": "Makana",
+      "mood": "静か",
+      "query": "calm piano"
+    },
+    "story_media_id": "18033870086909224"
   }
 }
