@@ -73,7 +73,7 @@
     "3万7000サイト・4000人インタビューなどの数値は今回のカードでは未使用（内容紹介にはあり）"
   ],
   "cover_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/2669/9784296202669_1_4.jpg?_ex=200x200",
-  "status": "draft",
+  "status": "posted",
   "meta": {
     "model": "claude-opus-5",
     "input_tokens": 6193,
@@ -83,5 +83,8 @@
       "rakuten",
       "openbd"
     ]
-  }
+  },
+  "media_id": "18081207341395306",
+  "posted_at": "2026-10-17T06:01:48.989780+09:00",
+  "story_media_id": "18094501100159077"
 }
