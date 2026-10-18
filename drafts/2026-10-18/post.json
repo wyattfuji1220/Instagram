@@ -86,6 +86,15 @@
     "variant": "question",
     "cards": 6,
     "seconds": 14.4,
-    "bytes": 1424964
+    "bytes": 1424964,
+    "media_id": "18146156080586685",
+    "posted_at": "2026-10-18T18:04:12.202825+09:00",
+    "audio": {
+      "audio_id": "1502936294231399",
+      "title": "Summer (From The Four Seasons By Vivaldi)",
+      "display_artist": "Mike Block",
+      "mood": "力強い",
+      "query": "cinematic inspiring"
+    }
   }
 }
