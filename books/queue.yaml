@@ -775,15 +775,19 @@ books:
 - title: 熟柿
   isbn: '9784041146590'
   notes: ''
+  status: generated
 - title: イン・ザ・メガチャーチ
   isbn: '9784296121045'
   notes: ''
+  status: generated
 - title: 教養悪口本
   isbn: '9784334952822'
   notes: ''
+  status: generated
 - title: 文体のひみつ　なぜあの人の文章はつい読んでしまうのか？
   isbn: '9784801401624'
   notes: ''
+  status: generated
 - title: 星が人を愛すことなかれ
   isbn: '9784087901740'
   notes: ''
